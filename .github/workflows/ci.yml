@@ -22,3 +22,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Same repository variable as the deploy workflow, so PR builds go
+          # through the exact same code path. Empty on forks — the tag is
+          # optional, so the build still succeeds.
+          PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}

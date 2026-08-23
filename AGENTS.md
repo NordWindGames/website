@@ -25,6 +25,20 @@ astro dev --background
 
 Verwaltung über `astro dev stop`, `astro dev status`, `astro dev logs`.
 
+## Analytics
+
+Google Analytics 4 hängt an `<Analytics />` ([src/components/Analytics.astro](./src/components/Analytics.astro)),
+die Logik liegt in [src/lib/analytics/](./src/lib/analytics/). Neue Seiten binden `<Analytics />` im
+`<head>` ein und markieren Elemente mit `data-analytics="cta|outbound"`, `data-analytics-id`,
+`data-analytics-location` bzw. `data-analytics-section` — keine eigenen Event-Listener schreiben.
+
+Neue Events zuerst im Katalog in `src/lib/analytics/events.ts` deklarieren (`track()` nimmt nur
+bekannte Namen an) und [docs/analytics.md](./docs/analytics.md) mitpflegen. Niemals
+personenbezogene Daten als Event-Parameter senden.
+
+Die Measurement-ID kommt aus `PUBLIC_GA_MEASUREMENT_ID`; ohne sie wird kein Tag gerendert und der
+Dev-Server loggt die Events nur in die Konsole.
+
 ## Dokumentation
 
 Vollständige Doku: https://docs.astro.build

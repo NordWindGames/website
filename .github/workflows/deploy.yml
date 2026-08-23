@@ -32,6 +32,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Repository variable (Settings -> Secrets and variables -> Actions).
+          # Not a secret: the measurement ID is inlined into the public bundle.
+          # Unset -> no Google Analytics tag is rendered.
+          PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
