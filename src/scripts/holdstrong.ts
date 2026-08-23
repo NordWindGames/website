@@ -18,7 +18,7 @@ const DEMO_TARGET = new Date('2026-10-16T10:00:00Z').getTime();
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
 
 // Set after deploying scripts/google-apps-script/playtest-signup.gs as a web app.
-const PLAYTEST_SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzH1I-QMqf13dtuV0q6UhPtQMBTzpiTkb-sDe8lKjPvL31VuYkJeZgCkdlL8eguYhx6/exec';
+const PLAYTEST_SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbw8hzeMnWs00hsAvczc_6sXYWIMyNmFNoN86Fl3cgRLPtYfy7J9iat5HlCbxwRdXGRK/exec';
 
 // Must match SHARED_TOKEN in scripts/google-apps-script/playtest-signup.gs.
 // Not a real secret (it ships in the public JS bundle) — it only filters out
