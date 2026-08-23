@@ -3,8 +3,7 @@
 Statische Website des GameStudios NordWindGames, gebaut mit [Astro](https://astro.build) und
 gehostet über GitHub Pages.
 
-Aktuell erreichbar unter `https://nordwindgames.github.io/website/` (eigene Domain folgt in einem
-späteren Schritt).
+Erreichbar unter `https://nordwind.games`.
 
 ## Commands
 

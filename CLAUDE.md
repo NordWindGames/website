@@ -1,8 +1,7 @@
 # NordWindGames Website
 
 Astro-basierte Static-Site des GameStudios NordWindGames, gehostet auf GitHub Pages.
-Deploy-Ziel: `https://nordwindgames.github.io/website/` (eigene Domain folgt später — dann ändert
-sich `base` in `astro.config.mjs` auf `/` und es kommt eine `public/CNAME`-Datei dazu).
+Deploy-Ziel: `https://nordwind.games` (eigene Domain via `public/CNAME`, DNS zeigt auf GitHub Pages).
 
 ## Workflow
 
