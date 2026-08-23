@@ -6,7 +6,9 @@ sich `base` in `astro.config.mjs` auf `/` und es kommt eine `public/CNAME`-Datei
 
 ## Workflow
 
-- `main` ist geschützt: niemals direkt pushen, immer über einen Feature-Branch und einen PR.
+- Niemals direkt auf `main` pushen, immer über einen Feature-Branch und einen PR (Konvention;
+  der technische Branch-Schutz ist aktuell mangels zweitem Reviewer-Account deaktiviert und wird
+  wieder eingerichtet, siehe [README.md](./README.md)).
 - Branch-Namen: `feature/…`, `fix/…`, `chore/…`.
 - Commit-Messages folgen Conventional Commits (`feat:`, `fix:`, `chore:`).
 - Vor dem Öffnen eines PRs lokal `npm run build` laufen lassen — der gleiche Check läuft als

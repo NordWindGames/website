@@ -22,3 +22,7 @@ Alle Befehle werden im Projekt-Root ausgeführt:
 
 Änderungen laufen über Pull Requests gegen `main` (siehe [CLAUDE.md](./CLAUDE.md)). Nach dem Merge
 baut und deployed eine GitHub-Actions-Pipeline die Seite automatisch auf GitHub Pages.
+
+> **Hinweis:** Der Branch-Schutz für `main` ist aktuell deaktiviert, da PRs mangels eines zweiten
+> Reviewer-Accounts nicht approved werden konnten (GitHub verbietet Self-Approval). Er wird wieder
+> eingerichtet, sobald ein Reviewer-Setup steht.
