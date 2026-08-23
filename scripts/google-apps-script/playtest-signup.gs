@@ -45,7 +45,20 @@ function doPost(e) {
 	}
 
 	const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-	sheet.appendRow([new Date(), sanitizeForSheet(email)]);
+	const lastRow = sheet.getLastRow();
+	// Column B holds emails (see the sheet header set up in step 1 above).
+	const existingEmails =
+		lastRow > 1
+			? sheet
+					.getRange(2, 2, lastRow - 1, 1)
+					.getValues()
+					.flat()
+					.map((value) => String(value).toLowerCase())
+			: [];
+
+	if (!existingEmails.includes(email.toLowerCase())) {
+		sheet.appendRow([new Date(), sanitizeForSheet(email)]);
+	}
 
 	return ContentService.createTextOutput('ok');
 }
