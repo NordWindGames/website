@@ -12,10 +12,36 @@ sich über `data-analytics-*`-Attribute, nicht über eigene Event-Listener.
    `PUBLIC_GA_MEASUREMENT_ID` mit dieser ID anlegen. Kein Secret — die ID landet ohnehin im
    öffentlichen Bundle.
 3. Lokal optional `.env` aus [`.env.example`](../.env.example) anlegen.
+4. Den Internal-Traffic-Filter anlegen und aktivieren — siehe [Lokal testen](#lokal-testen).
+
+Repo-Variablen wirken nur auf **neue** Builds: nach dem Anlegen der Variable muss ein Deploy laufen
+(Merge auf `main`), bevor die Live-Seite das Tag enthält.
 
 Ohne gesetzte ID wird **kein** GA-Tag gerendert. `npm run dev` loggt stattdessen jedes Event, das
 gesendet worden wäre, als `[analytics] …` in die Browser-Konsole — so lässt sich die Instrumentierung
 ohne echte Daten prüfen.
+
+## Lokal testen
+
+Mit gesetzter ID sendet der Dev-Server an die **echte** Property. Damit das die Reports nicht
+verfälscht, setzt [`Analytics.astro`](../src/components/Analytics.astro) in Dev-Builds zwei Flags:
+
+| Flag | Wirkung |
+| :--- | :--- |
+| `debug_mode: true` | Events erscheinen sofort in **Admin → DebugView**, statt die normale Reporting-Verzögerung abzuwarten. Hält sie aber **nicht** aus den Reports heraus. |
+| `traffic_type: 'internal'` | Kennzeichnet die Events als interner Traffic — die Grundlage für den Ausschluss-Filter unten. |
+
+Das Flag allein filtert nichts. In GA4 einmalig einrichten:
+
+1. **Admin → Data streams →** Stream wählen **→ Configure tag settings → Show more → Define
+   internal traffic**: Regel mit `traffic_type` **equals** `internal` anlegen.
+2. **Admin → Data filters →** `Internal Traffic` von **Testing** auf **Active** schalten.
+
+Filter greifen nur **ab Aktivierung** — bereits gesammelte Dev-Events bleiben in der Property.
+
+Zum Prüfen der Instrumentierung ohne jede Datenerfassung: `PUBLIC_GA_MEASUREMENT_ID` in `.env`
+leer lassen, dann läuft alles über die Konsole. Chrome blendet diese Ausgaben standardmäßig aus —
+sie liegen auf `console.debug`, also im Log-Level **Verbose** des Konsolen-Filters.
 
 > **Offen:** Es gibt aktuell **keinen** Consent-Layer (kein Banner, kein Google Consent Mode). GA4
 > setzt damit Cookies ohne Einwilligung. Vor einem größeren Launch nachziehen.
@@ -42,10 +68,30 @@ Traffic-Quelle/Medium/Kampagne.
 | `outbound_click` | `link_id`, `link_domain`, `link_url`, `link_location` | Welcher Social-Kanal tatsächlich geklickt wird — GA4s eingebautes `click` weiß nicht, *welcher* Button es war. |
 | `section_view` | `section_id`, `section_index`, `time_to_view_seconds` | Scroll-Funnel: welcher Abschnitt wird überhaupt erreicht, und wie schnell. |
 | `scroll_depth` | `percent_scrolled` (25/50/75/100) | Lesetiefe, feiner als GA4s 90 %-Event. |
-| `page_engagement` | `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`, `interactions`, `exit_reason` | Ein Qualitäts-Datensatz pro Seitenaufruf, gesendet beim Verlassen. Erlaubt Segmente wie „>30 s aktiv und >75 % gescrollt". |
+| `page_engagement` | `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`, `interactions`, `exit_reason`, `summary_index` | Ein Qualitäts-Datensatz pro Seitenaufruf. Erlaubt Segmente wie „>30 s aktiv und >75 % gescrollt". |
 
 Aktive Verweildauer zählt nur, solange der Tab sichtbar ist — ein Tab, der eine Stunde im
 Hintergrund liegt, ist keine Stunde Engagement.
+
+### `page_engagement` richtig auswerten
+
+Das Event wird bei **jedem** Aufmerksamkeits-Ende gesendet, nicht nur beim ersten:
+
+| `exit_reason` | Auslöser |
+| :--- | :--- |
+| `hidden` | Tab-Wechsel oder Minimieren (das einzige verlässliche Signal auf Mobilgeräten) |
+| `pagehide` | Reload, Schließen, Navigation im selben Tab |
+| `swap` | View-Transition-Navigation innerhalb der Seite |
+
+Ein Seitenaufruf kann also mehrere Zeilen erzeugen, jede mit hochzählendem
+`summary_index`. **Nicht summieren** — pro Seitenaufruf die Zeile mit dem höchsten
+`summary_index` nehmen, bzw. das Maximum je Metrik.
+
+Der Grund für die Mehrfach-Sendung: Nur beim ersten Signal zu senden untertreibt
+systematisch. Wer nach 3 Sekunden in einen anderen Tab wechselt und dann 4 Minuten liest,
+wäre sonst als 3-Sekunden-Besuch erfasst. Identische Folge-Summaries werden verworfen —
+das `pagehide` direkt hinter einem `visibilitychange` (der normale Weg, einen Desktop-Tab
+zu schließen) erzeugt keine Dublette.
 
 ## Custom Events — definiert, aber noch nicht gefeuert
 
@@ -86,7 +132,7 @@ Ohne diese Registrierung sind die Parameter in Reports nicht auswählbar:
 - **Custom Dimensions (event-scoped):** `cta_id`, `cta_location`, `link_id`, `link_location`,
   `section_id`, `error_reason`, `god_name`, `placement`, `exit_reason`, `platform`
 - **Custom Metrics:** `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`,
-  `interactions`, `time_to_convert_seconds`, `days_to_demo`
+  `interactions`, `time_to_convert_seconds`, `days_to_demo`, `summary_index`
 - **Custom Dimensions (user-scoped):** `viewport_bucket`, `reduced_motion`, `color_scheme`,
   `touch_primary`
 - **Key Events:** `playtest_signup_success`, `wishlist_click`
@@ -124,6 +170,24 @@ track('playtest_signup_error', { form_id: 'playtest', error_reason: 'invalid_ema
 
 `track()` akzeptiert nur Events aus dem Katalog in `events.ts` — ein Tippfehler im Event-Namen ist
 ein Typfehler, kein stiller Datenverlust.
+
+## View Transitions
+
+`<ClientRouter />` tauscht das DOM aus, ohne dass das Dokument neu lädt. Damit fällt jedes
+Signal weg, auf das man sich normalerweise verlässt: `pagehide` feuert nicht, und gtags
+`send_page_view` deckt nur den ersten Aufruf ab. [`auto.ts`](../src/lib/analytics/auto.ts)
+ist darauf vorbereitet:
+
+- Listener auf `document`/`window` werden **einmal pro Dokument** gebunden und lesen den
+  jeweils aktuellen Page View — kein Doppel-Binding, keine doppelten Events.
+- `astro:before-swap` schickt die Engagement-Summary der verlassenen Seite (`exit_reason: swap`).
+- `astro:page-load` sendet ein `page_view` und startet einen frischen Page View: Scroll-Tiefe,
+  Meilensteine, Klickzähler, Sections und die Engagement-Uhr werden zurückgesetzt, der
+  Observer der alten Seite wird getrennt.
+- Reine Hash-Wechsel (`#demo`) gelten als Sprung innerhalb der Seite, nicht als Seitenaufruf.
+
+Ohne `<ClientRouter />` ist all das inert — die Events feuern dann einfach nie. Beim Einbauen
+also nichts zu tun; nur nicht wieder ausbauen.
 
 ## Datenschutz-Regeln für neue Events
 

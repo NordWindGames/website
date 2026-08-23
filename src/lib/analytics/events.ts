@@ -49,13 +49,22 @@ export type AnalyticsEvents = {
 		percent_scrolled: 25 | 50 | 75 | 100;
 	};
 
-	/** Session-quality summary, sent once when the page is hidden or unloaded. */
+	/**
+	 * Session-quality summary, sent on every end-of-attention signal: the tab
+	 * being hidden, the page unloading, or a view transition swapping it out.
+	 *
+	 * A page view can therefore produce several of these — reports take the row
+	 * with the highest `summary_index` (or the maximum of each metric) and never
+	 * sum them. See docs/analytics.md.
+	 */
 	page_engagement: {
 		engaged_time_seconds: number;
 		max_scroll_percent: number;
 		sections_viewed: number;
 		interactions: number;
-		exit_reason: 'hidden' | 'pagehide';
+		exit_reason: 'hidden' | 'pagehide' | 'swap';
+		/** 1 for the first summary of this page view, 2 for the next, … */
+		summary_index: number;
 	};
 
 	// ---------------------------------------------------------------------
@@ -148,6 +157,32 @@ export function track<K extends AnalyticsEventName>(name: K, params: AnalyticsEv
 
 	if (import.meta.env.DEV) console.debug('[analytics]', name, payload);
 	gtag('event', name, payload);
+}
+
+/**
+ * Report a client-side navigation as a `page_view`.
+ *
+ * The tag sends this one itself for the initial document load
+ * (`send_page_view`), but Astro's view transitions swap the DOM without a
+ * document load — those navigations never reach GA4 unless we say so.
+ *
+ * Not part of the catalogue above: `page_view` is a GA4 built-in with reserved
+ * parameter names, not one of our custom events.
+ */
+export function trackPageView(referrer?: string): void {
+	const payload = compactParams({
+		page_location: window.location.href,
+		page_title: document.title,
+		page_referrer: referrer,
+	});
+
+	if (!isTagPresent()) {
+		if (import.meta.env.DEV) console.debug('[analytics] (no tag) page_view', payload);
+		return;
+	}
+
+	if (import.meta.env.DEV) console.debug('[analytics] page_view', payload);
+	gtag('event', 'page_view', payload);
 }
 
 /**

@@ -12,6 +12,26 @@ import { PUBLIC_GA_MEASUREMENT_ID } from 'astro:env/client';
 const measurementId = PUBLIC_GA_MEASUREMENT_ID;
 const isDev = import.meta.env.DEV;
 const enabled = Boolean(measurementId);
+
+const config = {
+	// Enhanced measurement handles page_view, scroll, outbound clicks
+	// and file downloads; everything else is sent from src/lib/analytics.
+	send_page_view: true,
+	// Routes events into GA4's DebugView instead of waiting out the usual
+	// reporting delay. Note that it does *not* keep them out of the reports —
+	// that is what traffic_type below is for.
+	debug_mode: isDev,
+	// Marks everything a dev server sends as internal traffic, so local
+	// testing does not land in the reports as real visitors. Config-level
+	// params stick to every following event for this measurement ID.
+	//
+	// Requires the matching rule in the GA4 property — Admin -> Data streams ->
+	// Configure tag settings -> Define internal traffic (traffic_type equals
+	// "internal") — plus the "Exclude internal traffic" filter switched from
+	// Testing to Active. Filters apply going forward only; events already
+	// collected stay in the property. See docs/analytics.md.
+	...(isDev ? { traffic_type: 'internal' } : {}),
+};
 ---
 
 {
@@ -19,19 +39,14 @@ const enabled = Boolean(measurementId);
 		<Fragment>
 			<link rel="preconnect" href="https://www.googletagmanager.com" />
 			<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`} />
-			<script is:inline define:vars={{ measurementId, isDev }}>
+			<script is:inline define:vars={{ measurementId, config }}>
 				window.dataLayer = window.dataLayer || [];
 				function gtag() {
 					window.dataLayer.push(arguments);
 				}
 				window.gtag = gtag;
 				gtag('js', new Date());
-				gtag('config', measurementId, {
-					// Enhanced measurement handles page_view, scroll, outbound clicks
-					// and file downloads; everything else is sent from src/lib/analytics.
-					send_page_view: true,
-					debug_mode: isDev,
-				});
+				gtag('config', measurementId, config);
 			</script>
 		</Fragment>
 	)
