@@ -18,7 +18,12 @@ const DEMO_TARGET = new Date('2026-10-16T10:00:00Z').getTime();
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
 
 // Set after deploying scripts/google-apps-script/playtest-signup.gs as a web app.
-const PLAYTEST_SIGNUP_ENDPOINT = '';
+const PLAYTEST_SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxl6J2pKMZnx4WPR7gjCYK59Q_ndodADb3biUa8KJZWuUHxmfmKg9jtUKfyMOxujy1q/exec';
+
+// Must match SHARED_TOKEN in scripts/google-apps-script/playtest-signup.gs.
+// Not a real secret (it ships in the public JS bundle) — it only filters out
+// scanners/bots that hit the URL directly without reading the page's JS.
+const PLAYTEST_SIGNUP_TOKEN = 'CHANGE_ME';
 
 function pad(n: number) {
 	return String(n).padStart(2, '0');
@@ -49,7 +54,7 @@ async function submitPlaytestSignup(email: string) {
 		method: 'POST',
 		mode: 'no-cors',
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-		body: new URLSearchParams({ email }),
+		body: new URLSearchParams({ email, token: PLAYTEST_SIGNUP_TOKEN }),
 	});
 }
 
