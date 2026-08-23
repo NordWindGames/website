@@ -2,38 +2,266 @@
 
 ---
 
-<html lang="de">
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<title>NordWindGames</title>
+		<meta name="description" content="Nordwind Games — indie game studio. Game: Hold Strong, coming soon." />
+		<title>Nordwind Games</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Silkscreen:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
 	</head>
 	<body>
-		<main>
-			<h1>NordWindGames</h1>
-			<p>Unsere Website entsteht gerade. Schau bald wieder vorbei.</p>
-		</main>
+		<div class="site" id="site-root">
+			<canvas id="storm-canvas" width="1280" height="720"></canvas>
+
+			<div class="content">
+				<header class="header">
+					<div class="brand">
+						<div class="brand-mark" aria-hidden="true">
+							<span class="dim"></span><span></span><span class="dim"></span>
+							<span></span><span></span><span></span>
+							<span class="dim"></span><span></span><span class="dim"></span>
+						</div>
+						<h1 class="brand-title">Nordwind Games</h1>
+					</div>
+
+					<nav class="socials" aria-label="Social media">
+						<a href="https://www.tiktok.com/" aria-label="TikTok" class="social-btn">
+							<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+								<path d="M16.6 2h-2.9v12.1a2.4 2.4 0 1 1-2.4-2.4c.26 0 .5.04.74.12V9.1a5.1 5.1 0 1 0 4.36 5.05V8.2a6.1 6.1 0 0 0 3.6 1.16V6.6a3.6 3.6 0 0 1-3.4-3.5V2z"></path>
+							</svg>
+						</a>
+						<a href="https://www.instagram.com/" aria-label="Instagram" class="social-btn">
+							<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+								<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect>
+								<circle cx="12" cy="12" r="4.1"></circle>
+								<circle cx="17.1" cy="6.9" r="1.1" fill="currentColor" stroke="none"></circle>
+							</svg>
+						</a>
+						<a href="https://discord.com/" aria-label="Discord" class="social-btn">
+							<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+								<path d="M19.3 5.6A15.5 15.5 0 0 0 15.5 4.4l-.3.7a11.6 11.6 0 0 1 3.3 1.4 12.4 12.4 0 0 0-10.9 0 11.6 11.6 0 0 1 3.3-1.4l-.3-.7A15.5 15.5 0 0 0 4.7 5.6C2.4 9 1.8 12.4 2.1 15.7a15.3 15.3 0 0 0 4.7 2.3l.9-1.4a10 10 0 0 1-1.6-.8l.4-.3a11 11 0 0 0 9 0l.4.3a10 10 0 0 1-1.6.8l.9 1.4a15.3 15.3 0 0 0 4.7-2.3c.4-3.9-.6-7.3-2.6-10.1zM9.1 13.8c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8zm5.8 0c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8z"></path>
+							</svg>
+						</a>
+						<a href="https://x.com/" aria-label="X" class="social-btn">
+							<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+								<path d="M18.2 2.5h3.4l-7.4 8.5 8.1 10.5h-6.5l-4.6-6.1-5.3 6.1H2.5l7.7-8.9L2.4 2.5h6.6l4.3 5.7 4.9-5.7zm-1.2 17h1.9L7.1 4.4H5.1l11.9 15.1z"></path>
+							</svg>
+						</a>
+					</nav>
+				</header>
+
+				<div class="hero">
+					<div class="cta-jolt" id="cta-jolt">
+						<div class="cta-shadow">
+							<button type="button" class="cta" id="cta-button">
+								<span class="cta-dot"></span>
+								Game: Hold Strong
+								<span class="cta-badge">coming soon</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			import { initStormCloud } from '../scripts/storm-cloud';
+
+			initStormCloud({
+				root: document.getElementById('site-root')!,
+				canvas: document.getElementById('storm-canvas') as HTMLCanvasElement,
+				button: document.getElementById('cta-button')!,
+				jolt: document.getElementById('cta-jolt')!,
+			});
+		</script>
 	</body>
 </html>
 
 <style>
-	body {
-		display: grid;
-		place-items: center;
-		min-height: 100vh;
+	:global(html, body) {
 		margin: 0;
-		font-family: system-ui, sans-serif;
-		background: #0b1220;
-		color: #f4f6fb;
+		padding: 0;
+		background: #eef2f7;
 	}
-	main {
+	:global(*) {
+		box-sizing: border-box;
+	}
+	:global(a) {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.site {
+		--fg: rgba(93, 102, 112, 1);
+		--muted: rgba(110, 125, 144, 1);
+		--line: rgba(93, 102, 112, 0.24);
+		--btnbg: rgba(255, 255, 255, 0.5);
+		--btnfg: rgba(170, 173, 177, 1);
+		--gamebg: var(--fg);
+		--gamefg: var(--btnfg);
+		--gameborder: var(--fg);
+		--gamelift: 0px;
+		--gameshadow: none;
+
+		position: relative;
+		width: 100%;
+		min-height: 100vh;
+		overflow: hidden;
+		font-family: 'IBM Plex Mono', ui-monospace, monospace;
+	}
+
+	#storm-canvas {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+
+	.content {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		padding: 40px clamp(24px, 6vw, 96px) 48px;
+	}
+
+	.header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+		flex-wrap: wrap;
+	}
+
+	.brand {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.brand-mark {
+		display: grid;
+		grid-template-columns: repeat(3, 4px);
+		grid-template-rows: repeat(3, 4px);
+		gap: 2px;
+	}
+	.brand-mark span {
+		background: var(--fg);
+	}
+	.brand-mark span.dim {
+		opacity: 0.25;
+	}
+
+	.brand-title {
+		font-family: Silkscreen, monospace;
+		font-weight: 400;
+		font-size: clamp(19px, 2vw, 26px);
+		line-height: 1;
+		letter-spacing: 0.02em;
+		color: var(--fg);
+		margin: 0;
+	}
+
+	.socials {
+		position: absolute;
+		right: clamp(24px, 6vw, 96px);
+		bottom: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.social-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 42px;
+		height: 42px;
+		border: 2px solid var(--fg);
+		background: var(--btnbg);
+		color: var(--fg);
+		box-shadow: 4px 4px 0 var(--line);
+		transition:
+			transform 110ms steps(2),
+			box-shadow 110ms steps(2);
+	}
+	.social-btn:hover {
+		transform: translate(2px, 2px);
+		box-shadow: 2px 2px 0 var(--fg);
+	}
+
+	.hero {
+		flex: 1 1 0%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding-top: 26vh;
 		text-align: center;
 	}
-	h1 {
-		font-size: 2.5rem;
-		margin-bottom: 0.5rem;
+
+	.cta-jolt {
+		display: inline-flex;
+		will-change: transform;
+		transform: translate3d(0, 0, 0);
+		filter: none;
+		text-shadow: none;
+	}
+
+	.cta-shadow {
+		display: inline-flex;
+		box-shadow: 9px 9px 0 var(--line);
+	}
+
+	.cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 14px;
+		min-height: 60px;
+		padding: 0 34px;
+		border: 2px solid var(--gameborder);
+		background: var(--gamebg);
+		color: var(--gamefg);
+		font-family: Silkscreen, monospace;
+		font-size: 15px;
+		font-weight: 400;
+		letter-spacing: 0.06em;
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			transform 160ms,
+			letter-spacing 220ms;
+		box-shadow: var(--gameshadow);
+		transform: translateY(var(--gamelift));
+	}
+	.cta:hover {
+		letter-spacing: 0.09em;
+	}
+
+	.cta-dot {
+		width: 7px;
+		height: 7px;
+		background: currentcolor;
+		display: inline-block;
+	}
+
+	.cta-badge {
+		font-size: 13px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		opacity: 0.62;
 	}
 </style>
