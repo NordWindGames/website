@@ -1,0 +1,785 @@
+---
+
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta
+			name="description"
+			content="HoldStrong — an incremental Viking roguelike by Nordwind Games. Join the playtest before the public demo."
+		/>
+		<title>HoldStrong — Nordwind Games</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;600;800&family=Barlow+Condensed:wght@400;500;600&family=Barlow:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<div class="hs-page">
+			<div class="hs-hero">
+				<img class="hs-hero-img" src="/holdstrong/keyart.png" alt="" />
+				<div class="hs-hero-overlay hs-hero-overlay-1"></div>
+				<div class="hs-hero-overlay hs-hero-overlay-2"></div>
+
+				<header class="hs-header">
+					<a href="/" class="hs-brand">HOLD<span class="accent">STRONG</span></a>
+					<nav class="hs-nav" aria-label="Sections">
+						<a href="#gods">The Gods</a>
+						<a href="#gallery">Gallery</a>
+						<a href="#demo">Playtest</a>
+						<a href="#" class="hs-nav-cta">Wishlist on Steam</a>
+					</nav>
+				</header>
+
+				<div class="hs-hero-body">
+					<h1 class="hs-title">HOLDSTRONG</h1>
+					<p class="hs-tagline">
+						An incremental Viking roguelike. Odin, Thor and Loki lend their power — you hold the last tower in the
+						frozen north, one endless night at a time.
+					</p>
+
+					<div class="hs-cta-row">
+						<a href="#demo" class="hs-cta-primary">Join the Playtest</a>
+						<a href="#" class="hs-cta-secondary">Add to wishlist</a>
+					</div>
+
+					<div class="hs-tags">
+						<span class="hs-tag">PC · Steam</span>
+						<span class="hs-tag">Single player</span>
+						<span class="hs-tag">Roguelike · Incremental</span>
+					</div>
+				</div>
+			</div>
+
+			<section class="hs-countdown">
+				<div class="hs-countdown-inner">
+					<div>
+						<div class="hs-eyebrow hs-eyebrow-blue">The demo opens the gates in</div>
+						<div class="hs-countdown-date">16 October 2026 · free on Steam</div>
+					</div>
+					<div class="hs-countdown-units">
+						<div class="hs-countdown-unit">
+							<div class="hs-countdown-value" id="hs-days">0</div>
+							<div class="hs-countdown-label">Days</div>
+						</div>
+						<div class="hs-countdown-unit">
+							<div class="hs-countdown-value" id="hs-hours">00</div>
+							<div class="hs-countdown-label">Hours</div>
+						</div>
+						<div class="hs-countdown-unit">
+							<div class="hs-countdown-value" id="hs-minutes">00</div>
+							<div class="hs-countdown-label">Minutes</div>
+						</div>
+						<div class="hs-countdown-unit">
+							<div class="hs-countdown-value" id="hs-seconds">00</div>
+							<div class="hs-countdown-label">Seconds</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="gods" class="hs-section">
+				<div class="hs-eyebrow hs-eyebrow-purple">Three boons, one night</div>
+				<h2 class="hs-h2">Pray well. The tower remembers.</h2>
+				<p class="hs-lead">
+					Every run you swear to one of the Aesir. Their gifts stack, compound and betray you differently each
+					time.
+				</p>
+
+				<div class="hs-gods-grid">
+					<div class="hs-god-card">
+						<div class="hs-god-rune" style="color:#7fd4ff">ᚱ</div>
+						<div class="hs-god-epithet" style="color:#7fd4ff">The Allfather</div>
+						<div class="hs-god-name">Odin</div>
+						<p class="hs-god-body">
+							Sight beyond the wall. Reveal the next three waves and bank every rune you would have wasted.
+						</p>
+						<div class="hs-god-perk">Boon · Foresight, +hoarded runes</div>
+					</div>
+					<div class="hs-god-card">
+						<div class="hs-god-rune" style="color:#ff9d5c">ᛁ</div>
+						<div class="hs-god-epithet" style="color:#ff9d5c">The Storm</div>
+						<div class="hs-god-name">Thor</div>
+						<p class="hs-god-body">
+							Raw voltage in the ballista. Chain lightning that grows louder the longer you refuse to fall back.
+						</p>
+						<div class="hs-god-perk">Boon · Chain damage scaling</div>
+					</div>
+					<div class="hs-god-card">
+						<div class="hs-god-rune" style="color:#a271ff">ᛋ</div>
+						<div class="hs-god-epithet" style="color:#a271ff">The Bargain</div>
+						<div class="hs-god-name">Loki</div>
+						<p class="hs-god-body">
+							Double everything — the gold, the glory, the horde. He never says which one doubles first.
+						</p>
+						<div class="hs-god-perk">Boon · High risk, high yield</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="gallery" class="hs-gallery">
+				<div class="hs-section">
+					<div class="hs-gallery-head">
+						<h2 class="hs-h2">From the build</h2>
+						<div class="hs-gallery-note">Pre-alpha capture · art not final</div>
+					</div>
+					<div class="hs-gallery-grid-main">
+						<div class="hs-gallery-slot hs-gallery-slot-wide">Wide gameplay shot — the tower under siege</div>
+						<div class="hs-gallery-slot">Upgrade / rune screen</div>
+						<div class="hs-gallery-slot">Boss or god encounter</div>
+					</div>
+					<div class="hs-gallery-grid-secondary">
+						<div class="hs-gallery-slot hs-gallery-slot-short">Combat</div>
+						<div class="hs-gallery-slot hs-gallery-slot-short">World map</div>
+						<div class="hs-gallery-slot hs-gallery-slot-short">Loot / meta progression</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="demo" class="hs-demo">
+				<div class="hs-demo-glow"></div>
+				<div class="hs-demo-inner">
+					<h2 class="hs-h2">Join the Playtest</h2>
+					<p class="hs-lead hs-lead-centered">
+						Play HoldStrong before the demo goes public on 16 October — and shape it. We hand out keys to a
+						small group, read every report, and change the build from what you tell us.
+					</p>
+
+					<div class="hs-feature-grid">
+						<div class="hs-feature-card">
+							<div class="hs-feature-title" style="color:#7fd4ff">Early access</div>
+							<p class="hs-feature-body">A Steam key for the test build, weeks ahead of the public demo.</p>
+						</div>
+						<div class="hs-feature-card">
+							<div class="hs-feature-title" style="color:#ff9d5c">Direct line to us</div>
+							<p class="hs-feature-body">A private Discord channel with the devs and a short feedback form per build.</p>
+						</div>
+						<div class="hs-feature-card">
+							<div class="hs-feature-title" style="color:#c3a6ff">Named in the credits</div>
+							<p class="hs-feature-body">Everyone who plays and reports gets their name in the game.</p>
+						</div>
+					</div>
+
+					<div class="hs-signup-success" id="hs-success" hidden>
+						<div class="hs-signup-success-title">You're on the playtest list.</div>
+						<p class="hs-signup-success-body">
+							We'll send your test key and the feedback brief to <span id="hs-success-email"></span> before
+							16 October.
+						</p>
+					</div>
+
+					<form class="hs-signup-form" id="hs-signup-form">
+						<div class="hs-signup-row">
+							<input
+								type="email"
+								id="hs-email-input"
+								placeholder="you@midgard.com"
+								class="hs-input"
+								required
+							/>
+							<button type="submit" class="hs-submit-btn">Apply as tester</button>
+						</div>
+						<div class="hs-error" id="hs-error"></div>
+					</form>
+				</div>
+			</section>
+
+			<footer class="hs-footer">
+				<div class="hs-footer-inner">
+					<div class="hs-footer-brand">HOLD<span class="accent">STRONG</span></div>
+					<div class="hs-footer-links">
+						<a href="#" class="hs-footer-link hs-footer-link-discord">Discord</a>
+						<a href="#" class="hs-footer-link hs-footer-link-steam">Steam</a>
+						<a href="/" class="hs-footer-link hs-footer-link-studio">Nordwind Games</a>
+					</div>
+					<div class="hs-copyright">© 2026 · Made by Nordwind Games</div>
+				</div>
+			</footer>
+		</div>
+
+		<script>
+			import { initHoldStrong } from '../scripts/holdstrong';
+
+			initHoldStrong({
+				days: document.getElementById('hs-days')!,
+				hours: document.getElementById('hs-hours')!,
+				minutes: document.getElementById('hs-minutes')!,
+				seconds: document.getElementById('hs-seconds')!,
+				form: document.getElementById('hs-signup-form') as HTMLFormElement,
+				emailInput: document.getElementById('hs-email-input') as HTMLInputElement,
+				error: document.getElementById('hs-error')!,
+				success: document.getElementById('hs-success')!,
+				successEmail: document.getElementById('hs-success-email')!,
+			});
+		</script>
+	</body>
+</html>
+
+<style>
+	:global(html, body) {
+		margin: 0;
+		padding: 0;
+		background: #070a11;
+	}
+	:global(*) {
+		box-sizing: border-box;
+	}
+	:global(a) {
+		text-decoration: none;
+	}
+
+	.hs-page {
+		background: #070a11;
+		color: #c9d2e0;
+		font-family: Barlow, system-ui, sans-serif;
+		overflow-x: hidden;
+	}
+
+	.accent {
+		color: #ff7a2f;
+	}
+
+	/* hero */
+
+	.hs-hero {
+		position: relative;
+		min-height: 820px;
+		display: flex;
+		flex-direction: column;
+	}
+	.hs-hero-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center 35%;
+	}
+	.hs-hero-overlay {
+		position: absolute;
+		inset: 0;
+	}
+	.hs-hero-overlay-1 {
+		background: linear-gradient(180deg, rgba(7, 10, 17, 0.72) 0%, rgba(7, 10, 17, 0.35) 32%, rgba(7, 10, 17, 0.82) 72%, #070a11 100%);
+	}
+	.hs-hero-overlay-2 {
+		background: radial-gradient(ellipse 70% 55% at 50% 45%, rgba(0, 0, 0, 0) 40%, rgba(7, 10, 17, 0.75) 100%);
+	}
+
+	.hs-header {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+		padding: 26px 48px;
+		flex-wrap: wrap;
+	}
+	.hs-brand {
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 26px;
+		font-weight: 800;
+		letter-spacing: 0.04em;
+		color: #f0e6d6;
+	}
+	.hs-nav {
+		display: flex;
+		align-items: center;
+		gap: 28px;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 15px;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: #8b97ab;
+		flex-wrap: wrap;
+	}
+	.hs-nav a {
+		color: #8b97ab;
+		white-space: nowrap;
+	}
+	.hs-nav-cta {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 9px 18px;
+		border: 1px solid rgba(255, 122, 47, 0.45);
+		color: #ffb066 !important;
+	}
+
+	.hs-hero-body {
+		position: relative;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		padding: 80px 32px 96px;
+	}
+	.hs-title {
+		margin: 0;
+		font-family: 'Grenze Gotisch', serif;
+		font-weight: 800;
+		font-size: clamp(64px, 9.5vw, 148px);
+		line-height: 0.86;
+		letter-spacing: 0.01em;
+		color: #f4ece0;
+		text-shadow: 0 0 60px rgba(255, 122, 47, 0.35), 0 8px 40px rgba(0, 0, 0, 0.8);
+	}
+	.hs-tagline {
+		margin: 28px 0 0;
+		max-width: 660px;
+		font-size: 20px;
+		line-height: 1.6;
+		color: #b3bfd1;
+	}
+	.hs-cta-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 14px;
+		margin-top: 38px;
+	}
+	.hs-cta-primary {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 17px 34px;
+		background: linear-gradient(180deg, #ff8c3f, #e35f14);
+		color: #180a02;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 18px;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		box-shadow: 0 0 0 1px rgba(255, 180, 120, 0.4), 0 16px 40px -12px rgba(255, 122, 47, 0.7);
+		transition: filter 150ms;
+	}
+	.hs-cta-primary:hover {
+		filter: brightness(1.08);
+	}
+	.hs-cta-secondary {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 17px 30px;
+		border: 1px solid rgba(201, 210, 224, 0.28);
+		color: #dbe3ef;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 18px;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		background: rgba(10, 15, 25, 0.5);
+		transition: border-color 150ms;
+	}
+	.hs-cta-secondary:hover {
+		border-color: rgba(201, 210, 224, 0.6);
+	}
+	.hs-tags {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 10px;
+		margin-top: 44px;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 13px;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: #7b8699;
+	}
+	.hs-tag {
+		padding: 7px 14px;
+		border: 1px solid rgba(123, 134, 153, 0.28);
+	}
+
+	/* countdown */
+
+	.hs-countdown {
+		border-top: 1px solid rgba(127, 212, 255, 0.12);
+		border-bottom: 1px solid rgba(127, 212, 255, 0.12);
+		background: linear-gradient(180deg, #0a101c, #070a11);
+	}
+	.hs-countdown-inner {
+		max-width: 1120px;
+		margin: 0 auto;
+		padding: 44px 48px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 32px;
+	}
+	.hs-countdown-date {
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 22px;
+		color: #e8dfd0;
+		margin-top: 6px;
+	}
+	.hs-countdown-units {
+		display: flex;
+		gap: 14px;
+	}
+	.hs-countdown-unit {
+		min-width: 104px;
+		padding: 16px 10px;
+		text-align: center;
+		background: rgba(15, 22, 36, 0.9);
+		border: 1px solid rgba(255, 122, 47, 0.22);
+	}
+	.hs-countdown-value {
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 44px;
+		line-height: 1;
+		color: #ff9d5c;
+	}
+	.hs-countdown-label {
+		margin-top: 8px;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 12px;
+		letter-spacing: 0.24em;
+		text-transform: uppercase;
+		color: #78849a;
+	}
+
+	/* shared section bits */
+
+	.hs-section {
+		max-width: 1120px;
+		margin: 0 auto;
+		padding: 100px 48px;
+	}
+	.hs-eyebrow {
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 13px;
+		letter-spacing: 0.32em;
+		text-transform: uppercase;
+	}
+	.hs-eyebrow-blue {
+		color: #7fd4ff;
+		letter-spacing: 0.3em;
+	}
+	.hs-eyebrow-purple {
+		color: #a271ff;
+	}
+	.hs-h2 {
+		margin: 14px 0 0;
+		font-family: 'Grenze Gotisch', serif;
+		font-weight: 600;
+		font-size: 52px;
+		line-height: 1.05;
+		color: #f0e7d9;
+	}
+	.hs-lead {
+		margin: 16px 0 0;
+		max-width: 600px;
+		font-size: 17px;
+		line-height: 1.65;
+		color: #93a0b4;
+	}
+	.hs-lead-centered {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 660px;
+		text-align: center;
+		font-size: 18px;
+	}
+
+	/* gods */
+
+	.hs-gods-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px;
+		margin-top: 48px;
+	}
+	.hs-god-card {
+		position: relative;
+		padding: 34px 30px 30px;
+		background: linear-gradient(180deg, rgba(17, 25, 41, 0.95), rgba(10, 15, 25, 0.95));
+		border: 1px solid rgba(127, 212, 255, 0.14);
+		overflow: hidden;
+		transition: border-color 150ms;
+	}
+	.hs-god-card:hover {
+		border-color: rgba(255, 122, 47, 0.4);
+	}
+	.hs-god-rune {
+		position: absolute;
+		top: -40px;
+		right: -20px;
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 150px;
+		line-height: 1;
+		opacity: 0.13;
+	}
+	.hs-god-epithet {
+		position: relative;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 12px;
+		letter-spacing: 0.3em;
+		text-transform: uppercase;
+	}
+	.hs-god-name {
+		position: relative;
+		margin-top: 10px;
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 38px;
+		color: #f0e7d9;
+	}
+	.hs-god-body {
+		position: relative;
+		margin: 14px 0 0;
+		font-size: 16px;
+		line-height: 1.6;
+		color: #93a0b4;
+	}
+	.hs-god-perk {
+		position: relative;
+		margin-top: 26px;
+		padding-top: 16px;
+		border-top: 1px solid rgba(147, 160, 180, 0.16);
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 13px;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: #78849a;
+	}
+
+	/* gallery */
+
+	.hs-gallery {
+		background: #090d16;
+		border-top: 1px solid rgba(127, 212, 255, 0.1);
+	}
+	.hs-gallery-head {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 24px;
+		flex-wrap: wrap;
+	}
+	.hs-gallery-note {
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 13px;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: #6f7b8e;
+	}
+	.hs-gallery-grid-main {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		grid-template-rows: 230px 230px;
+		gap: 16px;
+		margin-top: 34px;
+	}
+	.hs-gallery-grid-main .hs-gallery-slot-wide {
+		grid-row: span 2;
+	}
+	.hs-gallery-grid-secondary {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 16px;
+		margin-top: 16px;
+	}
+	.hs-gallery-grid-secondary .hs-gallery-slot-short {
+		height: 170px;
+	}
+	.hs-gallery-slot {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		padding: 16px;
+		min-width: 0;
+		border: 1px dashed rgba(127, 212, 255, 0.25);
+		background: rgba(15, 22, 36, 0.6);
+		color: #5c6a80;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 13px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	/* demo / signup */
+
+	.hs-demo {
+		position: relative;
+		overflow: hidden;
+		background: linear-gradient(180deg, #070a11, #0c1120);
+	}
+	.hs-demo-glow {
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(ellipse 60% 70% at 50% 110%, rgba(255, 122, 47, 0.22), transparent 70%);
+	}
+	.hs-demo-inner {
+		position: relative;
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 100px 48px;
+		text-align: center;
+	}
+	.hs-demo-inner .hs-h2 {
+		font-size: clamp(40px, 5vw, 60px);
+		color: #f4ece0;
+	}
+	.hs-feature-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 16px;
+		margin-top: 44px;
+		text-align: left;
+	}
+	.hs-feature-card {
+		padding: 22px 20px;
+		background: rgba(15, 22, 36, 0.75);
+		border: 1px solid rgba(127, 212, 255, 0.16);
+	}
+	.hs-feature-title {
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 22px;
+	}
+	.hs-feature-body {
+		margin: 8px 0 0;
+		font-size: 15px;
+		line-height: 1.55;
+		color: #93a0b4;
+	}
+
+	.hs-signup-success {
+		max-width: 620px;
+		margin: 40px auto 0;
+		padding: 30px;
+		border: 1px solid rgba(127, 212, 255, 0.35);
+		background: rgba(13, 20, 34, 0.85);
+	}
+	.hs-signup-success-title {
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 30px;
+		color: #7fd4ff;
+	}
+	.hs-signup-success-body {
+		margin: 10px 0 0;
+		font-size: 16px;
+		color: #93a0b4;
+	}
+	.hs-signup-success-body span {
+		color: #dbe3ef;
+	}
+
+	.hs-signup-form {
+		max-width: 620px;
+		margin: 40px auto 0;
+	}
+	.hs-signup-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		justify-content: center;
+	}
+	.hs-input {
+		flex: 1;
+		min-width: 280px;
+		padding: 18px 20px;
+		background: rgba(8, 12, 20, 0.9);
+		border: 1px solid rgba(147, 160, 180, 0.3);
+		color: #e8eef8;
+		font-family: Barlow, sans-serif;
+		font-size: 17px;
+		outline: none;
+	}
+	.hs-input:focus {
+		border-color: #ff7a2f;
+	}
+	.hs-input::placeholder {
+		color: #6b7689;
+	}
+	.hs-submit-btn {
+		padding: 18px 34px;
+		background: linear-gradient(180deg, #ff8c3f, #e35f14);
+		border: none;
+		color: #180a02;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 18px;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		white-space: nowrap;
+		flex-shrink: 0;
+		cursor: pointer;
+		box-shadow: 0 16px 40px -14px rgba(255, 122, 47, 0.8);
+		transition: filter 150ms;
+	}
+	.hs-submit-btn:hover {
+		filter: brightness(1.08);
+	}
+	.hs-error {
+		margin-top: 12px;
+		min-height: 20px;
+		font-size: 14px;
+		line-height: 20px;
+		color: #ff7a6b;
+	}
+
+	/* footer */
+
+	.hs-footer {
+		border-top: 1px solid rgba(127, 212, 255, 0.12);
+		background: #070a11;
+	}
+	.hs-footer-inner {
+		max-width: 1120px;
+		margin: 0 auto;
+		padding: 40px 48px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 24px;
+	}
+	.hs-footer-brand {
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 22px;
+		color: #8d97a8;
+	}
+	.hs-footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 14px;
+		font-family: 'Barlow Condensed', sans-serif;
+		font-size: 14px;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+	.hs-footer-link {
+		padding: 10px 18px;
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+	.hs-footer-link-discord {
+		border: 1px solid rgba(162, 113, 255, 0.4);
+		color: #c3a6ff;
+	}
+	.hs-footer-link-steam {
+		border: 1px solid rgba(147, 160, 180, 0.25);
+		color: #a9b4c5;
+	}
+	.hs-footer-link-studio {
+		border: 1px solid rgba(255, 122, 47, 0.4);
+		color: #ffb066;
+	}
+	.hs-copyright {
+		font-size: 13px;
+		color: #5f6a7c;
+	}
+</style>
