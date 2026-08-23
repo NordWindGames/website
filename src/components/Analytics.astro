@@ -1,0 +1,48 @@
+---
+// Google Analytics 4 tag + automatic instrumentation. Drop into <head>:
+//
+//   <Analytics />
+//
+// The measurement ID comes from PUBLIC_GA_MEASUREMENT_ID (see astro.config.mjs
+// and .env.example). Without it no tag is rendered, so dev servers, forks and
+// preview builds stay out of the production property; in `astro dev` the
+// analytics layer still logs every event it would have sent to the console.
+import { PUBLIC_GA_MEASUREMENT_ID } from 'astro:env/client';
+
+const measurementId = PUBLIC_GA_MEASUREMENT_ID;
+const isDev = import.meta.env.DEV;
+const enabled = Boolean(measurementId);
+---
+
+{
+	enabled && (
+		<Fragment>
+			<link rel="preconnect" href="https://www.googletagmanager.com" />
+			<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`} />
+			<script is:inline define:vars={{ measurementId, isDev }}>
+				window.dataLayer = window.dataLayer || [];
+				function gtag() {
+					window.dataLayer.push(arguments);
+				}
+				window.gtag = gtag;
+				gtag('js', new Date());
+				gtag('config', measurementId, {
+					// Enhanced measurement handles page_view, scroll, outbound clicks
+					// and file downloads; everything else is sent from src/lib/analytics.
+					send_page_view: true,
+					debug_mode: isDev,
+				});
+			</script>
+		</Fragment>
+	)
+}
+
+{/* Hoisted and bundled by Astro at compile time, so it deliberately sits
+    outside the conditional above — gating a <script> behind an expression
+    would not actually drop it from the page. With no tag installed
+    initAnalytics() is a no-op that only console-logs in dev builds. */}
+<script>
+	import { initAnalytics } from '../lib/analytics';
+
+	initAnalytics();
+</script>
