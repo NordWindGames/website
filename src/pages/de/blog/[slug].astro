@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import BlogLayout from '../../../layouts/BlogLayout.astro';
+import { getPostsByLocale } from '../../../lib/blog';
+
+export async function getStaticPaths() {
+	const posts = await getPostsByLocale('de');
+	return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BlogLayout title={`${post.data.title} — Nordwind Games Devlog`} description={post.data.description} locale="de">
+	<h1>{post.data.title}</h1>
+	<p class="meta">{post.data.date.toISOString().slice(0, 10)}</p>
+	<Content />
+</BlogLayout>
+
+<style>
+	.meta {
+		font-size: 13px;
+		color: var(--muted);
+		margin-top: -1em;
+	}
+</style>

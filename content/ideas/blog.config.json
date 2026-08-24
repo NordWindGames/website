@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "_comment": "Generic pipeline settings — no URLs, safe to commit to this public repo. The actual reference-blog list lives in sources.local.json (gitignored). See content/ideas/sources.example.json for that file's shape.",
+  "brand": {
+    "name": "Nordwind Games",
+    "domain": "nordwind.games",
+    "user_agent": "nordwindgames-devlog-pipeline/1.0 (+https://nordwind.games)"
+  },
+  "paths": {
+    "posts_dir": "src/content/blog",
+    "ideas_dir": "content/ideas",
+    "public_dir": "public",
+    "routes_dir": "src/pages",
+    "image_dir": "public/blog"
+  },
+  "locales": {
+    "list": ["en", "de"],
+    "default": "en",
+    "prefix": "as-needed",
+    "require_pairing": true
+  },
+  "conventions": {
+    "min_internal_links": 0,
+    "min_internal_links_ramp": [
+      { "at_posts": 3, "min": 1 },
+      { "at_posts": 5, "min": 2 }
+    ],
+    "_min_internal_links_note": "Cold start (devlog port, step 6): 0 until 3 posts exist on disk, then blog-lint.mjs applies the ramp above automatically. An unsatisfiable gate would just get disabled and never come back — this ramps it up instead.",
+    "words": { "min": 0, "max": 20000 },
+    "h2": { "min": 0, "max": 20 },
+    "_bands_note": "Left wide open — no corpus yet to derive real word/H2 bands from. Recalibrate at 5 posts.",
+    "require_hero_image": true,
+    "require_faq": false,
+    "_faq_note": "Dropped for the devlog: it was SEO rich-results bait, not part of what carries over per _port/blog-pipeline-port-devlog.md section 3.",
+    "disclosure_trigger_terms": [],
+    "disclosure_label_pattern": "^\\s*(using|built with|tools)\\s*:",
+    "_disclosure_note": "Repurposed, not deleted, per devlog doc section 2.6: when a post names a tool/engine/other studio (any term in disclosure_trigger_terms), lint requires a short 'what I use and why' line instead of the origin's competitor-neutrality disclosure."
+  },
+  "assets": {
+    "svg_ratio": { "min": 1, "max": 3.2 },
+    "prose_width_px": 768
+  },
+  "legacy_slugs": [],
+  "cadence_days": 30,
+  "publishing_cadence": "weekly",
+  "_publishing_cadence_note": "The user's own publishing commitment (devlog doc section 2.7) — enforced as a hard rule in .claude/skills/blog-write/SKILL.md, separate from cadence_days (which only paces the reference-blog research reminder)."
+}

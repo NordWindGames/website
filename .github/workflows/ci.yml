@@ -27,3 +27,9 @@ jobs:
           # through the exact same code path. Empty on forks — the tag is
           # optional, so the build still succeeds.
           PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
+
+      - name: Blog gate
+        # content/ideas/backlog.json is gitignored (privacy — see .gitignore), so it does not
+        # exist on this checkout. blog-check.mjs skips that one gate with a note instead of
+        # failing; inventory, conventions and images still run against every checked-in post.
+        run: npm run blog:check

@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Blog pipeline: reference-blog URLs, local repo paths, and everything scraped/derived from
+# them stay out of the public repo. Only the schema/config files below are committed.
+content/ideas/*
+!content/ideas/README.md
+!content/ideas/blog.config.json
+!content/ideas/sources.example.json
+!content/ideas/repos.example.json
