@@ -1,5 +1,6 @@
 ---
 import Analytics from '../components/Analytics.astro';
+import { SOCIAL_CHANNELS } from '../lib/social';
 ---
 
 <html lang="en">
@@ -35,56 +36,27 @@ import Analytics from '../components/Analytics.astro';
 					</div>
 
 					<nav class="socials" aria-label="Social media">
-						<a
-							href="https://www.tiktok.com/"
-							aria-label="TikTok"
-							class="social-btn"
-							data-analytics="outbound"
-							data-analytics-id="tiktok"
-							data-analytics-location="nav"
-						>
-							<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-								<path d="M16.6 2h-2.9v12.1a2.4 2.4 0 1 1-2.4-2.4c.26 0 .5.04.74.12V9.1a5.1 5.1 0 1 0 4.36 5.05V8.2a6.1 6.1 0 0 0 3.6 1.16V6.6a3.6 3.6 0 0 1-3.4-3.5V2z"></path>
-							</svg>
-						</a>
-						<a
-							href="https://www.instagram.com/"
-							aria-label="Instagram"
-							class="social-btn"
-							data-analytics="outbound"
-							data-analytics-id="instagram"
-							data-analytics-location="nav"
-						>
-							<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-								<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect>
-								<circle cx="12" cy="12" r="4.1"></circle>
-								<circle cx="17.1" cy="6.9" r="1.1" fill="currentColor" stroke="none"></circle>
-							</svg>
-						</a>
-						<a
-							href="https://discord.com/"
-							aria-label="Discord"
-							class="social-btn"
-							data-analytics="outbound"
-							data-analytics-id="discord"
-							data-analytics-location="nav"
-						>
-							<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-								<path d="M19.3 5.6A15.5 15.5 0 0 0 15.5 4.4l-.3.7a11.6 11.6 0 0 1 3.3 1.4 12.4 12.4 0 0 0-10.9 0 11.6 11.6 0 0 1 3.3-1.4l-.3-.7A15.5 15.5 0 0 0 4.7 5.6C2.4 9 1.8 12.4 2.1 15.7a15.3 15.3 0 0 0 4.7 2.3l.9-1.4a10 10 0 0 1-1.6-.8l.4-.3a11 11 0 0 0 9 0l.4.3a10 10 0 0 1-1.6.8l.9 1.4a15.3 15.3 0 0 0 4.7-2.3c.4-3.9-.6-7.3-2.6-10.1zM9.1 13.8c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8zm5.8 0c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8z"></path>
-							</svg>
-						</a>
-						<a
-							href="https://x.com/"
-							aria-label="X"
-							class="social-btn"
-							data-analytics="outbound"
-							data-analytics-id="x"
-							data-analytics-location="nav"
-						>
-							<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-								<path d="M18.2 2.5h3.4l-7.4 8.5 8.1 10.5h-6.5l-4.6-6.1-5.3 6.1H2.5l7.7-8.9L2.4 2.5h6.6l4.3 5.7 4.9-5.7zm-1.2 17h1.9L7.1 4.4H5.1l11.9 15.1z"></path>
-							</svg>
-						</a>
+						{
+							SOCIAL_CHANNELS.map((channel) => (
+								<a
+									href={channel.url}
+									aria-label={channel.label}
+									class="social-btn"
+									rel="noopener"
+									data-analytics="outbound"
+									data-analytics-id={channel.id}
+									data-analytics-location="nav"
+								>
+									<svg
+										width={channel.size}
+										height={channel.size}
+										viewBox="0 0 24 24"
+										aria-hidden="true"
+										set:html={channel.icon}
+									/>
+								</a>
+							))
+						}
 					</nav>
 				</header>
 
