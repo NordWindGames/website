@@ -1,114 +1,83 @@
 ---
 name: blog-research
-description: Periodic devlog idea generation. Reads our own git history plus the reference blogs, generates scored post ideas and practice observations, and appends them to content/ideas/backlog.json and content/ideas/practices.json. Use when asked to find new devlog ideas, run the devlog research, or refresh the backlog.
+description: Periodic devlog idea generation. Reads our own git history plus the reference blogs, generates scored post ideas and practice observations, and appends them to content/ideas/backlog.json. Use when asked to find new devlog ideas, run the devlog research, or refresh the backlog.
 ---
 
 # Devlog idea generation
 
-Reads alongside `docs/blog-automation.md` (how the pipeline works, why the human gate is not
-optional, why deterministic and reasoning work are split) and `_port/blog-pipeline-port-devlog.md`
-(why this is a devlog, not an SEO blog, and what changed because of that).
+`docs/blog.md` describes the pipeline and why the human gate is not optional.
 
 The failure mode this procedure exists to prevent: **a devlog about other people's devlogs.** The
-reference blogs — Factorio, Yacht Club Games, Stardew Valley, Archmage Rises — teach *how* to write
-a devlog. They are not a topic supply. Topics come from `dev-activity.json`, our own development.
-Read section 1 of `_port/blog-pipeline-port-devlog.md` before running this the first time.
+reference blogs teach *how* to write a devlog. They are not a topic supply. **Topics come from our
+own development** — the `activity` section of `scan.json`.
 
----
-
-## 1. Discover (deterministic, no tokens)
+## 1. Scan (deterministic, no tokens)
 
 ```bash
-node scripts/blog-devlog.mjs              # our own activity since the last published post
-node scripts/blog-sources.mjs --delta     # new reference-blog posts since last run
-node scripts/blog-index.mjs               # refresh our own inventory
+npm run blog:scan
 ```
 
-`blog-devlog.mjs` scans this website repo plus every repo listed in
-`content/ideas/repos.local.json` (gitignored — a local absolute path is machine-specific). The
-game repo is the one that actually matters for a devlog; if `dev-activity.json` only shows a
-`website` entry, `repos.local.json` is not set up yet — say so in the report rather than treating
-website-only activity as the whole picture.
+One command: reference blogs, our own git activity, our own post inventory, and the shape of new
+reference posts — all into `content/ideas/scan.json`.
 
-Read the OK/FAIL report from `blog-sources.mjs`. **A `FAIL` means a reference blog changed its site
-structure, not that the threshold is wrong.** Inspect and fix `content/ideas/sources.local.json`
-(gitignored — the real URLs live only there); never quietly lower `expected_min`. To retire a source
-on purpose, set `"enabled": false` on it.
+Read the source table it prints:
 
-**Exit code 2 means a source came in short.** The artefacts are still written but the corpus is
-incomplete (`complete: false`, `sources_failed`). Say so at the top of your report and be more
-cautious about pattern claims from that source this run.
+- **A `FAIL` means a reference blog changed its structure, not that the threshold is wrong.** Fix
+  the endpoint or `pathFilter` in `content/ideas/sources.local.json` (gitignored — the real URLs
+  live only there). **Never lower `expected_min` to clear it.** To retire a source deliberately,
+  set `"enabled": false`.
+- **A non-zero exit means a source came in short.** The snapshot is still written but carries
+  `complete: false`. Say so at the top of your report and be more cautious about pattern claims
+  from that source.
+- `cached` means the source answered 304 and was not refetched. Its count comes from the last real
+  fetch and is still checked against `expected_min`, so a cached source can still FAIL.
+- If it says `repos.local.json is not set up`, this is website-repo activity only — **say that in
+  your report** rather than treating it as the whole picture. The game repo is the one that matters.
 
-An empty delta from the reference blogs is a completely normal outcome — several of them publish
-rarely. `dev-activity.json` being thin is the actually informative signal: it means development was
-slow, and that is itself something a devlog can honestly say (devlog doc section 2.6).
+An empty delta from the reference blogs is normal; several publish rarely. Thin *own* activity is
+the informative signal: development was slow, and a devlog can say so honestly.
 
-## 2. Extract (only for genuinely new reference posts, if any)
+## 2. Post ideas — grounded in our own work
 
-```bash
-node scripts/blog-extract.mjs --from content/ideas/new-urls.json > /tmp/extracted.json
-```
+`scan.json`'s `activity.repos[].clusters` is the primary input. It may be nearly empty on a quiet
+period, and that is correct — **do not manufacture ideas from the reference blogs to fill the run.**
 
-**Never store full article text.** Outline plus counts is enough.
+Each cluster is already grouped by commit type with its directories. The judgement you add is
+reading `commits[].comment` — the full commit body, not the subject. **That is where the "what was
+it like to build this" material lives.** A cluster whose comments are all `null` is a changelog with
+nothing to say yet; one with substantive comments is a `learning` or `deep-dive` waiting to be
+written.
 
-## 3. Two analyses, two outputs
+Five types:
 
-### 3a. Post ideas — grounded in our own work
-
-Read `content/ideas/dev-activity.json`. This is the primary input; it may be nearly empty on a
-quiet period, and that is correct — **do not manufacture post ideas from the reference blogs to
-fill the run.** The file has one entry per repo under `repos` (`website`, plus the game repo once
-`repos.local.json` points at it); each cluster's `commits[].comment` is the full commit body, not
-just the subject — that is where the actual "what was it like to build this" material lives. A
-cluster with several commits but every `comment` null is a changelog with nothing to say yet; a
-cluster with substantive comments is a `learning` or `deep-dive` candidate waiting to be written.
-Cluster the commits/PRs/tags into candidate ideas using these five types:
-
-- **`progress`** — what actually got built this period, grounded directly in a cluster from
-  `dev-activity.json`. The backbone of a devlog; never skip this type for lack of drama.
+- **`progress`** — what actually got built. The backbone of a devlog; never skip it for lack of drama.
 - **`deep-dive`** — one system, mechanism or decision explained properly. Most likely to be read
   outside the existing audience.
-- **`learning`** — something that went wrong, or a technique that worked. Highest-value type, most
-  often avoided because it means admitting a mistake. Look for it deliberately.
+- **`learning`** — something that went wrong, or a technique that worked. **Highest-value type, most
+  often avoided because it means admitting a mistake. Look for it deliberately.**
 - **`milestone`** — a release, a version, a postmortem, a year in review.
 - **`refresh`** — an existing post overtaken by events.
 
-Four required inputs: `dev-activity.json`, `content/ideas/blog-index.json` (avoid repeating a topic
-already covered), `content/ideas/backlog.json` + `rejected.md` (so the same idea does not resurface),
-and — only if new reference posts were extracted this run — their skeletons, used for format
-inspiration, never as a topic source.
+Also read: `scan.json`'s `posts` (avoid repeating a covered topic), the existing backlog
+(`node scripts/blog.mjs idea`) and `content/ideas/rejected.md`.
 
-**Dedup must be semantic.** Compare against `backlog.json` by meaning, against everything ever seen,
-not only approved ideas.
+**Dedup must be semantic.** Compare by meaning against everything ever seen, not only approved
+ideas — the script only catches an identical title, and only as a warning.
 
-### 3b. Practice observations — from the reference blogs
+## 3. Practice observations — from the reference blogs
 
-Only from genuinely new/re-read reference-blog posts this run (or the baseline pattern analysis on
-first setup). Answer, per _port/blog-pipeline-port-devlog.md section 2's pattern-analysis questions:
-cadence and whether it held, post shape, what they show (screenshots/numbers/code/none), how they
-handle bad news, what is conspicuously absent. Write worthwhile ones to `practices.json`:
+Only from genuinely new reference-blog posts this run (`scan.json`'s `extracted`). Ask: what cadence
+do they keep and did it hold? What shape is a post? What do they show — screenshots, numbers, code,
+nothing? **How do they handle bad news?** What is conspicuously absent?
 
-```json
-{
-  "id": "practice-2026-004",
-  "created_at": "2026-08-24",
-  "status": "new",
-  "observation": "...",
-  "source_urls": ["..."],
-  "applies_to": "cadence | format | transparency | community | production | tooling | marketing",
-  "what_it_would_mean": "...",
-  "effort": "low | medium | high",
-  "decision": null,
-  "decided_at": null
-}
-```
+Worthwhile observations go in as `kind: "practice"` with `applies_to` one of
+`cadence | format | transparency | community | production | tooling | marketing`, plus
+`what_it_would_mean` and `effort`. They are reviewed and decided like any idea. **Never
+auto-decide a practice.**
 
-This is not a scratchpad the pipeline never reads back — it is reviewed and decided, same as
-`backlog.json`. **Never auto-decide a practice.**
+## 4. Score the post ideas
 
-## 4. Score post ideas
-
-Four axes, 1–5, **higher is always better on all four** — none inverted:
+Four axes, integers 1–5, **higher is always better on all four** — none inverted:
 
 | Axis | 1 | 5 |
 | --- | --- | --- |
@@ -117,53 +86,53 @@ Four axes, 1–5, **higher is always better on all four** — none inverted:
 | `ease` | needs work not done yet | writable from what exists |
 | `durability` | irrelevant in a month | still worth reading in two years |
 
-```
-total = 0.35*interest + 0.25*evidence + 0.20*ease + 0.20*durability
-```
+**Write the four integers only.** Do not compute a total — the weighting lives in
+`blog.config.json`'s `scoring.weights` and the script does the arithmetic.
 
-Score honestly. A backlog where everything scores 4+ is not a backlog. The authoritative formula is
-`scoring.formula` in `backlog.json`, which `--validate` parses and recomputes every total against.
+Score honestly. A backlog where everything scores 4+ is not a backlog.
 
 ## 5. Write the output
 
-Append to `content/ideas/backlog.json` using the schema in `_port/blog-pipeline-port-devlog.md`
-section 2.4. Fill `evidence` (the concrete material the post needs — a screenshot, a before/after
-number, the actual diff) here, during research, not while writing — it is what separates a real post
-from a status update.
-
-**Every new idea gets `status: "new"`. Never approve your own ideas.** The human gate is the only
-thing standing between this pipeline and automated content.
-
-Verify what you wrote:
+Pipe JSON to `add` — one object or an array:
 
 ```bash
-node scripts/blog-backlog.mjs --validate
+node scripts/blog.mjs add <<'JSON'
+[{ "type": "learning", "working_title": "...", "angle": "...", "locale": "both",
+   "internal_links": [], "evidence": "the concrete thing the post will show",
+   "source_urls": [], "outline_hint": "...",
+   "scores": { "interest": 4, "evidence": 3, "ease": 4, "durability": 3 } }]
+JSON
 ```
 
-It must exit 0 before you report.
+Ids are assigned, dates stamped, and **status is forced to `new`** — the command will not let you
+approve your own output. It validates before writing and refuses the whole batch on any error.
+
+Fill `evidence` **here, during research**, not while writing: the concrete material the post needs
+(a screenshot, a before/after number, the actual diff). It is what separates a real post from a
+status update.
 
 ## 6. Re-raise what is blocked
 
 ```bash
-node scripts/blog-backlog.mjs --status blocked
+node scripts/blog.mjs idea --status blocked
 ```
 
-For each blocked idea, ask its `followup_question` in your report with its age in days. A blocked
-idea nobody asks about is the same as a rejected one.
+Ask each blocked idea's follow-up question in your report, with its age. A blocked idea nobody asks
+about is the same as a rejected one. Record what came of asking with
+`node scripts/blog.mjs note <id> "..."`.
 
 ## 7. Report
 
-- any source that came in short, first
-- what `dev-activity.json` covered (span, commit count, cluster themes) — even if thin
-- new reference-blog posts, per source, if any
-- the new post ideas with scores and one line of reasoning each
-- new practice observations, if any
-- the blocked-idea follow-ups
-- review commands: `node scripts/blog-backlog.mjs`, `--show <id>`, `--approve`, `--reject --reason`
+In this order:
 
-## Cadence
+1. any source that came in short, or a cached source worth re-checking
+2. what our own activity covered (span, commit count, cluster themes) — even if thin
+3. new reference-blog posts per source, if any, and how many were **not** extracted
+4. the new ideas with scores and one line of reasoning each
+5. new practice observations
+6. the blocked-idea follow-ups
+7. review commands: `node scripts/blog.mjs idea`, `idea <id>`,
+   `set approved <id>`, `set rejected <id> --reason "..."`
 
-Discovery is cheap and can run any time. The *reminder* (`blog-weekly.mjs --check`) is paced to
-`cadence_days` in `blog.config.json` (30, monthly) — see devlog doc section 2.7 for why weekly
-would train the reminder to be ignored. When the backlog holds more approved ideas than can be
-written soon, say so instead of generating more.
+When the backlog already holds more approved ideas than can be written soon, say so instead of
+generating more.
