@@ -17,9 +17,3 @@ export async function getPostsByLocale(locale: Locale) {
 		.map((entry) => ({ ...entry, slug: slugOf(entry) }))
 		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
-
-export async function getPostBySlug(locale: Locale, slug: string) {
-	const all = await getCollection('blog');
-	const entry = all.find((e) => localeOf(e) === locale && slugOf(e) === slug);
-	return entry ? { ...entry, slug } : undefined;
-}
