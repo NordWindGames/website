@@ -10,11 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "blog:weekly": "node scripts/blog-weekly.mjs",
-    "blog:check": "node scripts/blog-check.mjs",
-    "blog:lint": "node scripts/blog-lint.mjs",
-    "blog:assets": "node scripts/blog-assets.mjs",
-    "blog:dev": "node scripts/blog-devlog.mjs"
+    "blog": "node scripts/blog.mjs",
+    "blog:scan": "node scripts/blog.mjs scan",
+    "blog:check": "node scripts/blog.mjs check"
   },
   "dependencies": {
     "astro": "^7.2.4"

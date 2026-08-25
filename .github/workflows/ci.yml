@@ -29,7 +29,14 @@ jobs:
           PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
 
       - name: Blog gate
+        # The whole pipeline is one CLI, so a syntax error anywhere in it would take down the
+        # gate too. --check parses every module without running it, which costs ~50ms and makes
+        # that failure obvious instead of confusing.
+        #
         # content/ideas/backlog.json is gitignored (privacy — see .gitignore), so it does not
-        # exist on this checkout. blog-check.mjs skips that one gate with a note instead of
-        # failing; inventory, conventions and images still run against every checked-in post.
-        run: npm run blog:check
+        # exist on this checkout. The backlog gate skips itself with a note instead of failing;
+        # conventions and images still run against every checked-in post.
+        run: |
+          node --check scripts/blog.mjs
+          for f in scripts/lib/*.mjs; do node --check "$f"; done
+          npm run blog:check
