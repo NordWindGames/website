@@ -1,5 +1,6 @@
 ---
 import Analytics from '../components/Analytics.astro';
+import { SOCIAL_CHANNELS, DISCORD_INVITE } from '../lib/social';
 
 interface Props {
 	title: string;
@@ -11,6 +12,11 @@ const { title, description, locale } = Astro.props;
 const home = locale === 'en' ? '/' : '/de/';
 const blogHome = locale === 'en' ? '/blog/' : '/de/blog/';
 const otherLocaleLabel = locale === 'en' ? 'Deutsch' : 'English';
+
+const t =
+	locale === 'de'
+		? { follow: 'Folge der Entwicklung', talk: 'Reden wir', discord: 'Discord beitreten' }
+		: { follow: 'Follow the development', talk: 'Come talk', discord: 'Join the Discord' };
 ---
 
 <html lang={locale}>
@@ -42,6 +48,50 @@ const otherLocaleLabel = locale === 'en' ? 'Deutsch' : 'English';
 			<main class="content">
 				<slot />
 			</main>
+			<footer class="footer">
+				<div class="footer-inner">
+					<div class="footer-block">
+						<span class="footer-label">{t.talk}</span>
+						<a
+							class="discord-link"
+							href={DISCORD_INVITE}
+							rel="noopener"
+							data-analytics="outbound"
+							data-analytics-id="discord"
+							data-analytics-location="footer"
+						>
+							{t.discord}
+						</a>
+					</div>
+
+					<div class="footer-block">
+						<span class="footer-label">{t.follow}</span>
+						<nav class="socials" aria-label={t.follow}>
+							{
+								SOCIAL_CHANNELS.map((channel) => (
+									<a
+										href={channel.url}
+										class="social-btn"
+										aria-label={channel.label}
+										rel="noopener"
+										data-analytics="outbound"
+										data-analytics-id={channel.id}
+										data-analytics-location="footer"
+									>
+										<svg
+											width={channel.size}
+											height={channel.size}
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+											set:html={channel.icon}
+										/>
+									</a>
+								))
+							}
+						</nav>
+					</div>
+				</div>
+			</footer>
 		</div>
 	</body>
 </html>
@@ -63,9 +113,13 @@ const otherLocaleLabel = locale === 'en' ? 'Deutsch' : 'English';
 		--fg: rgba(93, 102, 112, 1);
 		--muted: rgba(110, 125, 144, 1);
 		--line: rgba(93, 102, 112, 0.24);
+		--btnbg: rgba(255, 255, 255, 0.5);
 		min-height: 100vh;
 		font-family: 'IBM Plex Mono', ui-monospace, monospace;
 		color: var(--fg);
+		/* Column so the footer sits at the bottom of a short post, not mid-page. */
+		display: flex;
+		flex-direction: column;
 	}
 
 	.header {
@@ -96,9 +150,83 @@ const otherLocaleLabel = locale === 'en' ? 'Deutsch' : 'English';
 	}
 
 	.content {
+		width: 100%;
 		max-width: 768px;
 		margin: 0 auto;
 		padding: 48px 24px 96px;
+		flex: 1 0 auto;
+	}
+
+	/* ── footer ──────────────────────────────────────────────────────────── */
+
+	.footer {
+		border-top: 2px solid var(--line);
+		padding: 32px clamp(24px, 6vw, 96px) 40px;
+	}
+
+	.footer-inner {
+		max-width: 768px;
+		margin: 0 auto;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 28px;
+	}
+
+	.footer-block {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.footer-label {
+		font-family: Silkscreen, monospace;
+		font-size: 13px;
+		letter-spacing: 0.04em;
+		color: var(--muted);
+	}
+
+	.discord-link {
+		align-self: flex-start;
+		border: 2px solid var(--fg);
+		background: var(--btnbg);
+		padding: 10px 16px;
+		font-size: 14px;
+		text-decoration: none;
+		box-shadow: 4px 4px 0 var(--line);
+		transition:
+			transform 110ms steps(2),
+			box-shadow 110ms steps(2);
+	}
+	.discord-link:hover {
+		transform: translate(2px, 2px);
+		box-shadow: 2px 2px 0 var(--fg);
+	}
+
+	.socials {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.social-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 42px;
+		height: 42px;
+		border: 2px solid var(--fg);
+		background: var(--btnbg);
+		color: var(--fg);
+		box-shadow: 4px 4px 0 var(--line);
+		transition:
+			transform 110ms steps(2),
+			box-shadow 110ms steps(2);
+	}
+	.social-btn:hover {
+		transform: translate(2px, 2px);
+		box-shadow: 2px 2px 0 var(--fg);
 	}
 
 	.content :global(h1) {
