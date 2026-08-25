@@ -21,17 +21,33 @@ const LINK_RE = /(?<!!)\[([^\]]*)\]\(\s*([^\s)]+)[^)]*\)/g
 const IMAGE_RE = /!\[([^\]]*)\]\(\s*([^\s)]+)[^)]*\)/g
 const H2_RE = /^##\s+(.+)$/gm
 
-/** Minimal frontmatter reader, dependency-free. `data` is null when there is no block at all. */
+/**
+ * Minimal frontmatter reader, dependency-free. `data` is null when there is no block at all.
+ *
+ * This is a regex, not a YAML parser, which is the point - the shape contract belongs to the zod
+ * schema in src/content.config.ts. But being more permissive than YAML means it can accept a block
+ * that Astro then refuses to parse, so `yamlRisks` reports the one case that actually bites:
+ * an unquoted value containing ": ", which YAML reads as a nested mapping. A game called
+ * "HoldStrong: The Last Tower" hits this in every title or description that names it.
+ */
 export function splitFrontmatter(raw) {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/)
-  if (!m) return { data: null, body: raw }
+  if (!m) return { data: null, body: raw, yamlRisks: [] }
 
   const data = {}
+  const yamlRisks = []
   for (const line of m[1].split(/\r?\n/)) {
     const kv = line.match(/^([A-Za-z0-9_-]+):\s*(.*)$/)
-    if (kv) data[kv[1]] = kv[2].trim().replace(/^["'](.*)["']$/, '$1')
+    if (!kv) continue
+
+    const [, key, rawValue] = kv
+    const value = rawValue.trim()
+    const quoted = /^(".*"|'.*')$/.test(value)
+    if (!quoted && /:\s/.test(value)) yamlRisks.push({ key, value })
+
+    data[key] = value.replace(/^["'](.*)["']$/, '$1')
   }
-  return { data, body: m[2] }
+  return { data, body: m[2], yamlRisks }
 }
 
 /**
@@ -57,7 +73,7 @@ export function readCorpus() {
 
     for (const name of names) {
       const file = join(POSTS_DIR, locale, name)
-      const { data, body } = splitFrontmatter(readFileSync(file, 'utf8'))
+      const { data, body, yamlRisks } = splitFrontmatter(readFileSync(file, 'utf8'))
 
       files.push({
         locale,
@@ -66,6 +82,7 @@ export function readCorpus() {
         where: rel(file),
         data,
         body,
+        yamlRisks,
         h2: [...body.matchAll(H2_RE)].map((m) => m[1].trim()),
         words: body.split(/\s+/).filter(Boolean).length,
         links: [...body.matchAll(LINK_RE)].map((m) => m[2]),

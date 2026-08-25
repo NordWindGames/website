@@ -124,6 +124,15 @@ export function lint(corpus) {
     for (const field of ['title', 'description', 'date']) {
       if (!data[field]?.trim()) err(where, `frontmatter is missing "${field}"`)
     }
+    // Astro parses the block as real YAML, this reader does not. Catch the gap rather than
+    // letting a green gate hand a build error to the next person.
+    for (const { key, value } of post.yamlRisks ?? []) {
+      err(
+        where,
+        `frontmatter "${key}" contains ": " but is not quoted, so YAML reads it as a nested ` +
+          `key and the build fails. Wrap it in double quotes: ${key}: "${value}"`
+      )
+    }
     if (data.date && !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
       err(where, `date "${data.date}" is not YYYY-MM-DD`)
     }
