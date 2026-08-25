@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "_comment": "SCHEMA EXAMPLE ONLY — fake path. Real local repo paths are machine-specific and personal, so they live only in repos.local.json (gitignored, never committed). Without a repos.local.json, blog-devlog.mjs only scans this website repo. Copy this file to repos.local.json and point it at the real game repo once it exists locally.",
+  "_comment": "SCHEMA EXAMPLE ONLY — fake path. Real local repo paths are machine-specific and personal, so they live only in repos.local.json (gitignored, never committed). Without a repos.local.json, a scan only sees this website repo. Copy this file to repos.local.json and point it at the real game repo once it exists locally.",
   "repos": [
     {
       "id": "game",

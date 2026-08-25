@@ -1,47 +1,39 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "_comment": "SCHEMA EXAMPLE ONLY — fake URLs. The real reference-blog list lives in sources.local.json, which is gitignored so those URLs never land in this public repo's history. Copy this file to sources.local.json and fill in the real sources.",
-  "own_site": {
-    "sitemap": "https://nordwind.games/sitemap-index.xml",
-    "posts_dir": "src/content/blog"
-  },
   "sources": [
     {
       "id": "example-rss",
-      "name": "Example Studio (RSS)",
       "site": "https://example.com",
-      "tier": "A",
       "method": "rss",
       "endpoints": ["https://example.com/blog/feed.xml"],
       "pathFilter": "^/blog/.+",
       "ua": "default",
       "expected_min": 10,
-      "notes": "RSS feed only carries the most recent 20 entries — use for --delta, not --baseline. See baseline_endpoint below.",
+      "notes": "A feed usually carries only the most recent 10-20 entries — right for a delta, wrong for a baseline. Hence baseline_endpoint below.",
       "baseline_endpoint": { "method": "sitemap", "endpoints": ["https://example.com/sitemap.xml"] }
     },
     {
       "id": "example-sitemap",
-      "name": "Example Studio (sitemap)",
       "site": "https://example.org",
-      "tier": "A",
       "method": "sitemap",
       "endpoints": ["https://example.org/sitemap.xml"],
       "pathFilter": "^/news/.+",
       "ua": "default",
       "expected_min": 20,
-      "notes": "No RSS feed found; sitemap has full lastmod history."
+      "notes": "No feed found; the sitemap has the full history. Sitemap indexes are not followed — point at a leaf sitemap, not an index."
     },
     {
       "id": "example-html",
-      "name": "Example Studio (HTML listing)",
       "site": "https://example.net",
-      "tier": "A",
       "method": "html",
       "endpoints": ["https://example.net/blog"],
       "pathFilter": "^/blog/.+",
       "ua": "browser",
       "expected_min": 5,
-      "notes": "No feed or sitemap covers posts; falls back to scraping the listing page. Fragile — watch for FAIL if it paginates."
+      "enabled": true,
+      "notes": "No feed or sitemap covers posts, so this scrapes the listing page. Fragile — watch for FAIL if it starts paginating. Set enabled:false to retire a source deliberately; never lower expected_min to silence a FAIL.",
+      "_ua_note": "\"browser\" sends a browser user-agent, for hosts that 403 anything else. Check with: node scripts/blog.mjs scan --probe"
     }
   ]
 }
