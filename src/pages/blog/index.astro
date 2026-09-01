@@ -1,6 +1,6 @@
 ---
 import BlogLayout from '../../layouts/BlogLayout.astro';
-import { getPostsByLocale } from '../../lib/blog';
+import { getPostsByLocale, postPath } from '../../lib/blog';
 
 const posts = await getPostsByLocale('en');
 ---
@@ -11,7 +11,7 @@ const posts = await getPostsByLocale('en');
 	<ul class="post-list">
 		{posts.map((post) => (
 			<li>
-				<a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+				<a href={postPath('en', post.slug)}>{post.data.title}</a>
 				<p class="meta">{post.data.date.toISOString().slice(0, 10)} — {post.data.description}</p>
 			</li>
 		))}
