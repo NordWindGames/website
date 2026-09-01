@@ -1,20 +1,29 @@
 ---
 import Analytics from '../components/Analytics.astro';
 import { SOCIAL_CHANNELS, DISCORD_INVITE } from '../lib/social';
+import { blogIndexPath, otherLocale, type Locale } from '../lib/blog';
 
 interface Props {
 	title: string;
 	description: string;
-	locale: 'en' | 'de';
+	locale: Locale;
+	/**
+	 * Where the language switcher points. Defaults to the other locale's devlog
+	 * index; a post passes the translated post instead, so switching language
+	 * keeps you on what you were reading rather than dumping you at the index.
+	 */
+	altLocaleHref?: string;
 }
 
-const { title, description, locale } = Astro.props;
+const { title, description, locale, altLocaleHref } = Astro.props;
 // The landing page is English-only, so both locales' brand link goes there. A
 // '/de/' home would be a 404: GitHub Pages serves static files with no rewrite,
 // and there is no src/pages/de/index.astro to build one from.
 const home = '/';
-const blogHome = locale === 'en' ? '/blog/' : '/de/blog/';
-const otherLocaleLabel = locale === 'en' ? 'Deutsch' : 'English';
+const blogHome = blogIndexPath(locale);
+const alt = otherLocale(locale);
+const altHref = altLocaleHref ?? blogIndexPath(alt);
+const altLabel = alt === 'de' ? 'Deutsch' : 'English';
 
 const t =
 	locale === 'de'
@@ -45,7 +54,7 @@ const t =
 				<a href={home} class="brand-link">Nordwind Games</a>
 				<nav class="nav">
 					<a href={blogHome}>Devlog</a>
-					<a href={locale === 'en' ? '/de/blog/' : '/blog/'}>{otherLocaleLabel}</a>
+					<a href={altHref} hreflang={alt} lang={alt}>{altLabel}</a>
 				</nav>
 			</header>
 			<main class="content">

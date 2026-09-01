@@ -18,6 +18,10 @@ export async function getPostsByLocale(locale: Locale) {
 		.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
+export function otherLocale(locale: Locale): Locale {
+	return locale === 'en' ? 'de' : 'en';
+}
+
 /**
  * URL builders. English is the unprefixed default locale (see astro.config.mjs),
  * German lives under /de/. Trailing slashes are deliberate: the build emits
@@ -32,4 +36,20 @@ export function blogIndexPath(locale: Locale): string {
 
 export function postPath(locale: Locale, slug: string): string {
 	return `${blogIndexPath(locale)}${slug}/`;
+}
+
+/**
+ * Where the language switcher points from a post: the same post in the other
+ * locale, or that locale's index when the post has no translation yet.
+ *
+ * The fallback is the whole point. Slugs are shared across locales (the same
+ * welcome.md name in both src/content/blog/en and /de), so the translated URL is
+ * predictable — but only for posts that actually exist. Guessing wrong on a
+ * static host is a hard 404: GitHub Pages serves whatever file is at the path
+ * and has no rewrite to fall back on. So we check the collection instead.
+ */
+export async function getTranslationPath(from: Locale, slug: string): Promise<string> {
+	const to = otherLocale(from);
+	const translated = await getPostsByLocale(to);
+	return translated.some((post) => post.slug === slug) ? postPath(to, slug) : blogIndexPath(to);
 }
