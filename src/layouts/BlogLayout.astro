@@ -9,7 +9,10 @@ interface Props {
 }
 
 const { title, description, locale } = Astro.props;
-const home = locale === 'en' ? '/' : '/de/';
+// The landing page is English-only, so both locales' brand link goes there. A
+// '/de/' home would be a 404: GitHub Pages serves static files with no rewrite,
+// and there is no src/pages/de/index.astro to build one from.
+const home = '/';
 const blogHome = locale === 'en' ? '/blog/' : '/de/blog/';
 const otherLocaleLabel = locale === 'en' ? 'Deutsch' : 'English';
 
