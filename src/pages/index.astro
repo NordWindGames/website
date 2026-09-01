@@ -35,6 +35,19 @@ import { SOCIAL_CHANNELS } from '../lib/social';
 						<h1 class="brand-title">Nordwind Games</h1>
 					</div>
 
+					<nav class="site-nav" aria-label="Site sections">
+						<a
+							class="nav-link"
+							href="/blog/"
+							data-analytics="cta"
+							data-analytics-id="devlog"
+							data-analytics-location="header"
+							data-analytics-label="Devlog"
+						>
+							Devlog
+						</a>
+					</nav>
+
 					<nav class="socials" aria-label="Social media">
 						{
 							SOCIAL_CHANNELS.map((channel) => (
@@ -179,6 +192,34 @@ import { SOCIAL_CHANNELS } from '../lib/social';
 		letter-spacing: 0.02em;
 		color: var(--fg);
 		margin: 0;
+	}
+
+	/* Text sibling of .social-btn: same pixel-art frame, sized for a word. */
+	.site-nav {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.nav-link {
+		display: inline-flex;
+		align-items: center;
+		height: 42px;
+		padding: 0 18px;
+		border: 2px solid var(--fg);
+		background: var(--btnbg);
+		color: var(--fg);
+		font-family: Silkscreen, monospace;
+		font-size: 13px;
+		letter-spacing: 0.06em;
+		box-shadow: 4px 4px 0 var(--line);
+		transition:
+			transform 110ms steps(2),
+			box-shadow 110ms steps(2);
+	}
+	.nav-link:hover {
+		transform: translate(2px, 2px);
+		box-shadow: 2px 2px 0 var(--fg);
 	}
 
 	.socials {
