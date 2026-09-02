@@ -1,6 +1,6 @@
 ---
 title: Hello from the North
-description: "Why this devlog exists, what HoldStrong: The Last Tower is, and what I am committing to."
+description: 'Why this devlog exists, what HoldStrong: The Last Tower is, and what I am committing to.'
 date: 2026-08-25
 ---
 

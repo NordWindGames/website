@@ -26,10 +26,10 @@ ohne echte Daten prüfen.
 Mit gesetzter ID sendet der Dev-Server an die **echte** Property. Damit das die Reports nicht
 verfälscht, setzt [`Analytics.astro`](../src/components/Analytics.astro) in Dev-Builds zwei Flags:
 
-| Flag | Wirkung |
-| :--- | :--- |
-| `debug_mode: true` | Events erscheinen sofort in **Admin → DebugView**, statt die normale Reporting-Verzögerung abzuwarten. Hält sie aber **nicht** aus den Reports heraus. |
-| `traffic_type: 'internal'` | Kennzeichnet die Events als interner Traffic — die Grundlage für den Ausschluss-Filter unten. |
+| Flag                       | Wirkung                                                                                                                                                |
+| :------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `debug_mode: true`         | Events erscheinen sofort in **Admin → DebugView**, statt die normale Reporting-Verzögerung abzuwarten. Hält sie aber **nicht** aus den Reports heraus. |
+| `traffic_type: 'internal'` | Kennzeichnet die Events als interner Traffic — die Grundlage für den Ausschluss-Filter unten.                                                          |
 
 Das Flag allein filtert nichts. In GA4 einmalig einrichten:
 
@@ -48,27 +48,27 @@ sie liegen auf `console.debug`, also im Log-Level **Verbose** des Konsolen-Filte
 
 ## Was automatisch getrackt wird (GA4 Enhanced Measurement, kein Code)
 
-| Event | Bedeutung |
-| :--- | :--- |
-| `page_view` | Seitenaufruf inkl. `page_location`, `page_referrer`, UTM-Parameter |
-| `session_start`, `first_visit` | Sessions und Neu- vs. Wiederkehrer |
-| `user_engagement` | Aktive Verweildauer |
-| `scroll` | 90 % Scrolltiefe (unsere eigene Staffelung siehe unten ist feiner) |
-| `click` | Outbound-Klicks generisch (`link_domain`, `link_url`) |
-| `file_download` | Downloads — greift automatisch, sobald eine Demo-Datei verlinkt wird |
+| Event                          | Bedeutung                                                            |
+| :----------------------------- | :------------------------------------------------------------------- |
+| `page_view`                    | Seitenaufruf inkl. `page_location`, `page_referrer`, UTM-Parameter   |
+| `session_start`, `first_visit` | Sessions und Neu- vs. Wiederkehrer                                   |
+| `user_engagement`              | Aktive Verweildauer                                                  |
+| `scroll`                       | 90 % Scrolltiefe (unsere eigene Staffelung siehe unten ist feiner)   |
+| `click`                        | Outbound-Klicks generisch (`link_domain`, `link_url`)                |
+| `file_download`                | Downloads — greift automatisch, sobald eine Demo-Datei verlinkt wird |
 
 Dazu kommen aus GA4 selbst: Gerät, Browser, OS, Auflösung, Land/Region/Stadt, Sprache,
 Traffic-Quelle/Medium/Kampagne.
 
 ## Custom Events — jetzt aktiv
 
-| Event | Parameter | Wofür |
-| :--- | :--- | :--- |
-| `cta_click` | `cta_id`, `cta_location`, `cta_label`, `link_url`, `click_index` | Welcher CTA zieht. `click_index` zeigt Mehrfachklicks (auf der Startseite = Spielerei mit dem Blitz-Button, ein Engagement-Signal). |
-| `outbound_click` | `link_id`, `link_domain`, `link_url`, `link_location` | Welcher Social-Kanal tatsächlich geklickt wird — GA4s eingebautes `click` weiß nicht, *welcher* Button es war. |
-| `section_view` | `section_id`, `section_index`, `time_to_view_seconds` | Scroll-Funnel: welcher Abschnitt wird überhaupt erreicht, und wie schnell. |
-| `scroll_depth` | `percent_scrolled` (25/50/75/100) | Lesetiefe, feiner als GA4s 90 %-Event. |
-| `page_engagement` | `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`, `interactions`, `exit_reason`, `summary_index` | Ein Qualitäts-Datensatz pro Seitenaufruf. Erlaubt Segmente wie „>30 s aktiv und >75 % gescrollt". |
+| Event             | Parameter                                                                                                       | Wofür                                                                                                                               |
+| :---------------- | :-------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| `cta_click`       | `cta_id`, `cta_location`, `cta_label`, `link_url`, `click_index`                                                | Welcher CTA zieht. `click_index` zeigt Mehrfachklicks (auf der Startseite = Spielerei mit dem Blitz-Button, ein Engagement-Signal). |
+| `outbound_click`  | `link_id`, `link_domain`, `link_url`, `link_location`                                                           | Welcher Social-Kanal tatsächlich geklickt wird — GA4s eingebautes `click` weiß nicht, _welcher_ Button es war.                      |
+| `section_view`    | `section_id`, `section_index`, `time_to_view_seconds`                                                           | Scroll-Funnel: welcher Abschnitt wird überhaupt erreicht, und wie schnell.                                                          |
+| `scroll_depth`    | `percent_scrolled` (25/50/75/100)                                                                               | Lesetiefe, feiner als GA4s 90 %-Event.                                                                                              |
+| `page_engagement` | `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`, `interactions`, `exit_reason`, `summary_index` | Ein Qualitäts-Datensatz pro Seitenaufruf. Erlaubt Segmente wie „>30 s aktiv und >75 % gescrollt".                                   |
 
 Aktive Verweildauer zählt nur, solange der Tab sichtbar ist — ein Tab, der eine Stunde im
 Hintergrund liegt, ist keine Stunde Engagement.
@@ -77,11 +77,11 @@ Hintergrund liegt, ist keine Stunde Engagement.
 
 Das Event wird bei **jedem** Aufmerksamkeits-Ende gesendet, nicht nur beim ersten:
 
-| `exit_reason` | Auslöser |
-| :--- | :--- |
-| `hidden` | Tab-Wechsel oder Minimieren (das einzige verlässliche Signal auf Mobilgeräten) |
-| `pagehide` | Reload, Schließen, Navigation im selben Tab |
-| `swap` | View-Transition-Navigation innerhalb der Seite |
+| `exit_reason` | Auslöser                                                                       |
+| :------------ | :----------------------------------------------------------------------------- |
+| `hidden`      | Tab-Wechsel oder Minimieren (das einzige verlässliche Signal auf Mobilgeräten) |
+| `pagehide`    | Reload, Schließen, Navigation im selben Tab                                    |
+| `swap`        | View-Transition-Navigation innerhalb der Seite                                 |
 
 Ein Seitenaufruf kann also mehrere Zeilen erzeugen, jede mit hochzählendem
 `summary_index`. **Nicht summieren** — pro Seitenaufruf die Zeile mit dem höchsten
@@ -100,30 +100,30 @@ Die Aufrufstellen landen mit der HoldStrong-Demo-Seite (`feature/holdstrong-land
 jetzt schon definiert, damit Key Events und Custom Dimensions in GA4 vorab konfiguriert werden können
 — GA4 sammelt rückwirkend **nichts**, was nicht vorher angelegt war.
 
-| Event | Parameter | Wofür |
-| :--- | :--- | :--- |
-| `wishlist_click` | `store`, `placement` | **Key Event.** Steam-Wishlist-Absicht — das wichtigste Pre-Launch-Signal überhaupt. |
-| `playtest_signup_start` | `form_id` | Erster Fokus/Tastendruck im E-Mail-Feld → Funnel-Einstieg. |
-| `playtest_signup_submit` | `form_id`, `attempt` | Absenden versucht (auch bei ungültiger Eingabe). |
-| `playtest_signup_success` | `form_id`, `time_to_convert_seconds`, `attempt` | **Key Event.** Anmeldung akzeptiert. |
-| `playtest_signup_error` | `form_id`, `error_reason` | Wo Anmeldungen scheitern (`invalid_email`, `duplicate`, `network_error`). |
-| `god_card_engage` | `god_name`, `engage_type` | Welcher Gott zieht Aufmerksamkeit — Signal für Marketing-Assets und Feature-Priorisierung. |
-| `gallery_item_click` | `gallery_slot`, `slot_index` | Welche Screenshots interessieren. |
-| `countdown_view` | `days_to_demo` | Countdown gesehen, inkl. Abstand zum Demo-Termin. |
-| `trailer_progress` | `video_title`, `percent_played` | Trailer-Abbruchquoten, sobald ein Trailer existiert. |
-| `demo_download_click` | `platform` | Demo-Downloads pro Plattform ab Release. |
-| `share_click` | `method` | Teilen der Seite. |
+| Event                     | Parameter                                       | Wofür                                                                                      |
+| :------------------------ | :---------------------------------------------- | :----------------------------------------------------------------------------------------- |
+| `wishlist_click`          | `store`, `placement`                            | **Key Event.** Steam-Wishlist-Absicht — das wichtigste Pre-Launch-Signal überhaupt.        |
+| `playtest_signup_start`   | `form_id`                                       | Erster Fokus/Tastendruck im E-Mail-Feld → Funnel-Einstieg.                                 |
+| `playtest_signup_submit`  | `form_id`, `attempt`                            | Absenden versucht (auch bei ungültiger Eingabe).                                           |
+| `playtest_signup_success` | `form_id`, `time_to_convert_seconds`, `attempt` | **Key Event.** Anmeldung akzeptiert.                                                       |
+| `playtest_signup_error`   | `form_id`, `error_reason`                       | Wo Anmeldungen scheitern (`invalid_email`, `duplicate`, `network_error`).                  |
+| `god_card_engage`         | `god_name`, `engage_type`                       | Welcher Gott zieht Aufmerksamkeit — Signal für Marketing-Assets und Feature-Priorisierung. |
+| `gallery_item_click`      | `gallery_slot`, `slot_index`                    | Welche Screenshots interessieren.                                                          |
+| `countdown_view`          | `days_to_demo`                                  | Countdown gesehen, inkl. Abstand zum Demo-Termin.                                          |
+| `trailer_progress`        | `video_title`, `percent_played`                 | Trailer-Abbruchquoten, sobald ein Trailer existiert.                                       |
+| `demo_download_click`     | `platform`                                      | Demo-Downloads pro Plattform ab Release.                                                   |
+| `share_click`             | `method`                                        | Teilen der Seite.                                                                          |
 
 ## User Properties (Custom Dimensions, user-scoped)
 
-Werden einmal pro Seitenaufruf gesetzt. Sie beschreiben die *Umgebung*, nicht die Person.
+Werden einmal pro Seitenaufruf gesetzt. Sie beschreiben die _Umgebung_, nicht die Person.
 
-| Property | Werte | Wofür |
-| :--- | :--- | :--- |
-| `viewport_bucket` | `mobile`, `tablet`, `desktop`, `wide` | Stabiler als rohe Breiten; Basis für Layout-Entscheidungen. |
-| `reduced_motion` | `true`, `false` | Die Seite ist animationslastig — relevant, falls Conversion-Raten auseinanderlaufen. |
-| `color_scheme` | `light`, `dark` | Für die geplante Dark-Mode-Variante. |
-| `touch_primary` | `true`, `false` | Touch vs. Maus, unabhängig von der Viewport-Breite. |
+| Property          | Werte                                 | Wofür                                                                                |
+| :---------------- | :------------------------------------ | :----------------------------------------------------------------------------------- |
+| `viewport_bucket` | `mobile`, `tablet`, `desktop`, `wide` | Stabiler als rohe Breiten; Basis für Layout-Entscheidungen.                          |
+| `reduced_motion`  | `true`, `false`                       | Die Seite ist animationslastig — relevant, falls Conversion-Raten auseinanderlaufen. |
+| `color_scheme`    | `light`, `dark`                       | Für die geplante Dark-Mode-Variante.                                                 |
+| `touch_primary`   | `true`, `false`                       | Touch vs. Maus, unabhängig von der Viewport-Breite.                                  |
 
 ## In GA4 anzulegen
 
@@ -143,6 +143,7 @@ Ohne diese Registrierung sind die Parameter in Reports nicht auswählbar:
 ---
 import Analytics from '../components/Analytics.astro';
 ---
+
 <head>
   <Analytics />
 </head>
@@ -151,8 +152,12 @@ import Analytics from '../components/Analytics.astro';
     Join the Playtest
   </a>
 
-  <a href="https://discord.gg/…" data-analytics="outbound" data-analytics-id="discord"
-     data-analytics-location="footer">Discord</a>
+  <a
+    href="https://discord.gg/…"
+    data-analytics="outbound"
+    data-analytics-id="discord"
+    data-analytics-location="footer">Discord</a
+  >
 
   <section id="gods" data-analytics-section="gods">…</section>
 </body>

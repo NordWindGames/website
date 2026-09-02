@@ -91,7 +91,10 @@ function svgSize(markup) {
 
   const viewBox = tag.match(/\bviewBox\s*=\s*["']([^"']+)["']/i)?.[1]
   if (viewBox) {
-    const p = viewBox.trim().split(/[\s,]+/).map(Number)
+    const p = viewBox
+      .trim()
+      .split(/[\s,]+/)
+      .map(Number)
     if (p.length === 4 && p.every(Number.isFinite) && p[2] > 0 && p[3] > 0) {
       return { width: p[2], height: p[3] }
     }
@@ -130,7 +133,7 @@ export function lint(corpus) {
       err(
         where,
         `frontmatter "${key}" contains ": " but is not quoted, so YAML reads it as a nested ` +
-          `key and the build fails. Wrap it in double quotes: ${key}: "${value}"`
+          `key and the build fails. Wrap it in double quotes: ${key}: "${value}"`,
       )
     }
     if (data.date && !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
@@ -177,7 +180,7 @@ export function lint(corpus) {
           where,
           `wrong locale prefix for a "${locale}" post: ${href} - expected ` +
             (expectedPrefix ? `"${expectedPrefix}/…"` : 'no locale prefix ("/blog/…")') +
-            (prefix ? `, not "${prefix}/…"` : ' (prefix missing)')
+            (prefix ? `, not "${prefix}/…"` : ' (prefix missing)'),
         )
         continue
       }
@@ -205,7 +208,7 @@ export function lint(corpus) {
       err(
         where,
         `${internalBlogLinks} internal blog link(s), at least ${floor} required - ` +
-          'orphan posts are what this rule exists to prevent'
+          'orphan posts are what this rule exists to prevent',
       )
     }
   }
@@ -215,13 +218,16 @@ export function lint(corpus) {
       err(
         `${CONFIG.paths.posts_dir}/*/${slug}.md`,
         `missing translation: no file for locale(s) ${missing.join(', ')} - ` +
-          'both locales use the identical filename'
+          'both locales use the identical filename',
       )
     }
     for (const [slug, present] of corpus.bySlug) {
       const dates = [...new Set(present.map((p) => p.data?.date).filter(Boolean))]
       if (dates.length > 1) {
-        warn(`${CONFIG.paths.posts_dir}/*/${slug}.md`, `locales carry different dates: ${dates.join(' vs ')}`)
+        warn(
+          `${CONFIG.paths.posts_dir}/*/${slug}.md`,
+          `locales carry different dates: ${dates.join(' vs ')}`,
+        )
       }
     }
   }
@@ -246,7 +252,7 @@ export function assets(corpus) {
       }
       if (!src.startsWith('/')) {
         errors.push(
-          `${where}: image path must start with "/" (served from ${CONFIG.paths.public_dir}/) - ${src}`
+          `${where}: image path must start with "/" (served from ${CONFIG.paths.public_dir}/) - ${src}`,
         )
         continue
       }
@@ -259,7 +265,7 @@ export function assets(corpus) {
       if (!existsCaseExact(src)) {
         errors.push(
           `${where}: image path differs in case from the file on disk, which 404s on Linux - ` +
-            `${CONFIG.paths.public_dir}${src}`
+            `${CONFIG.paths.public_dir}${src}`,
         )
         continue
       }
@@ -274,7 +280,7 @@ export function assets(corpus) {
       if (!size) {
         errors.push(
           `${where}: SVG has no readable viewBox, so it does not scale responsively inside the ` +
-            `fluid content column - ${CONFIG.paths.public_dir}${src}. Add viewBox="0 0 <w> <h>".`
+            `fluid content column - ${CONFIG.paths.public_dir}${src}. Add viewBox="0 0 <w> <h>".`,
         )
         continue
       }
@@ -285,7 +291,7 @@ export function assets(corpus) {
         warnings.push(
           `${where}: SVG aspect ratio ${ratio.toFixed(2)}:1 (${size.width}x${size.height}) is ` +
             `unusual for the ${CONFIG.assets.prose_width_px}px-wide prose column - ` +
-            `${CONFIG.paths.public_dir}${src}`
+            `${CONFIG.paths.public_dir}${src}`,
         )
       }
     }

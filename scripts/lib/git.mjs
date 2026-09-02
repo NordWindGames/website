@@ -23,7 +23,11 @@ const FIELD_SEP = '\x1f'
 
 async function git(cwd, args) {
   try {
-    const { stdout } = await run('git', args, { cwd, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 })
+    const { stdout } = await run('git', args, {
+      cwd,
+      encoding: 'utf8',
+      maxBuffer: 32 * 1024 * 1024,
+    })
     return stdout
   } catch {
     return null // not a git repo, no commits yet, or git is missing
@@ -43,14 +47,16 @@ export function reposToScan() {
 
   for (const repo of declared) {
     if (!repo.path) continue
-    if (existsSync(repo.path)) repos.push({ id: repo.id, label: repo.label ?? repo.id, path: repo.path })
+    if (existsSync(repo.path))
+      repos.push({ id: repo.id, label: repo.label ?? repo.id, path: repo.path })
     else missing.push(repo.path)
   }
 
   return { repos, configured: declared.length > 0, missing }
 }
 
-const commitType = (subject) => subject.match(/^([a-z]+)(?:\([^)]*\))?!?:\s*/i)?.[1]?.toLowerCase() ?? 'other'
+const commitType = (subject) =>
+  subject.match(/^([a-z]+)(?:\([^)]*\))?!?:\s*/i)?.[1]?.toLowerCase() ?? 'other'
 const topDir = (path) => (path.includes('/') ? path.split('/')[0] : '(root)')
 
 function parseCommits(raw) {
@@ -68,7 +74,11 @@ function parseCommits(raw) {
         date,
         subject,
         body: body.join(FIELD_SEP).trim(),
-        files: block.slice(cut + 1).split('\n').map((f) => f.trim()).filter(Boolean),
+        files: block
+          .slice(cut + 1)
+          .split('\n')
+          .map((f) => f.trim())
+          .filter(Boolean),
       }
     })
 }

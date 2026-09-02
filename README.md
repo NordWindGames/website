@@ -9,13 +9,13 @@ Erreichbar unter `https://nordwind.games`.
 
 Alle Befehle werden im Projekt-Root ausgeführt:
 
-| Command             | Aktion                                          |
+| Command             | Aktion                                           |
 | :------------------ | :----------------------------------------------- |
-| `npm install`        | Installiert Abhängigkeiten                       |
-| `npm run dev`         | Startet den Dev-Server auf `localhost:4321`      |
-| `npm run build`       | Baut die Produktions-Site nach `./dist/`         |
-| `npm run preview`     | Zeigt den Build lokal an, vor dem Deploy         |
-| `npm run astro ...`   | Astro-CLI-Befehle wie `astro add`, `astro check` |
+| `npm install`       | Installiert Abhängigkeiten                       |
+| `npm run dev`       | Startet den Dev-Server auf `localhost:4321`      |
+| `npm run build`     | Baut die Produktions-Site nach `./dist/`         |
+| `npm run preview`   | Zeigt den Build lokal an, vor dem Deploy         |
+| `npm run astro ...` | Astro-CLI-Befehle wie `astro add`, `astro check` |
 
 ## Workflow
 

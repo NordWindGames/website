@@ -8,7 +8,7 @@ description: Periodic devlog idea generation. Reads our own git history plus the
 `docs/blog.md` describes the pipeline and why the human gate is not optional.
 
 The failure mode this procedure exists to prevent: **a devlog about other people's devlogs.** The
-reference blogs teach *how* to write a devlog. They are not a topic supply. **Topics come from our
+reference blogs teach _how_ to write a devlog. They are not a topic supply. **Topics come from our
 own development** — the `activity` section of `scan.json`.
 
 ## 1. Scan (deterministic, no tokens)
@@ -34,7 +34,7 @@ Read the source table it prints:
 - If it says `repos.local.json is not set up`, this is website-repo activity only — **say that in
   your report** rather than treating it as the whole picture. The game repo is the one that matters.
 
-An empty delta from the reference blogs is normal; several publish rarely. Thin *own* activity is
+An empty delta from the reference blogs is normal; several publish rarely. Thin _own_ activity is
 the informative signal: development was slow, and a devlog can say so honestly.
 
 ## 2. Post ideas — grounded in our own work
@@ -79,12 +79,12 @@ auto-decide a practice.**
 
 Four axes, integers 1–5, **higher is always better on all four** — none inverted:
 
-| Axis | 1 | 5 |
-| --- | --- | --- |
-| `interest` | only I care | a stranger would read this |
-| `evidence` | nothing to show yet | screenshots, numbers or code ready now |
-| `ease` | needs work not done yet | writable from what exists |
-| `durability` | irrelevant in a month | still worth reading in two years |
+| Axis         | 1                       | 5                                      |
+| ------------ | ----------------------- | -------------------------------------- |
+| `interest`   | only I care             | a stranger would read this             |
+| `evidence`   | nothing to show yet     | screenshots, numbers or code ready now |
+| `ease`       | needs work not done yet | writable from what exists              |
+| `durability` | irrelevant in a month   | still worth reading in two years       |
 
 **Write the four integers only.** Do not compute a total — the weighting lives in
 `blog.config.json`'s `scoring.weights` and the script does the arithmetic.

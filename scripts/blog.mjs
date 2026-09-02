@@ -78,7 +78,9 @@ async function status(argv) {
   const snapshot = readIdeas('scan.json')
   const backlog = backlogLib.load()
 
-  console.log(`posts:   ${corpus.bySlug.size} on disk (${corpus.files.length} files across ${corpus.locales.join(', ') || 'no locales'})`)
+  console.log(
+    `posts:   ${corpus.bySlug.size} on disk (${corpus.files.length} files across ${corpus.locales.join(', ') || 'no locales'})`,
+  )
   for (const m of corpus.missingTranslation) {
     console.log(`  warn   ${m.slug} exists only in ${m.has.join(', ')}`)
   }
@@ -90,13 +92,17 @@ async function status(argv) {
     console.log(
       `scan:    ${snapshot.generated} (${age === 0 ? 'today' : `${age}d ago`}), ` +
         `${snapshot.new.length} new reference post(s)` +
-        (snapshot.complete ? '' : ', INCOMPLETE')
+        (snapshot.complete ? '' : ', INCOMPLETE'),
     )
     for (const s of snapshot.sources.filter((s) => !s.ok)) {
-      console.log(`  FAIL   ${s.id} ${s.found}/${s.expected_min} - inspect with: node scripts/blog.mjs scan --probe`)
+      console.log(
+        `  FAIL   ${s.id} ${s.found}/${s.expected_min} - inspect with: node scripts/blog.mjs scan --probe`,
+      )
     }
     const commits = (snapshot.activity?.repos ?? []).reduce((n, r) => n + r.commit_count, 0)
-    console.log(`         ${commits} commit(s) of our own since ${snapshot.activity?.since ?? 'the beginning'}`)
+    console.log(
+      `         ${commits} commit(s) of our own since ${snapshot.activity?.since ?? 'the beginning'}`,
+    )
   }
 
   if (!backlog) {
@@ -106,7 +112,11 @@ async function status(argv) {
     for (const i of backlog.items) counts[i.status] = (counts[i.status] ?? 0) + 1
     console.log(
       `backlog: ${backlog.items.length} item(s)` +
-        (Object.keys(counts).length ? ` - ${Object.entries(counts).map(([s, n]) => `${s} ${n}`).join(', ')}` : '')
+        (Object.keys(counts).length
+          ? ` - ${Object.entries(counts)
+              .map(([s, n]) => `${s} ${n}`)
+              .join(', ')}`
+          : ''),
     )
     for (const item of backlog.items.filter((i) => i.status === 'blocked')) {
       const age = item.blocked_since ? `${daysSince(item.blocked_since)}d` : '?'
@@ -114,7 +124,9 @@ async function status(argv) {
     }
   }
 
-  const approved = (backlog?.items ?? []).filter((i) => i.kind !== 'practice' && i.status === 'approved')
+  const approved = (backlog?.items ?? []).filter(
+    (i) => i.kind !== 'practice' && i.status === 'approved',
+  )
   console.log('')
   if (approved.length) {
     console.log(`next:    ${approved.length} approved and unwritten. Write one: /blog-write`)
@@ -149,10 +161,12 @@ async function scan(argv) {
       const verdict = r.status === 200 ? 'ok  ' : r.status ? `${r.status} ` : 'err '
       console.log(
         `  ${verdict} ${r.id.padEnd(16)} ${r.ua.padEnd(8)} ${r.label.padEnd(9)} ` +
-          `${r.bytes ? `${Math.round(r.bytes / 1024)}kb` : r.error ?? ''}`
+          `${r.bytes ? `${Math.round(r.bytes / 1024)}kb` : (r.error ?? '')}`,
       )
     }
-    console.log(`\nprobe finished in ${((Date.now() - started) / 1000).toFixed(1)}s. Nothing written.`)
+    console.log(
+      `\nprobe finished in ${((Date.now() - started) / 1000).toFixed(1)}s. Nothing written.`,
+    )
     return 0
   }
 
@@ -170,7 +184,8 @@ async function scan(argv) {
     refs: !args.has('no-refs'),
   })
 
-  if (migrated) console.log('migrated the old seen.json into state.json (seen.json left in place)\n')
+  if (migrated)
+    console.log('migrated the old seen.json into state.json (seen.json left in place)\n')
 
   banner(`sources (${mode})`)
   if (sourcesMissing) {
@@ -181,14 +196,15 @@ async function scan(argv) {
   for (const s of snapshot.sources) {
     console.log(
       `  ${s.ok ? 'pass' : 'FAIL'}  ${s.id.padEnd(16)} ${String(s.found).padStart(3)}/${s.expected_min}` +
-        (s.cached ? '  cached (304, not refetched)' : '')
+        (s.cached ? '  cached (304, not refetched)' : ''),
     )
     for (const a of s.attempts.filter((a) => a.error || a.status >= 400 || a.status === 0)) {
       console.log(`          ${a.status || 'err'}  ${a.url}${a.error ? ` - ${a.error}` : ''}`)
     }
     if (s.hint) {
       console.log(`          pathFilter matched nothing. Available path shapes:`)
-      for (const [prefix, n] of s.hint) console.log(`            ${String(n).padStart(4)}  ${prefix}`)
+      for (const [prefix, n] of s.hint)
+        console.log(`            ${String(n).padStart(4)}  ${prefix}`)
     }
   }
 
@@ -205,34 +221,39 @@ async function scan(argv) {
     `\n  extracted the shape of ${ex.items.length - failedExtracts}/${ex.requested}` +
       (failedExtracts ? ` (${failedExtracts} failed)` : '') +
       // Never let a capped run read as a complete one.
-      (ex.skipped ? `, ${ex.skipped} NOT extracted (raise --extract to cover them)` : '')
+      (ex.skipped ? `, ${ex.skipped} NOT extracted (raise --extract to cover them)` : ''),
   )
 
   banner('our own development')
   const act = snapshot.activity
   console.log(`  since ${act.since ?? 'the beginning (no published post yet)'}`)
   for (const repo of act.repos) {
-    console.log(`  ${repo.label.padEnd(16)} ${String(repo.commit_count).padStart(4)} commit(s)` +
-      (repo.span ? `  ${repo.span.from} … ${repo.span.to}` : '') +
-      (repo.tags.length ? `  tags: ${repo.tags.map((t) => t.name).join(', ')}` : ''))
+    console.log(
+      `  ${repo.label.padEnd(16)} ${String(repo.commit_count).padStart(4)} commit(s)` +
+        (repo.span ? `  ${repo.span.from} … ${repo.span.to}` : '') +
+        (repo.tags.length ? `  tags: ${repo.tags.map((t) => t.name).join(', ')}` : ''),
+    )
     for (const c of repo.clusters.slice(0, 6)) {
       const withBody = c.commits.filter((x) => x.comment).length
       console.log(
         `      ${c.type.padEnd(10)} ${String(c.commit_count).padStart(3)}  ` +
-          `${withBody}/${c.commit_count} with a commit body  ${c.directories.slice(0, 3).join(', ')}`
+          `${withBody}/${c.commit_count} with a commit body  ${c.directories.slice(0, 3).join(', ')}`,
       )
     }
   }
   if (!act.game_repo_configured) {
     console.log(
       '\n  repos.local.json is not set up, so this is website-repo activity only.\n' +
-        '  Copy content/ideas/repos.example.json and point it at the game repo.'
+        '  Copy content/ideas/repos.example.json and point it at the game repo.',
     )
   }
-  for (const p of act.unreachable_paths) console.log(`  warn  declared repo path does not exist: ${p}`)
+  for (const p of act.unreachable_paths)
+    console.log(`  warn  declared repo path does not exist: ${p}`)
 
   banner('our own posts')
-  console.log(`  ${snapshot.posts.unique_slugs} post(s), ${snapshot.posts.total_files} file(s) across ${snapshot.posts.locales.join(', ') || 'no locales'}`)
+  console.log(
+    `  ${snapshot.posts.unique_slugs} post(s), ${snapshot.posts.total_files} file(s) across ${snapshot.posts.locales.join(', ') || 'no locales'}`,
+  )
   for (const m of snapshot.posts.missing_translation) {
     console.log(`  warn  ${m.slug} exists only in ${m.has.join(', ')}`)
   }
@@ -245,7 +266,7 @@ async function scan(argv) {
       '\nINCOMPLETE: content/ideas/sources.local.json does not exist, so no reference blog was\n' +
         'looked at. That is not "nothing new" - it is a scan that could not look. Copy\n' +
         'content/ideas/sources.example.json to sources.local.json and fill in the real sources,\n' +
-        'or pass --no-refs if you only wanted our own activity.'
+        'or pass --no-refs if you only wanted our own activity.',
     )
     return 1
   }
@@ -254,7 +275,7 @@ async function scan(argv) {
       `\nINCOMPLETE: ${failed.map((f) => `${f.id} ${f.found}/${f.expected_min}`).join(', ')}\n` +
         'A source under its expected_min changed its structure. Inspect it with --probe and fix\n' +
         'the endpoint or pathFilter. Never lower expected_min to clear this - that is how a\n' +
-        'silently broken source starts looking like a quiet week.'
+        'silently broken source starts looking like a quiet week.',
     )
     return 1
   }
@@ -283,8 +304,15 @@ async function extract(argv) {
 }
 
 const MARK = {
-  new: ' ', approved: '+', blocked: '!', in_progress: '>', drafted: '~', published: '*',
-  rejected: 'x', adopted: '+', deferred: '?',
+  new: ' ',
+  approved: '+',
+  blocked: '!',
+  in_progress: '>',
+  drafted: '~',
+  published: '*',
+  rejected: 'x',
+  adopted: '+',
+  deferred: '?',
 }
 
 /** Load the backlog and the corpus, or explain why not. */
@@ -318,7 +346,9 @@ async function idea(argv) {
       .filter((i) => i.kind !== 'practice' && i.status === 'approved')
       .sort((a, b) => (lib.total(b) ?? 0) - (lib.total(a) ?? 0))
     if (!ready.length) {
-      console.log('nothing approved. That is the human gate working, not an obstacle to route around.')
+      console.log(
+        'nothing approved. That is the human gate working, not an obstacle to route around.',
+      )
       return 0
     }
     console.log(JSON.stringify({ ...ready[0], score_total: lib.total(ready[0]) }, null, 2))
@@ -354,17 +384,21 @@ async function idea(argv) {
     console.log(
       ` ${MARK[item.status] ?? '?'} ${(item.id ?? '?').padEnd(17)} ` +
         `${score === null ? '    ' : score.toFixed(2)}  ${(item.type ?? item.applies_to ?? '-').padEnd(10)} ` +
-        `${item.working_title ?? item.observation ?? '(untitled)'}`
+        `${item.working_title ?? item.observation ?? '(untitled)'}`,
     )
     if (item.status === 'blocked') {
       const { daysSince } = await import('./lib/ctx.mjs')
       const age = item.blocked_since ? `${daysSince(item.blocked_since)}d` : '?'
-      console.log(`     blocked ${age}: ${item.blocker}${item.followup_question ? ` - ask: ${item.followup_question}` : ''}`)
+      console.log(
+        `     blocked ${age}: ${item.blocker}${item.followup_question ? ` - ask: ${item.followup_question}` : ''}`,
+      )
     }
   }
   console.log(
     `\n${items.length} shown of ${backlog.items.length}. ` +
-      Object.entries(counts).map(([s, n]) => `${s} ${n}`).join(', ')
+      Object.entries(counts)
+        .map(([s, n]) => `${s} ${n}`)
+        .join(', '),
   )
   return 0
 }
@@ -392,7 +426,7 @@ async function add(argv) {
   }
   incoming = Array.isArray(incoming) ? incoming : [incoming]
 
-  const [lib, { readCorpus, }, ctxLib] = await Promise.all([
+  const [lib, { readCorpus }, ctxLib] = await Promise.all([
     import('./lib/backlog.mjs'),
     import('./lib/posts.mjs'),
     import('./lib/ctx.mjs'),
@@ -430,7 +464,9 @@ async function add(argv) {
   for (const item of added) {
     console.log(`added ${item.id}  ${item.working_title ?? item.observation ?? ''}`)
   }
-  console.log(`\n${added.length} item(s) added at status "new". Review with: node scripts/blog.mjs idea`)
+  console.log(
+    `\n${added.length} item(s) added at status "new". Review with: node scripts/blog.mjs idea`,
+  )
   return 0
 }
 
@@ -546,13 +582,15 @@ async function check(argv) {
       console.log('\ninbound blog links per slug:')
       for (const slug of slugs) {
         const n = inbound.get(slug)?.size ?? 0
-        console.log(`  ${String(n).padStart(2)}  ${slug}${n === 0 ? '   <- orphan, nothing links here' : ''}`)
+        console.log(
+          `  ${String(n).padStart(2)}  ${slug}${n === 0 ? '   <- orphan, nothing links here' : ''}`,
+        )
       }
       const orphans = slugs.filter((s) => inbound.get(s)?.size === 0)
       if (orphans.length && slugs.length > 1) {
         console.log(
           `\n${orphans.length} of ${slugs.length} slugs have no inbound link. A new post should ` +
-            'earn one from an existing post, not only hand them out.'
+            'earn one from an existing post, not only hand them out.',
         )
       }
     }
@@ -560,7 +598,7 @@ async function check(argv) {
     console.log(
       `\nconventions: ${corpus.files.length} file(s) across ${corpus.locales.length} locale(s), ` +
         `${errors.length} error(s), ${warnings.length} warning(s), min_internal_links=${floor} ` +
-        `(${corpus.bySlug.size} post(s) on disk)`
+        `(${corpus.bySlug.size} post(s) on disk)`,
     )
     results.push({ name: 'conventions', errors, warnings })
   }
@@ -571,7 +609,7 @@ async function check(argv) {
     report(errors, warnings)
     console.log(
       `\nimages: ${checked} image reference(s) across ${corpus.locales.length} locale(s), ` +
-        `${errors.length} error(s), ${warnings.length} warning(s)`
+        `${errors.length} error(s), ${warnings.length} warning(s)`,
     )
     results.push({ name: 'images', errors, warnings })
   }
@@ -588,7 +626,7 @@ async function check(argv) {
       report(errors, warnings)
       console.log(
         `\nbacklog: ${backlog.items.length} item(s), ${errors.length} error(s), ` +
-          `${warnings.length} warning(s)`
+          `${warnings.length} warning(s)`,
       )
       results.push({ name: 'backlog', errors, warnings })
     }
@@ -597,7 +635,9 @@ async function check(argv) {
   const spread = gates.distribution(corpus)
   if (spread) {
     banner('corpus distribution (reported, not enforced)')
-    console.log(`  words:  min ${spread.words.min}  median ${spread.words.median}  max ${spread.words.max}`)
+    console.log(
+      `  words:  min ${spread.words.min}  median ${spread.words.median}  max ${spread.words.max}`,
+    )
     console.log(`  H2:     min ${spread.h2.min}  median ${spread.h2.median}  max ${spread.h2.max}`)
     console.log('\nSet a real band in blog.config.json once these numbers mean something.')
   }
@@ -612,7 +652,7 @@ async function check(argv) {
   console.log(
     failed > 0
       ? `\n${failed} gate(s) failed.${strict ? ' (--strict: warnings count as errors)' : ''}`
-      : '\nblog check passed. Still owed by hand: a human reading the post.'
+      : '\nblog check passed. Still owed by hand: a human reading the post.',
   )
   return failed > 0 ? 1 : 0
 }

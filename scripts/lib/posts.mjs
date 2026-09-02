@@ -98,7 +98,7 @@ export function readCorpus() {
   }
 
   const slugsByLocale = new Map(
-    locales.map((l) => [l, new Set(files.filter((f) => f.locale === l).map((f) => f.slug))])
+    locales.map((l) => [l, new Set(files.filter((f) => f.locale === l).map((f) => f.slug))]),
   )
 
   // Computed unconditionally; whether a gap is an error is require_pairing's business, not ours.
@@ -115,7 +115,10 @@ export function readCorpus() {
 
 /** Newest `date` across the corpus, or null when there is nothing published yet. */
 export function newestDate(corpus) {
-  const dates = corpus.files.map((f) => f.data?.date).filter(Boolean).sort()
+  const dates = corpus.files
+    .map((f) => f.data?.date)
+    .filter(Boolean)
+    .sort()
   return dates.length ? dates[dates.length - 1] : null
 }
 

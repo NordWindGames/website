@@ -59,7 +59,9 @@ function parseBody(method, res) {
   return {
     entries,
     // Sitemap indexes are not followed. Saying so beats reporting an empty source.
-    note: children.length ? `sitemap index: ${children.length} child sitemap(s) not followed` : null,
+    note: children.length
+      ? `sitemap index: ${children.length} child sitemap(s) not followed`
+      : null,
   }
 }
 
@@ -172,7 +174,7 @@ export async function probe(sources) {
       const res = await fetchText(job.endpoint, { ua: job.ua, userAgent: CONFIG.brand.user_agent })
       return { ...job, status: res.status, error: res.error ?? null, bytes: res.body.length }
     },
-    { hostOf: (job) => new URL(job.endpoint).host }
+    { hostOf: (job) => new URL(job.endpoint).host },
   )
 
   return results.sort((a, b) => a.id.localeCompare(b.id) || a.endpoint.localeCompare(b.endpoint))
@@ -203,7 +205,7 @@ export async function scan({ mode = 'delta', extract = 20, refs = true } = {}) {
   const sourcesMissing = refs && !sourcesFile
   const active = refs ? (sourcesFile?.sources ?? []).filter((s) => s.enabled !== false) : []
   const discovered = await Promise.all(
-    active.map((source) => discover(source, { mode, state, revalidateBefore }))
+    active.map((source) => discover(source, { mode, state, revalidateBefore })),
   )
   // Collected first, then sorted: in parallel, four sources' logs would otherwise interleave.
   discovered.sort((a, b) => a.id.localeCompare(b.id))
@@ -221,7 +223,8 @@ export async function scan({ mode = 'delta', extract = 20, refs = true } = {}) {
 
   // A baseline exists to seed `seen`, not to be read - extracting 282 URLs would be pointless.
   const wantExtract = mode === 'delta' && extract > 0 ? fresh.slice(0, extract) : []
-  const skippedExtract = mode === 'delta' ? Math.max(0, fresh.length - wantExtract.length) : fresh.length
+  const skippedExtract =
+    mode === 'delta' ? Math.max(0, fresh.length - wantExtract.length) : fresh.length
 
   const extracted = await pool(
     wantExtract.map((p) => p.url),
@@ -229,7 +232,7 @@ export async function scan({ mode = 'delta', extract = 20, refs = true } = {}) {
       const res = await fetchText(url, { ua: 'browser', userAgent: CONFIG.brand.user_agent })
       if (!res.ok) return { url, error: res.error ?? `HTTP ${res.status}` }
       return { url, ...articleSkeleton(res.body) }
-    }
+    },
   )
 
   // State: remember validators always, and URLs on any mode that is meant to move the waterline.
@@ -243,7 +246,9 @@ export async function scan({ mode = 'delta', extract = 20, refs = true } = {}) {
     }
   }
 
-  const failed = discovered.filter((s) => !s.ok).map((s) => ({ id: s.id, found: s.found, expected_min: s.expected_min }))
+  const failed = discovered
+    .filter((s) => !s.ok)
+    .map((s) => ({ id: s.id, found: s.found, expected_min: s.expected_min }))
   const complete = failed.length === 0 && activity.ok && !sourcesMissing
   state.last_scan = { at: today(), mode, complete, failed: failed.map((f) => f.id) }
 

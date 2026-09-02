@@ -66,7 +66,14 @@ export async function fetchText(url, options = {}) {
       })
 
       if (res.status === 304) {
-        return { ok: true, unchanged: true, status: 304, finalUrl: res.url, body: '', ...validators }
+        return {
+          ok: true,
+          unchanged: true,
+          status: 304,
+          finalUrl: res.url,
+          body: '',
+          ...validators,
+        }
       }
       if (!res.ok) {
         // A 5xx is a hiccup worth one retry; a 4xx is an answer.
@@ -162,7 +169,7 @@ export async function pool(items, worker, options = {}) {
               release()
             }
           }
-        })()
+        })(),
       )
     }
   }

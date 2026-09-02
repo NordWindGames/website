@@ -3,10 +3,5 @@
 
 export { initAnalytics } from './auto';
 export { setUserProperties, track } from './events';
-export type {
-	AnalyticsEventName,
-	AnalyticsEvents,
-	AnalyticsUserProperties,
-	Placement,
-} from './events';
+export type { AnalyticsEventName, AnalyticsEvents, AnalyticsUserProperties, Placement } from './events';
 export { isTagPresent } from './gtag';

@@ -9,9 +9,19 @@
  * unhandled entity into a space *after* handling five by name. One real decoder replaces both.
  */
 const ENTITIES = {
-  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
-  rsquo: '’', lsquo: '‘', ldquo: '“', rdquo: '”',
-  mdash: '—', ndash: '–', hellip: '…',
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+  rsquo: '’',
+  lsquo: '‘',
+  ldquo: '“',
+  rdquo: '”',
+  mdash: '—',
+  ndash: '–',
+  hellip: '…',
 }
 
 export const decodeEntities = (s) =>
@@ -30,7 +40,7 @@ export const stripTags = (html) =>
       .replace(/<script[\s\S]*?<\/script>/gi, ' ')
       .replace(/<style[\s\S]*?<\/style>/gi, ' ')
       .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
-      .replace(/<[^>]+>/g, ' ')
+      .replace(/<[^>]+>/g, ' '),
   )
     .replace(/\s+/g, ' ')
     .trim()
@@ -51,12 +61,15 @@ const attr = (tag, name) => {
  */
 export function parseSitemap(xml) {
   const isIndex = /<sitemapindex/i.test(xml)
-  const blocks = xml.match(isIndex ? /<sitemap[\s>][\s\S]*?<\/sitemap>/gi : /<url[\s>][\s\S]*?<\/url>/gi) ?? []
+  const blocks =
+    xml.match(isIndex ? /<sitemap[\s>][\s\S]*?<\/sitemap>/gi : /<url[\s>][\s\S]*?<\/url>/gi) ?? []
   const parsed = blocks
     .map((b) => ({ loc: innerTag(b, 'loc'), lastmod: innerTag(b, 'lastmod') }))
     .filter((e) => e.loc)
 
-  return isIndex ? { entries: [], children: parsed.map((e) => e.loc) } : { entries: parsed, children: [] }
+  return isIndex
+    ? { entries: [], children: parsed.map((e) => e.loc) }
+    : { entries: parsed, children: [] }
 }
 
 /**
@@ -68,15 +81,18 @@ export function parseSitemap(xml) {
  * baseline - hence `baseline_endpoint` in sources.local.json.
  */
 export function parseFeed(xml) {
-  const isAtom = /<feed[\s>]/i.test(xml) && /xmlns\s*=\s*["']http:\/\/www\.w3\.org\/2005\/Atom["']/i.test(xml)
-  const blocks = xml.match(isAtom ? /<entry[\s>][\s\S]*?<\/entry>/gi : /<item[\s>][\s\S]*?<\/item>/gi) ?? []
+  const isAtom =
+    /<feed[\s>]/i.test(xml) && /xmlns\s*=\s*["']http:\/\/www\.w3\.org\/2005\/Atom["']/i.test(xml)
+  const blocks =
+    xml.match(isAtom ? /<entry[\s>][\s\S]*?<\/entry>/gi : /<item[\s>][\s\S]*?<\/item>/gi) ?? []
 
   return blocks
     .map((block) => {
       let loc
       if (isAtom) {
         const link =
-          block.match(/<link\b[^>]*rel=["']alternate["'][^>]*>/i)?.[0] ?? block.match(/<link\b[^>]*>/i)?.[0]
+          block.match(/<link\b[^>]*rel=["']alternate["'][^>]*>/i)?.[0] ??
+          block.match(/<link\b[^>]*>/i)?.[0]
         loc = link ? attr(link, 'href') : innerTag(block, 'link')
       } else {
         loc = innerTag(block, 'link')
@@ -134,10 +150,10 @@ const meta = (html, ...names) => {
   for (const name of names) {
     const m =
       html.match(
-        new RegExp(`<meta[^>]+(?:name|property)=["']${name}["'][^>]*content=["']([^"']*)["']`, 'i')
+        new RegExp(`<meta[^>]+(?:name|property)=["']${name}["'][^>]*content=["']([^"']*)["']`, 'i'),
       ) ??
       html.match(
-        new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]*(?:name|property)=["']${name}["']`, 'i')
+        new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]*(?:name|property)=["']${name}["']`, 'i'),
       )
     if (m) return stripTags(m[1])
   }

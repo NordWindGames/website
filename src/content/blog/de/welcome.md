@@ -1,6 +1,6 @@
 ---
 title: Hallo aus dem Norden
-description: "Warum es diesen Devlog gibt, was HoldStrong: The Last Tower ist, und worauf ich mich festlege."
+description: 'Warum es diesen Devlog gibt, was HoldStrong: The Last Tower ist, und worauf ich mich festlege.'
 date: 2026-08-25
 ---
 
