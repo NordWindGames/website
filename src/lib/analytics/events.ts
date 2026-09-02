@@ -15,7 +15,8 @@ export type Placement = 'header' | 'hero' | 'nav' | 'section' | 'footer' | 'over
 
 export type AnalyticsEvents = {
 	// ---------------------------------------------------------------------
-	// Wired up today (studio landing page)
+	// Site-wide. Emitted by the declarative layer in auto.ts, so any page that
+	// renders <Analytics /> gets these without writing a listener.
 	// ---------------------------------------------------------------------
 
 	/** Any primary/secondary call to action was clicked. */
@@ -68,10 +69,7 @@ export type AnalyticsEvents = {
 	};
 
 	// ---------------------------------------------------------------------
-	// Defined for the HoldStrong demo page (feature/holdstrong-landing-page).
-	// Not emitted from this branch yet — the call sites land with that page.
-	// Declared here so the funnel, the GA4 key events and the custom
-	// dimensions can be configured in the property up front.
+	// HoldStrong landing page.
 	// ---------------------------------------------------------------------
 
 	/** Steam wishlist intent — the highest-value pre-launch signal there is. */
@@ -99,27 +97,51 @@ export type AnalyticsEvents = {
 		attempt: number;
 	};
 
-	/** Signup rejected. No email or raw input is ever sent — only the reason. */
+	/**
+	 * Signup rejected. No email or raw input is ever sent — only the reason.
+	 *
+	 * The three values are the three ways it can fail, and they point at
+	 * different owners: 'invalid_email' is the visitor's typo (caught in the
+	 * browser, nothing left the page), 'network_error' means the request never
+	 * arrived — offline, timed out, or killed by an extension — and 'rejected'
+	 * means it arrived and the storage endpoint refused it, which is ours to fix.
+	 *
+	 * A duplicate address is deliberately not in here. The endpoint recognises
+	 * one and answers ok: the visitor is already signed up, which is a success
+	 * for them, not an error.
+	 */
 	playtest_signup_error: {
 		form_id: string;
-		error_reason: 'invalid_email' | 'duplicate' | 'network_error' | 'unknown';
+		error_reason: 'invalid_email' | 'network_error' | 'rejected';
 	};
 
-	/** Which of the three gods pulls attention — a marketing/design signal. */
+	/**
+	 * Which of the three gods pulls attention — a marketing/design signal.
+	 *
+	 * Odin is not among them: he grants no orb, so he has no card on the page.
+	 */
 	god_card_engage: {
-		god_name: 'odin' | 'thor' | 'loki';
+		god_name: 'thor' | 'loki' | 'tyr';
 		engage_type: 'dwell' | 'click';
-	};
-
-	/** A screenshot/gallery slot was opened. */
-	gallery_item_click: {
-		gallery_slot: string;
-		slot_index: number;
 	};
 
 	/** Countdown block seen, with how far out the demo still is. */
 	countdown_view: {
 		days_to_demo: number;
+	};
+
+	// ---------------------------------------------------------------------
+	// Declared but never emitted yet: nothing on the page carries them. The
+	// gallery is placeholder blocks rather than images, there is no trailer, no
+	// share button, and the demo ships on 16 October. They are typed up front
+	// because GA4 collects nothing retroactively — a key event or custom
+	// dimension only gathers data from the day it was registered.
+	// ---------------------------------------------------------------------
+
+	/** A screenshot/gallery slot was opened. */
+	gallery_item_click: {
+		gallery_slot: string;
+		slot_index: number;
 	};
 
 	/** Trailer playback milestones once a trailer exists. */

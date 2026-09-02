@@ -8,6 +8,7 @@
 //      data-analytics-location="hero">…</a>
 //   <a data-analytics="outbound" data-analytics-id="discord"
 //      data-analytics-location="footer" href="https://discord.com/…">…</a>
+//   <a data-analytics="wishlist" data-analytics-location="nav">…</a>
 //   <section data-analytics-section="gods">…</section>
 //
 // On top of that this module always reports scroll depth and a per-page-view
@@ -152,6 +153,16 @@ function bindClicks(): void {
 
 			const kind = el.getAttribute('data-analytics');
 			const id = el.getAttribute('data-analytics-id');
+
+			// Ahead of the id check: the store is the whole identity of a wishlist
+			// button, so there is nothing an id would add beyond a second place to
+			// misspell it.
+			if (kind === 'wishlist') {
+				current.interactions += 1;
+				track('wishlist_click', { store: 'steam', placement: placementOf(el) });
+				return;
+			}
+
 			if (!id) return;
 
 			current.interactions += 1;

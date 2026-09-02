@@ -1,4 +1,5 @@
 ---
+import Analytics from '../components/Analytics.astro';
 import { DISCORD_INVITE } from '../lib/social';
 ---
 
@@ -20,6 +21,7 @@ import { DISCORD_INVITE } from '../lib/social';
 			href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;600;800&family=Barlow+Condensed:wght@400;500;600&family=Barlow:wght@400;500;600&display=swap"
 			rel="stylesheet"
 		/>
+		<Analytics />
 	</head>
 	<body>
 		<div class="hs-page">
@@ -29,12 +31,37 @@ import { DISCORD_INVITE } from '../lib/social';
 				<div class="hs-hero-overlay hs-hero-overlay-2"></div>
 
 				<header class="hs-header">
-					<a href="/" class="hs-brand">HOLD<span class="accent">STRONG</span></a>
+					<a
+						href="/"
+						class="hs-brand"
+						data-analytics="cta"
+						data-analytics-id="studio_home"
+						data-analytics-location="header"
+						data-analytics-label="HoldStrong wordmark">HOLD<span class="accent">STRONG</span></a
+					>
 					<nav class="hs-nav" aria-label="Sections">
-						<a href="#gods">The Gods</a>
-						<a href="#gallery">Gallery</a>
-						<a href="#demo">Playtest</a>
-						<a href="#" class="hs-nav-cta">Wishlist on Steam</a>
+						<a href="#gods" data-analytics="cta" data-analytics-id="jump_gods" data-analytics-location="nav"
+							>The Gods</a
+						>
+						<a
+							href="#gallery"
+							data-analytics="cta"
+							data-analytics-id="jump_gallery"
+							data-analytics-location="nav">Gallery</a
+						>
+						<a
+							href="#demo"
+							data-analytics="cta"
+							data-analytics-id="jump_playtest"
+							data-analytics-location="nav">Playtest</a
+						>
+						<!-- TODO(nordwind): no Steam page exists yet, so this stays href="#". The click is
+						     still tracked on purpose - wishlist intent is the strongest pre-launch signal
+						     there is, and it is worth measuring before the store page can absorb it. Point
+						     this and the two below at the real URL as soon as there is one. -->
+						<a href="#" class="hs-nav-cta" data-analytics="wishlist" data-analytics-location="nav"
+							>Wishlist on Steam</a
+						>
 					</nav>
 				</header>
 
@@ -46,8 +73,16 @@ import { DISCORD_INVITE } from '../lib/social';
 					</p>
 
 					<div class="hs-cta-row">
-						<a href="#demo" class="hs-cta-primary">Join the Playtest</a>
-						<a href="#" class="hs-cta-secondary">Add to wishlist</a>
+						<a
+							href="#demo"
+							class="hs-cta-primary"
+							data-analytics="cta"
+							data-analytics-id="join_playtest"
+							data-analytics-location="hero">Join the Playtest</a
+						>
+						<a href="#" class="hs-cta-secondary" data-analytics="wishlist" data-analytics-location="hero"
+							>Add to wishlist</a
+						>
 					</div>
 
 					<div class="hs-tags">
@@ -58,7 +93,7 @@ import { DISCORD_INVITE } from '../lib/social';
 				</div>
 			</div>
 
-			<section class="hs-countdown">
+			<section class="hs-countdown" id="hs-countdown" data-analytics-section="countdown">
 				<div class="hs-countdown-inner">
 					<div>
 						<div class="hs-eyebrow hs-eyebrow-blue">The demo opens the gates in</div>
@@ -85,7 +120,7 @@ import { DISCORD_INVITE } from '../lib/social';
 				</div>
 			</section>
 
-			<section id="gods" class="hs-section">
+			<section id="gods" class="hs-section" data-analytics-section="gods">
 				<div class="hs-eyebrow hs-eyebrow-purple">Three orbs, one day of the endless battle</div>
 				<h2 class="hs-h2">The gods do not speak. They intervene.</h2>
 				<p class="hs-lead">
@@ -94,7 +129,7 @@ import { DISCORD_INVITE } from '../lib/social';
 				</p>
 
 				<div class="hs-gods-grid">
-					<div class="hs-god-card">
+					<div class="hs-god-card" data-god="thor">
 						<div class="hs-god-rune" style="color:#ff9d5c">ᚦ</div>
 						<div class="hs-god-epithet" style="color:#ff9d5c">The loudest help</div>
 						<div class="hs-god-name">Thor</div>
@@ -104,7 +139,7 @@ import { DISCORD_INVITE } from '../lib/social';
 						</p>
 						<div class="hs-god-perk">Orb · Chain lightning</div>
 					</div>
-					<div class="hs-god-card">
+					<div class="hs-god-card" data-god="loki">
 						<div class="hs-god-rune" style="color:#a271ff">ᚷ</div>
 						<div class="hs-god-epithet" style="color:#a271ff">He sends no one</div>
 						<div class="hs-god-name">Loki</div>
@@ -114,7 +149,7 @@ import { DISCORD_INVITE } from '../lib/social';
 						</p>
 						<div class="hs-god-perk">Orb · Static doppelgänger</div>
 					</div>
-					<div class="hs-god-card">
+					<div class="hs-god-card" data-god="tyr">
 						<div class="hs-god-rune" style="color:#7fd4ff">ᛏ</div>
 						<div class="hs-god-epithet" style="color:#7fd4ff">An old debt</div>
 						<div class="hs-god-name">Týr</div>
@@ -127,7 +162,7 @@ import { DISCORD_INVITE } from '../lib/social';
 				</div>
 			</section>
 
-			<section id="gallery" class="hs-gallery">
+			<section id="gallery" class="hs-gallery" data-analytics-section="gallery">
 				<div class="hs-section">
 					<div class="hs-gallery-head">
 						<h2 class="hs-h2">From the build</h2>
@@ -146,7 +181,7 @@ import { DISCORD_INVITE } from '../lib/social';
 				</div>
 			</section>
 
-			<section id="demo" class="hs-demo">
+			<section id="demo" class="hs-demo" data-analytics-section="playtest">
 				<div class="hs-demo-glow"></div>
 				<div class="hs-demo-inner">
 					<h2 class="hs-h2">Join the Playtest</h2>
@@ -214,9 +249,26 @@ import { DISCORD_INVITE } from '../lib/social';
 						>
 							Discord
 						</a>
-						<a href="#" class="hs-footer-link hs-footer-link-steam">Steam</a>
-						<a href="/blog" class="hs-footer-link hs-footer-link-devlog">Devlog</a>
-						<a href="/" class="hs-footer-link hs-footer-link-studio">Nordwind Games</a>
+						<a
+							href="#"
+							class="hs-footer-link hs-footer-link-steam"
+							data-analytics="wishlist"
+							data-analytics-location="footer">Steam</a
+						>
+						<a
+							href="/blog"
+							class="hs-footer-link hs-footer-link-devlog"
+							data-analytics="cta"
+							data-analytics-id="devlog"
+							data-analytics-location="footer">Devlog</a
+						>
+						<a
+							href="/"
+							class="hs-footer-link hs-footer-link-studio"
+							data-analytics="cta"
+							data-analytics-id="studio_home"
+							data-analytics-location="footer">Nordwind Games</a
+						>
 					</div>
 					<div class="hs-copyright">© 2026 · Made by Nordwind Games</div>
 				</div>
@@ -236,6 +288,8 @@ import { DISCORD_INVITE } from '../lib/social';
 				error: document.getElementById('hs-error')!,
 				success: document.getElementById('hs-success')!,
 				successEmail: document.getElementById('hs-success-email')!,
+				countdown: document.getElementById('hs-countdown')!,
+				godCards: Array.from(document.querySelectorAll<HTMLElement>('[data-god]')),
 			});
 		</script>
 	</body>

@@ -60,7 +60,7 @@ sie liegen auf `console.debug`, also im Log-Level **Verbose** des Konsolen-Filte
 Dazu kommen aus GA4 selbst: Gerät, Browser, OS, Auflösung, Land/Region/Stadt, Sprache,
 Traffic-Quelle/Medium/Kampagne.
 
-## Custom Events — jetzt aktiv
+## Custom Events — seitenübergreifend aktiv
 
 | Event             | Parameter                                                                                                       | Wofür                                                                                                                               |
 | :---------------- | :-------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
@@ -93,26 +93,57 @@ wäre sonst als 3-Sekunden-Besuch erfasst. Identische Folge-Summaries werden ver
 das `pagehide` direkt hinter einem `visibilitychange` (der normale Weg, einen Desktop-Tab
 zu schließen) erzeugt keine Dublette.
 
+## Custom Events — HoldStrong-Landingpage
+
+Aufrufstellen in [`src/pages/holdstrong.astro`](../src/pages/holdstrong.astro) (Attribute) und
+[`src/scripts/holdstrong.ts`](../src/scripts/holdstrong.ts) (alles, was sich nicht als Attribut
+ausdrücken lässt).
+
+| Event                     | Parameter                                       | Wofür                                                                               |
+| :------------------------ | :---------------------------------------------- | :---------------------------------------------------------------------------------- |
+| `wishlist_click`          | `store`, `placement`                            | **Key Event.** Steam-Wishlist-Absicht — das wichtigste Pre-Launch-Signal überhaupt. |
+| `playtest_signup_start`   | `form_id`                                       | Erster Fokus oder Tastendruck im E-Mail-Feld → Funnel-Einstieg.                     |
+| `playtest_signup_submit`  | `form_id`, `attempt`                            | Absenden versucht — auch bei ungültiger Eingabe.                                    |
+| `playtest_signup_success` | `form_id`, `time_to_convert_seconds`, `attempt` | **Key Event.** Anmeldung gespeichert.                                               |
+| `playtest_signup_error`   | `form_id`, `error_reason`                       | Woran Anmeldungen scheitern.                                                        |
+| `god_card_engage`         | `god_name`, `engage_type`                       | Welcher Gott Aufmerksamkeit zieht — Signal für Marketing-Assets und Priorisierung.  |
+| `countdown_view`          | `days_to_demo`                                  | Countdown gesehen, inkl. Abstand zum Demo-Termin.                                   |
+
+**`error_reason`** hat drei Werte, und sie zeigen auf unterschiedliche Verantwortliche:
+`invalid_email` ist der Tippfehler des Besuchers (im Browser abgefangen, nichts hat die Seite
+verlassen), `network_error` heißt die Anfrage kam nie an (offline, Timeout, Ad-Blocker), und
+`rejected` heißt sie kam an und der Endpunkt hat sie abgelehnt — das ist unser Fehler.
+Eine bereits eingetragene Adresse ist **kein** Fehlerfall: der Endpunkt erkennt sie und antwortet
+`ok`, der Besucher ist ja angemeldet.
+
+Das Formular trägt bewusst `novalidate`. Die native Constraint-Validierung des Browsers
+unterdrückt sonst das `submit`-Event komplett — dann läuft weder die eigene Fehlermeldung der
+Seite noch eines der Funnel-Events. `type="email"` und `required` bleiben am Feld, für die
+Mobil-Tastatur und für Screenreader.
+
+**`god_card_engage`** kennt zwei `engage_type`: `dwell` feuert einmal pro Karte und Seitenaufruf,
+sobald sie 2 Sekunden am Stück zu mindestens 60 % sichtbar war — schnelles Vorbeiscrollen zählt
+nicht. `click` feuert bei jedem Klick. `god_name` ist `thor`, `loki` oder `tyr`; Odin hat keine
+Karte, er vergibt keinen Orb.
+
+> **Offen:** Die drei Wishlist-Buttons zeigen noch auf `href="#"` — es gibt keine Steam-Seite.
+> `wishlist_click` feuert trotzdem, bewusst: der Klick ist das Signal, nicht das Ziel. Die Zahlen
+> stammen bis zum Steam-Launch also aus einem Button, der nichts tut.
+
 ## Custom Events — definiert, aber noch nicht gefeuert
 
-Diese Events stehen typisiert in [`src/lib/analytics/events.ts`](../src/lib/analytics/events.ts).
-Die Aufrufstellen landen mit der HoldStrong-Demo-Seite (`feature/holdstrong-landing-page`). Sie sind
-jetzt schon definiert, damit Key Events und Custom Dimensions in GA4 vorab konfiguriert werden können
-— GA4 sammelt rückwirkend **nichts**, was nicht vorher angelegt war.
+Diese Events stehen typisiert in [`src/lib/analytics/events.ts`](../src/lib/analytics/events.ts),
+haben aber nichts, woran sie hängen könnten: die Gallery besteht aus Platzhalter-Blöcken statt
+Bildern, einen Trailer gibt es nicht, einen Share-Button auch nicht, und die Demo erscheint erst
+am 16. Oktober. Sie sind trotzdem definiert, damit Key Events und Custom Dimensions in GA4 vorab
+angelegt werden können — GA4 sammelt rückwirkend **nichts**, was nicht vorher registriert war.
 
-| Event                     | Parameter                                       | Wofür                                                                                      |
-| :------------------------ | :---------------------------------------------- | :----------------------------------------------------------------------------------------- |
-| `wishlist_click`          | `store`, `placement`                            | **Key Event.** Steam-Wishlist-Absicht — das wichtigste Pre-Launch-Signal überhaupt.        |
-| `playtest_signup_start`   | `form_id`                                       | Erster Fokus/Tastendruck im E-Mail-Feld → Funnel-Einstieg.                                 |
-| `playtest_signup_submit`  | `form_id`, `attempt`                            | Absenden versucht (auch bei ungültiger Eingabe).                                           |
-| `playtest_signup_success` | `form_id`, `time_to_convert_seconds`, `attempt` | **Key Event.** Anmeldung akzeptiert.                                                       |
-| `playtest_signup_error`   | `form_id`, `error_reason`                       | Wo Anmeldungen scheitern (`invalid_email`, `duplicate`, `network_error`).                  |
-| `god_card_engage`         | `god_name`, `engage_type`                       | Welcher Gott zieht Aufmerksamkeit — Signal für Marketing-Assets und Feature-Priorisierung. |
-| `gallery_item_click`      | `gallery_slot`, `slot_index`                    | Welche Screenshots interessieren.                                                          |
-| `countdown_view`          | `days_to_demo`                                  | Countdown gesehen, inkl. Abstand zum Demo-Termin.                                          |
-| `trailer_progress`        | `video_title`, `percent_played`                 | Trailer-Abbruchquoten, sobald ein Trailer existiert.                                       |
-| `demo_download_click`     | `platform`                                      | Demo-Downloads pro Plattform ab Release.                                                   |
-| `share_click`             | `method`                                        | Teilen der Seite.                                                                          |
+| Event                 | Parameter                       | Wofür                                        |
+| :-------------------- | :------------------------------ | :------------------------------------------- |
+| `gallery_item_click`  | `gallery_slot`, `slot_index`    | Welche Screenshots interessieren.            |
+| `trailer_progress`    | `video_title`, `percent_played` | Trailer-Abbruchquoten, sobald es einen gibt. |
+| `demo_download_click` | `platform`                      | Demo-Downloads pro Plattform ab Release.     |
+| `share_click`         | `method`                        | Teilen der Seite.                            |
 
 ## User Properties (Custom Dimensions, user-scoped)
 
@@ -130,9 +161,10 @@ Werden einmal pro Seitenaufruf gesetzt. Sie beschreiben die _Umgebung_, nicht di
 Ohne diese Registrierung sind die Parameter in Reports nicht auswählbar:
 
 - **Custom Dimensions (event-scoped):** `cta_id`, `cta_location`, `link_id`, `link_location`,
-  `section_id`, `error_reason`, `god_name`, `placement`, `exit_reason`, `platform`
+  `section_id`, `error_reason`, `god_name`, `engage_type`, `form_id`, `store`, `placement`,
+  `exit_reason`, `platform`
 - **Custom Metrics:** `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`,
-  `interactions`, `time_to_convert_seconds`, `days_to_demo`, `summary_index`
+  `interactions`, `time_to_convert_seconds`, `days_to_demo`, `attempt`, `summary_index`
 - **Custom Dimensions (user-scoped):** `viewport_bucket`, `reduced_motion`, `color_scheme`,
   `touch_primary`
 - **Key Events:** `playtest_signup_success`, `wishlist_click`
@@ -158,6 +190,11 @@ import Analytics from '../components/Analytics.astro';
     data-analytics-id="discord"
     data-analytics-location="footer">Discord</a
   >
+
+  <!-- wishlist braucht keine data-analytics-id: der Store ist die ganze Identität. -->
+  <a href="https://store.steampowered.com/…" data-analytics="wishlist" data-analytics-location="nav">
+    Wishlist on Steam
+  </a>
 
   <section id="gods" data-analytics-section="gods">…</section>
 </body>
