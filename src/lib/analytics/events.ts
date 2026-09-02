@@ -125,11 +125,6 @@ export type AnalyticsEvents = {
 		engage_type: 'dwell' | 'click';
 	};
 
-	/** Countdown block seen, with how far out the demo still is. */
-	countdown_view: {
-		days_to_demo: number;
-	};
-
 	// ---------------------------------------------------------------------
 	// Declared but never emitted yet: nothing on the page carries them. The
 	// gallery is placeholder blocks rather than images, there is no trailer, no

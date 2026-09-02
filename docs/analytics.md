@@ -107,7 +107,6 @@ ausdrücken lässt).
 | `playtest_signup_success` | `form_id`, `time_to_convert_seconds`, `attempt` | **Key Event.** Anmeldung gespeichert.                                               |
 | `playtest_signup_error`   | `form_id`, `error_reason`                       | Woran Anmeldungen scheitern.                                                        |
 | `god_card_engage`         | `god_name`, `engage_type`                       | Welcher Gott Aufmerksamkeit zieht — Signal für Marketing-Assets und Priorisierung.  |
-| `countdown_view`          | `days_to_demo`                                  | Countdown gesehen, inkl. Abstand zum Demo-Termin.                                   |
 
 **`error_reason`** hat drei Werte, und sie zeigen auf unterschiedliche Verantwortliche:
 `invalid_email` ist der Tippfehler des Besuchers (im Browser abgefangen, nichts hat die Seite
@@ -164,7 +163,7 @@ Ohne diese Registrierung sind die Parameter in Reports nicht auswählbar:
   `section_id`, `error_reason`, `god_name`, `engage_type`, `form_id`, `store`, `placement`,
   `exit_reason`, `platform`
 - **Custom Metrics:** `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`,
-  `interactions`, `time_to_convert_seconds`, `days_to_demo`, `attempt`, `summary_index`
+  `interactions`, `time_to_convert_seconds`, `attempt`, `summary_index`
 - **Custom Dimensions (user-scoped):** `viewport_bucket`, `reduced_motion`, `color_scheme`,
   `touch_primary`
 - **Key Events:** `playtest_signup_success`, `wishlist_click`

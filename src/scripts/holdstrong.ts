@@ -21,7 +21,6 @@ type Els = {
 	error: HTMLElement;
 	success: HTMLElement;
 	successEmail: HTMLElement;
-	countdown: HTMLElement;
 	godCards: HTMLElement[];
 };
 
@@ -70,8 +69,6 @@ function pad(n: number) {
 }
 
 const isGod = (value: string | undefined): value is God => GODS.includes(value as God);
-
-const daysToDemo = () => Math.max(0, Math.ceil((DEMO_TARGET - Date.now()) / 86_400_000));
 
 function startCountdown(els: Pick<Els, 'days' | 'hours' | 'minutes' | 'seconds'>) {
 	const tick = () => {
@@ -248,31 +245,8 @@ function bindGodCards(cards: HTMLElement[]) {
 	for (const card of cards) observer.observe(card);
 }
 
-/**
- * The countdown reaching the viewport, with how far out the demo still is.
- *
- * section_view already reports that the block was seen; what this adds is
- * days_to_demo on the event itself, so a conversion rate can be read against the
- * distance to launch without joining against a calendar.
- */
-function observeCountdown(el: HTMLElement) {
-	if (typeof IntersectionObserver === 'undefined') return;
-
-	const observer = new IntersectionObserver(
-		(entries) => {
-			if (!entries.some((entry) => entry.isIntersecting)) return;
-			observer.disconnect();
-			track('countdown_view', { days_to_demo: daysToDemo() });
-		},
-		{ rootMargin: '0px 0px -40% 0px' },
-	);
-
-	observer.observe(el);
-}
-
 export function initHoldStrong(els: Els) {
 	startCountdown(els);
 	bindSignupForm(els);
 	bindGodCards(els.godCards);
-	observeCountdown(els.countdown);
 }
