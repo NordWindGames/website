@@ -157,16 +157,89 @@ Werden einmal pro Seitenaufruf gesetzt. Sie beschreiben die _Umgebung_, nicht di
 
 ## In GA4 anzulegen
 
-Ohne diese Registrierung sind die Parameter in Reports nicht auswählbar:
+**Admin → Datenanzeige → Benutzerdefinierte Definitionen.** Ohne diese Registrierung sind die
+Parameter in Reports nicht auswählbar, und GA4 sammelt sie **nicht rückwirkend** — was heute nicht
+angelegt ist, fehlt für alles, was vor dem Anlegen passiert ist.
 
-- **Custom Dimensions (event-scoped):** `cta_id`, `cta_location`, `link_id`, `link_location`,
-  `section_id`, `error_reason`, `god_name`, `engage_type`, `form_id`, `store`, `placement`,
-  `exit_reason`, `platform`
-- **Custom Metrics:** `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`,
-  `interactions`, `time_to_convert_seconds`, `attempt`, `summary_index`
-- **Custom Dimensions (user-scoped):** `viewport_bucket`, `reduced_motion`, `color_scheme`,
-  `touch_primary`
-- **Key Events:** `playtest_signup_success`, `wishlist_click`
+Ein Parameter ist entweder Dimension **oder** Messwert, nie beides. Faustregel: Text und Ordinal-
+zahlen, nach denen man gruppiert, werden Dimension; nur was man summiert oder mittelt, wird
+Messwert.
+
+### Benutzerdefinierte Dimensionen — Anwendungsbereich `Ereignis`
+
+| Dimensionsname     | Ereignisparameter | Kommt von                                      |
+| :----------------- | :---------------- | :--------------------------------------------- |
+| CTA ID             | `cta_id`          | `cta_click`                                    |
+| CTA Position       | `cta_location`    | `cta_click`                                    |
+| CTA Label          | `cta_label`       | `cta_click`                                    |
+| CTA Klick-Index    | `click_index`     | `cta_click` — 1., 2., 3. Klick im Seitenaufruf |
+| Link Position      | `link_location`   | `outbound_click`                               |
+| Section ID         | `section_id`      | `section_view`                                 |
+| Section Index      | `section_index`   | `section_view` — Reihenfolge im Scroll-Funnel  |
+| Exit-Grund         | `exit_reason`     | `page_engagement`                              |
+| Summary Index      | `summary_index`   | `page_engagement` — höchster Wert je Aufruf    |
+| Store              | `store`           | `wishlist_click`                               |
+| Placement          | `placement`       | `wishlist_click`                               |
+| Signup Versuch     | `attempt`         | `playtest_signup_submit`, `_success`           |
+| Signup Fehlergrund | `error_reason`    | `playtest_signup_error`                        |
+| Gott               | `god_name`        | `god_card_engage`                              |
+| Engagement-Art     | `engage_type`     | `god_card_engage` — `dwell` oder `click`       |
+
+`click_index`, `section_index`, `summary_index` und `attempt` sind zwar Zahlen, aber Ordnungs-
+zahlen: eine Summe daraus bedeutet nichts, die Frage ist immer „wie viele Ereignisse hatten Wert
+N". Deshalb Dimension, nicht Messwert.
+
+### Benutzerdefinierte Messwerte — Anwendungsbereich `Ereignis` (einzige Option)
+
+| Messwertname       | Ereignisparameter         | Maßeinheit | Kommt von                 |
+| :----------------- | :------------------------ | :--------- | :------------------------ |
+| Zeit bis Section   | `time_to_view_seconds`    | Sekunden   | `section_view`            |
+| Aktive Zeit        | `engaged_time_seconds`    | Sekunden   | `page_engagement`         |
+| Max. Scrolltiefe   | `max_scroll_percent`      | Standard   | `page_engagement`         |
+| Gesehene Sections  | `sections_viewed`         | Standard   | `page_engagement`         |
+| Interaktionen      | `interactions`            | Standard   | `page_engagement`         |
+| Zeit bis Anmeldung | `time_to_convert_seconds` | Sekunden   | `playtest_signup_success` |
+
+GA4 kennt keine Einheit „Prozent" — `max_scroll_percent` läuft als **Standard** und wird als
+nackte Zahl 0–100 gemeldet.
+
+### Benutzerdefinierte Dimensionen — Anwendungsbereich `Nutzer`
+
+Hier wird statt eines Ereignisparameters eine **Nutzereigenschaft** eingetragen; die Namen sind
+identisch.
+
+| Dimensionsname | Nutzereigenschaft |
+| :------------- | :---------------- |
+| Viewport       | `viewport_bucket` |
+| Reduced Motion | `reduced_motion`  |
+| Farbschema     | `color_scheme`    |
+| Touch-Gerät    | `touch_primary`   |
+
+### Nicht anlegen — schon eingebaut
+
+Diese Parameter füllen GA4s vorgefertigte Dimensionen und brauchen keine eigene Definition.
+Erst im Report suchen; legt man sie trotzdem an, verbrennt das nur ein Kontingent.
+
+| Parameter          | Vorhandene Dimension    |
+| :----------------- | :---------------------- |
+| `link_id`          | Link-ID                 |
+| `link_url`         | Link-URL                |
+| `link_domain`      | Linkdomain              |
+| `form_id`          | Formular-ID             |
+| `percent_scrolled` | Gescrollter Prozentsatz |
+
+### Nicht anlegen — feuert noch nicht
+
+`gallery_slot`, `slot_index`, `video_title`, `percent_played`, `platform` und `method` gehören zu
+den Events, die die Seite noch nicht auslöst. Anlegen, wenn Gallery, Trailer, Demo-Download oder
+Share-Button live gehen — vorher sammeln sie ohnehin nichts.
+
+### Schlüsselereignisse
+
+**Admin → Schlüsselereignisse → Neues Schlüsselereignis**, Name jeweils exakt eintippen:
+
+- `playtest_signup_success`
+- `wishlist_click`
 
 ## Eine neue Seite instrumentieren
 
