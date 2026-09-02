@@ -179,7 +179,12 @@ import { DISCORD_INVITE } from '../lib/social';
 						</p>
 					</div>
 
-					<form class="hs-signup-form" id="hs-signup-form">
+					<!-- novalidate: the form does its own checking and renders the result into
+					     .hs-error, styled to match the page. Native constraint validation would
+					     preempt that - it blocks the submit event entirely, so neither the custom
+					     message nor the funnel events would ever be reached. type/required stay on
+					     the input for the mobile keyboard and for assistive technology. -->
+					<form class="hs-signup-form" id="hs-signup-form" novalidate>
 						<div class="hs-signup-row">
 							<input
 								type="email"
