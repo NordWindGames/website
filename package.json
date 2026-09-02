@@ -9,7 +9,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "blog": "node scripts/blog.mjs",
+    "blog:scan": "node scripts/blog.mjs scan",
+    "blog:check": "node scripts/blog.mjs check"
   },
   "dependencies": {
     "astro": "^7.2.4"

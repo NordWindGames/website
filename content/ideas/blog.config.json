@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "_comment": "Generic pipeline settings — no URLs, safe to commit to this public repo. The real reference-blog list lives in sources.local.json (gitignored). See sources.example.json for its shape, and docs/blog.md for what all of this does.",
+  "brand": {
+    "name": "Nordwind Games",
+    "domain": "nordwind.games",
+    "user_agent": "nordwindgames-devlog-pipeline/1.0 (+https://nordwind.games)"
+  },
+  "paths": {
+    "posts_dir": "src/content/blog",
+    "public_dir": "public",
+    "routes_dir": "src/pages"
+  },
+  "locales": {
+    "list": ["en", "de"],
+    "default": "en",
+    "require_pairing": true
+  },
+  "conventions": {
+    "require_hero_image": true,
+    "min_internal_links_ramp": [
+      { "at_posts": 3, "min": 1 },
+      { "at_posts": 5, "min": 2 }
+    ],
+    "_ramp_note": "Dormant by design: no floor until 3 posts exist, because an unsatisfiable gate just gets disabled and never comes back. There is deliberately no word or H2 band — `blog check` prints the real corpus distribution instead of pretending a 0-20000 placeholder is a rule."
+  },
+  "assets": {
+    "svg_ratio": { "min": 1, "max": 3.2 },
+    "prose_width_px": 768
+  },
+  "scoring": {
+    "_note": "Four axes, all higher-is-better, none inverted. scores.total is NOT stored on an idea — scripts/lib/backlog.mjs computes it from these weights on read, so it cannot drift from the axes it is derived from.",
+    "weights": { "interest": 0.35, "evidence": 0.25, "ease": 0.20, "durability": 0.20 }
+  },
+  "cadence_days": 30,
+  "_cadence_note": "How long a stored ETag/Last-Modified may be trusted before scan forces an unconditional refetch. A server that answers 304 forever must not be able to hide a change indefinitely."
+}

@@ -1,0 +1,38 @@
+---
+import BlogLayout from '../../../layouts/BlogLayout.astro';
+import { getPostsByLocale, postPath } from '../../../lib/blog';
+
+const posts = await getPostsByLocale('de');
+---
+
+<BlogLayout title="Devlog — Nordwind Games" description="Entwicklungsfortschritt und Learnings von Nordwind Games." locale="de">
+	<h1>Devlog</h1>
+	{posts.length === 0 && <p>Noch keine Beiträge — schau bald wieder vorbei.</p>}
+	<ul class="post-list">
+		{posts.map((post) => (
+			<li>
+				<a href={postPath('de', post.slug)}>{post.data.title}</a>
+				<p class="meta">{post.data.date.toISOString().slice(0, 10)} — {post.data.description}</p>
+			</li>
+		))}
+	</ul>
+</BlogLayout>
+
+<style>
+	.post-list {
+		list-style: none;
+		padding: 0;
+		margin: 2em 0 0;
+	}
+	.post-list li {
+		margin-bottom: 1.75em;
+	}
+	.post-list a {
+		font-size: 18px;
+	}
+	.meta {
+		margin: 0.35em 0 0;
+		font-size: 13px;
+		color: var(--muted);
+	}
+</style>
