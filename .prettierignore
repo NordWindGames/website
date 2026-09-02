@@ -1,0 +1,17 @@
+# Build output and caches
+dist/
+.astro/
+
+# Generated or third-party, not ours to style
+package-lock.json
+
+# The devlog pipeline's state files, most of which are gitignored anyway
+content/ideas/
+
+# prettier-plugin-astro 0.14.1 cannot parse a <script> nested inside a JSX
+# expression - it tries to parse the script body at the wrong offset and throws
+# a SyntaxError on valid code. Analytics.astro gates its gtag snippet behind
+# `enabled && (...)`, which is exactly that shape. Reproduced in isolation; a
+# top-level <script> with the same body formats fine. Drop this entry once the
+# plugin handles it.
+src/components/Analytics.astro

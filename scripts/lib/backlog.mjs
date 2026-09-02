@@ -20,14 +20,28 @@ import { CONFIG, readIdeas, today, writeIdeas } from './ctx.mjs'
 export const SCORE_AXES = ['interest', 'evidence', 'ease', 'durability']
 export const POST_TYPES = ['progress', 'deep-dive', 'learning', 'milestone', 'refresh']
 export const POST_STATUSES = [
-  'new', 'approved', 'blocked', 'in_progress', 'drafted', 'published', 'rejected',
+  'new',
+  'approved',
+  'blocked',
+  'in_progress',
+  'drafted',
+  'published',
+  'rejected',
 ]
 export const PRACTICE_STATUSES = ['new', 'adopted', 'deferred', 'rejected']
 export const NEEDS_SLUG = ['in_progress', 'drafted', 'published']
 
 const POST_FIELDS = [
-  'id', 'created_at', 'status', 'type', 'working_title', 'angle', 'locale',
-  'scores', 'internal_links', 'evidence',
+  'id',
+  'created_at',
+  'status',
+  'type',
+  'working_title',
+  'angle',
+  'locale',
+  'scores',
+  'internal_links',
+  'evidence',
 ]
 const PRACTICE_FIELDS = ['id', 'created_at', 'status', 'observation', 'applies_to']
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
@@ -59,8 +73,16 @@ export function load() {
       kind: idea.kind ?? 'post',
       ...rest,
       // A stored total is dropped on read: total() is the only thing that computes it.
-      ...(scores ? { scores: Object.fromEntries(SCORE_AXES.filter((a) => a in scores).map((a) => [a, scores[a]])) } : {}),
-      ...(scores ? { extraAxes: Object.keys(scores).filter((k) => ![...SCORE_AXES, 'total'].includes(k)) } : {}),
+      ...(scores
+        ? {
+            scores: Object.fromEntries(
+              SCORE_AXES.filter((a) => a in scores).map((a) => [a, scores[a]]),
+            ),
+          }
+        : {}),
+      ...(scores
+        ? { extraAxes: Object.keys(scores).filter((k) => ![...SCORE_AXES, 'total'].includes(k)) }
+        : {}),
     })
   }
 
@@ -134,7 +156,8 @@ export function transition(item, status, opts, corpus) {
   }
 
   if (status === 'rejected') {
-    if (!opts.reason) return '--reason is required to reject - the reason is what teaches the next run'
+    if (!opts.reason)
+      return '--reason is required to reject - the reason is what teaches the next run'
     item.review_note = opts.reason
     item.reviewed_at = stamp
   }
@@ -154,7 +177,8 @@ export function transition(item, status, opts, corpus) {
   if (NEEDS_SLUG.includes(status)) {
     const slug = opts.slug ?? item.assigned_slug
     if (!slug) return `--slug is required to move to "${status}"`
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return `slug must be lowercase kebab-case: "${slug}"`
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))
+      return `slug must be lowercase kebab-case: "${slug}"`
     item.assigned_slug = slug
 
     // in_progress means "being written", so the files may not exist yet. drafted and published
@@ -267,30 +291,36 @@ export function validate(backlog, corpus) {
         if (missing.length && item.status === 'in_progress') {
           warnings.push(
             `${at}: in_progress, still missing ` +
-              missing.map((l) => `${l}/${item.assigned_slug}.md`).join(', ')
+              missing.map((l) => `${l}/${item.assigned_slug}.md`).join(', '),
           )
         } else if (missing.length) {
           errors.push(
             `${at}: status "${item.status}" but assigned_slug "${item.assigned_slug}" has no ` +
-              `file for locale(s) ${missing.join(', ')}`
+              `file for locale(s) ${missing.join(', ')}`,
           )
         }
       }
     }
     if (item.assigned_slug) {
       const prev = seenSlugs.get(item.assigned_slug)
-      if (prev) errors.push(`${at}: assigned_slug "${item.assigned_slug}" is also claimed by ${prev}`)
+      if (prev)
+        errors.push(`${at}: assigned_slug "${item.assigned_slug}" is also claimed by ${prev}`)
       seenSlugs.set(item.assigned_slug, at)
     }
 
     for (const link of item.internal_links ?? []) {
-      const slug = String(link).replace(/^\/?(?:[a-z]{2}\/)?blog\//, '').replace(/\/$/, '')
+      const slug = String(link)
+        .replace(/^\/?(?:[a-z]{2}\/)?blog\//, '')
+        .replace(/\/$/, '')
       if (locales.length && !locales.some((l) => corpus.slugsByLocale.get(l)?.has(slug))) {
         warnings.push(`${at}: internal_links names "${slug}", which is not an existing post`)
       }
     }
 
-    const key = String(item.working_title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+    const key = String(item.working_title ?? '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim()
     if (key && seenTitles.has(key)) {
       warnings.push(`${at}: working_title is identical to ${seenTitles.get(key)}`)
     }
@@ -302,7 +332,7 @@ export function validate(backlog, corpus) {
   if (undated.length) {
     warnings.push(
       `approved but no reviewed_at date: ${undated.map((i) => i.id).join(', ')} - ` +
-        'approval is a human act and should carry the date it happened'
+        'approval is a human act and should carry the date it happened',
     )
   }
 

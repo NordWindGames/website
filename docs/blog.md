@@ -58,30 +58,30 @@ Three layers:
   generation, scoring, drafting. Run via Claude Code.
 - **State** — JSON in `content/ideas/`.
 
-| `scripts/lib/` | does |
-| --- | --- |
-| `ctx.mjs` | root, config with defaults, paths, JSON and date helpers, argv parsing |
-| `posts.mjs` | the single corpus reader: one pass over `src/content/blog/<locale>/*.md` |
-| `http.mjs` | conditional GET, one retry, a worker pool with a per-host cap |
-| `parse.mjs` | sitemaps, RSS/Atom, HTML listings, article shape |
-| `git.mjs` | our own activity, clustered by conventional-commit type |
-| `scan.mjs` | one scan: discover, dedupe, extract, inventory — into one snapshot |
-| `backlog.mjs` | load/save, the status machine, validation |
-| `gates.mjs` | the conventions and image gates |
+| `scripts/lib/` | does                                                                     |
+| -------------- | ------------------------------------------------------------------------ |
+| `ctx.mjs`      | root, config with defaults, paths, JSON and date helpers, argv parsing   |
+| `posts.mjs`    | the single corpus reader: one pass over `src/content/blog/<locale>/*.md` |
+| `http.mjs`     | conditional GET, one retry, a worker pool with a per-host cap            |
+| `parse.mjs`    | sitemaps, RSS/Atom, HTML listings, article shape                         |
+| `git.mjs`      | our own activity, clustered by conventional-commit type                  |
+| `scan.mjs`     | one scan: discover, dedupe, extract, inventory — into one snapshot       |
+| `backlog.mjs`  | load/save, the status machine, validation                                |
+| `gates.mjs`    | the conventions and image gates                                          |
 
 ### State files
 
-| file | committed | what |
-| --- | --- | --- |
-| `blog.config.json` | yes | paths, locales, conventions, scoring weights. No URLs. |
-| `sources.example.json` | yes | schema template with fake URLs |
-| `repos.example.json` | yes | schema template with a fake path |
-| `sources.local.json` | **no** | the real reference-blog URLs |
-| `repos.local.json` | **no** | local paths to other repos (the game repo) |
-| `state.json` | no | seen URLs + per-endpoint cache validators. Bookkeeping, not for reading. |
-| `scan.json` | no | the one snapshot the reasoning layer reads |
-| `backlog.json` | no | ideas and practices, one array with a `kind` |
-| `rejected.md` | no | standing no-go areas, written by hand |
+| file                   | committed | what                                                                     |
+| ---------------------- | --------- | ------------------------------------------------------------------------ |
+| `blog.config.json`     | yes       | paths, locales, conventions, scoring weights. No URLs.                   |
+| `sources.example.json` | yes       | schema template with fake URLs                                           |
+| `repos.example.json`   | yes       | schema template with a fake path                                         |
+| `sources.local.json`   | **no**    | the real reference-blog URLs                                             |
+| `repos.local.json`     | **no**    | local paths to other repos (the game repo)                               |
+| `state.json`           | no        | seen URLs + per-endpoint cache validators. Bookkeeping, not for reading. |
+| `scan.json`            | no        | the one snapshot the reasoning layer reads                               |
+| `backlog.json`         | no        | ideas and practices, one array with a `kind`                             |
+| `rejected.md`          | no        | standing no-go areas, written by hand                                    |
 
 This repo is **public**: the reference-blog URLs and anything derived from them must never land in
 its history. `.gitignore` allowlists exactly the four committed files above.
@@ -136,7 +136,7 @@ The DE/EN pairing is enforced **only here.** Astro does not care: an EN-only pos
 fine, `/de/blog/<slug>/` simply does not exist. Set `locales.require_pairing` to `false` and the
 bilingual guarantee is gone with nothing else noticing.
 
-Frontmatter *shape* is owned by the zod `.strict()` schema in `src/content.config.ts` — `title`,
+Frontmatter _shape_ is owned by the zod `.strict()` schema in `src/content.config.ts` — `title`,
 `description`, `date`, and an extra field is a build error. The gates defer to it rather than
 re-declaring an allowlist.
 

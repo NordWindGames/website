@@ -12,13 +12,17 @@
     "astro": "astro",
     "blog": "node scripts/blog.mjs",
     "blog:scan": "node scripts/blog.mjs scan",
-    "blog:check": "node scripts/blog.mjs check"
+    "blog:check": "node scripts/blog.mjs check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "astro": "^7.2.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "prettier": "3.9.6",
+    "prettier-plugin-astro": "0.14.1",
     "typescript": "^6.0.3"
   }
 }

@@ -336,7 +336,8 @@ class StormCloud {
 			const hit = Math.exp(-dt / 120); // white-hot overcharge
 			const arc =
 				dt < 620
-					? Math.exp(-dt / 210) * (0.5 * Math.sin(dt / 17) + 0.3 * Math.sin(dt / 41) + 0.2 * Math.sin(dt / 7.3))
+					? Math.exp(-dt / 210) *
+						(0.5 * Math.sin(dt / 17) + 0.3 * Math.sin(dt / 41) + 0.2 * Math.sin(dt / 7.3))
 					: 0;
 			const cool = Math.exp(-dt / 1100); // filament cooling down
 			const pulse = 0.5 + 0.5 * Math.sin(dt / 700);
@@ -357,11 +358,23 @@ class StormCloud {
 			root.style.setProperty(
 				'--gameshadow',
 				[
-					'inset 0 0 ' + Math.round(6 + 26 * lum) + 'px rgba(255,255,255,' + (0.25 + 0.6 * lum).toFixed(3) + ')',
+					'inset 0 0 ' +
+						Math.round(6 + 26 * lum) +
+						'px rgba(255,255,255,' +
+						(0.25 + 0.6 * lum).toFixed(3) +
+						')',
 					'inset 0 -2px 0 rgba(146,96,0,' + (0.35 * (1 - lum)).toFixed(3) + ')',
 					'0 0 ' + Math.round(2 + 70 * lum) + 'px rgba(255,255,255,' + (0.9 * lum).toFixed(3) + ')',
-					'0 0 ' + Math.round(halo * 0.45) + 'px rgba(255,214,110,' + (0.32 + 0.14 * pulse + 0.4 * lum).toFixed(3) + ')',
-					'0 0 ' + Math.round(halo) + 'px rgba(242,168,32,' + (0.2 + 0.1 * pulse + 0.3 * lum).toFixed(3) + ')',
+					'0 0 ' +
+						Math.round(halo * 0.45) +
+						'px rgba(255,214,110,' +
+						(0.32 + 0.14 * pulse + 0.4 * lum).toFixed(3) +
+						')',
+					'0 0 ' +
+						Math.round(halo) +
+						'px rgba(242,168,32,' +
+						(0.2 + 0.1 * pulse + 0.3 * lum).toFixed(3) +
+						')',
 					'0 0 ' + Math.round(halo * 2.1) + 'px rgba(242,168,32,' + (0.1 + 0.16 * lum).toFixed(3) + ')',
 					'0 12px 34px rgba(120,74,0,0.3)',
 				].join(', '),
@@ -370,9 +383,21 @@ class StormCloud {
 			const s = 1 + 0.055 * hit + 0.012 * Math.max(0, arc);
 			const st = this.jolt.style;
 			st.transform =
-				'translate3d(' + (Math.sin(dt / 8.5) * 5 * j).toFixed(2) + 'px,' + (Math.cos(dt / 6.5) * 4 * j).toFixed(2) + 'px,0) scale(' + s.toFixed(4) + ')';
-			st.filter = 'brightness(' + (1 + 0.5 * lum).toFixed(3) + ') saturate(' + (1 + 0.35 * cool - 0.5 * lum).toFixed(3) + ')';
-			st.textShadow = '0 0 ' + Math.round(4 + 18 * lum) + 'px rgba(255,255,255,' + (0.25 + 0.55 * lum).toFixed(3) + ')';
+				'translate3d(' +
+				(Math.sin(dt / 8.5) * 5 * j).toFixed(2) +
+				'px,' +
+				(Math.cos(dt / 6.5) * 4 * j).toFixed(2) +
+				'px,0) scale(' +
+				s.toFixed(4) +
+				')';
+			st.filter =
+				'brightness(' +
+				(1 + 0.5 * lum).toFixed(3) +
+				') saturate(' +
+				(1 + 0.35 * cool - 0.5 * lum).toFixed(3) +
+				')';
+			st.textShadow =
+				'0 0 ' + Math.round(4 + 18 * lum) + 'px rgba(255,255,255,' + (0.25 + 0.55 * lum).toFixed(3) + ')';
 		} else {
 			const st = this.jolt.style;
 			st.transform = 'translate3d(0,0,0)';
@@ -387,7 +412,10 @@ class StormCloud {
 				'--gamefg',
 				this.rgb(this.mix(this.mix([250, 252, 255], [12, 17, 24], darken), [255, 236, 170], ch), 1),
 			);
-			root.style.setProperty('--gameborder', this.rgb(this.mix(fg, [255, 232, 150], Math.min(1, ch * 1.2)), 1));
+			root.style.setProperty(
+				'--gameborder',
+				this.rgb(this.mix(fg, [255, 232, 150], Math.min(1, ch * 1.2)), 1),
+			);
 			root.style.setProperty('--gamelift', (-3.5 * ch).toFixed(2) + 'px');
 			if (ch < 0.01) {
 				root.style.setProperty('--gameshadow', 'none');
@@ -396,17 +424,33 @@ class StormCloud {
 				root.style.setProperty(
 					'--gameshadow',
 					[
-						'inset 0 0 ' + Math.round(4 + 16 * crack) + 'px rgba(255,214,110,' + (0.18 * ch + 0.22 * crack).toFixed(3) + ')',
-						'0 0 ' + Math.round(halo * 0.4) + 'px rgba(255,224,130,' + (0.3 * ch + 0.2 * crack).toFixed(3) + ')',
+						'inset 0 0 ' +
+							Math.round(4 + 16 * crack) +
+							'px rgba(255,214,110,' +
+							(0.18 * ch + 0.22 * crack).toFixed(3) +
+							')',
+						'0 0 ' +
+							Math.round(halo * 0.4) +
+							'px rgba(255,224,130,' +
+							(0.3 * ch + 0.2 * crack).toFixed(3) +
+							')',
 						'0 0 ' + Math.round(halo) + 'px rgba(242,168,32,' + (0.22 * ch).toFixed(3) + ')',
 						'0 0 ' + Math.round(halo * 2) + 'px rgba(242,168,32,' + (0.12 * ch).toFixed(3) + ')',
 						'0 10px 26px rgba(20,26,36,' + (0.22 * ch).toFixed(3) + ')',
 					].join(', '),
 				);
 			}
-			st.transform = 'translate3d(' + (Math.sin(now / 47) * 0.9 * ch * ch).toFixed(2) + 'px,' + (Math.cos(now / 39) * 0.7 * ch * ch).toFixed(2) + 'px,0)';
+			st.transform =
+				'translate3d(' +
+				(Math.sin(now / 47) * 0.9 * ch * ch).toFixed(2) +
+				'px,' +
+				(Math.cos(now / 39) * 0.7 * ch * ch).toFixed(2) +
+				'px,0)';
 			st.filter = ch > 0.01 ? 'brightness(' + (1 + 0.1 * crack).toFixed(3) + ')' : 'none';
-			st.textShadow = ch > 0.01 ? '0 0 ' + Math.round(6 + 12 * crack) + 'px rgba(255,224,130,' + (0.35 * ch).toFixed(3) + ')' : 'none';
+			st.textShadow =
+				ch > 0.01
+					? '0 0 ' + Math.round(6 + 12 * crack) + 'px rgba(255,224,130,' + (0.35 * ch).toFixed(3) + ')'
+					: 'none';
 		}
 
 		// ONE continuous flight path: catmull-rom through waypoints, traversed by a single
@@ -433,7 +477,10 @@ class StormCloud {
 		const cr = (p0: number, p1: number, p2: number, p3: number, t: number) => {
 			const t2 = t * t;
 			const t3 = t2 * t;
-			return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
+			return (
+				0.5 *
+				(2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3)
+			);
 		};
 		const segs = wps.length - 3;
 		const fs = Math.min(segs - 0.0001, pathT * segs);
@@ -551,7 +598,8 @@ class StormCloud {
 			const a = Math.min(1, this.lerp(sparse, 1, solid) * appear * this.lerp(1, 0.94, settled));
 			if (a < 0.02) continue;
 			// solid body draws full tiles (hard pixel edges); the sparse speck keeps gaps
-			const d = Math.max(1, Math.round(this.lerp(dot, step * (0.86 + 0.3 * s), solid))) + (flash > 0.4 ? 1 : 0);
+			const d =
+				Math.max(1, Math.round(this.lerp(dot, step * (0.86 + 0.3 * s), solid))) + (flash > 0.4 ? 1 : 0);
 			let e = buf[n];
 			if (!e) {
 				e = buf[n] = { z: 0, px: 0, py: 0, d: 0, a: 0, c: [0, 0, 0] };
@@ -620,7 +668,12 @@ class StormCloud {
 				for (let idx = 0; idx < 14; idx++) {
 					const ang = -Math.PI / 2 + (idx / 13 - 0.5) * 2.3;
 					const d2 = (1 - hit) * Math.min(w, h) * (0.06 + (0.05 * ((idx * 37) % 11)) / 11);
-					ctx.fillRect(Math.round(tx + Math.cos(ang) * d2), Math.round(ty + Math.sin(ang) * d2 * 0.9), sp, sp);
+					ctx.fillRect(
+						Math.round(tx + Math.cos(ang) * d2),
+						Math.round(ty + Math.sin(ang) * d2 * 0.9),
+						sp,
+						sp,
+					);
 				}
 			}
 		}

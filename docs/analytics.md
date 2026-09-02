@@ -26,10 +26,10 @@ ohne echte Daten prüfen.
 Mit gesetzter ID sendet der Dev-Server an die **echte** Property. Damit das die Reports nicht
 verfälscht, setzt [`Analytics.astro`](../src/components/Analytics.astro) in Dev-Builds zwei Flags:
 
-| Flag | Wirkung |
-| :--- | :--- |
-| `debug_mode: true` | Events erscheinen sofort in **Admin → DebugView**, statt die normale Reporting-Verzögerung abzuwarten. Hält sie aber **nicht** aus den Reports heraus. |
-| `traffic_type: 'internal'` | Kennzeichnet die Events als interner Traffic — die Grundlage für den Ausschluss-Filter unten. |
+| Flag                       | Wirkung                                                                                                                                                |
+| :------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `debug_mode: true`         | Events erscheinen sofort in **Admin → DebugView**, statt die normale Reporting-Verzögerung abzuwarten. Hält sie aber **nicht** aus den Reports heraus. |
+| `traffic_type: 'internal'` | Kennzeichnet die Events als interner Traffic — die Grundlage für den Ausschluss-Filter unten.                                                          |
 
 Das Flag allein filtert nichts. In GA4 einmalig einrichten:
 
@@ -48,27 +48,27 @@ sie liegen auf `console.debug`, also im Log-Level **Verbose** des Konsolen-Filte
 
 ## Was automatisch getrackt wird (GA4 Enhanced Measurement, kein Code)
 
-| Event | Bedeutung |
-| :--- | :--- |
-| `page_view` | Seitenaufruf inkl. `page_location`, `page_referrer`, UTM-Parameter |
-| `session_start`, `first_visit` | Sessions und Neu- vs. Wiederkehrer |
-| `user_engagement` | Aktive Verweildauer |
-| `scroll` | 90 % Scrolltiefe (unsere eigene Staffelung siehe unten ist feiner) |
-| `click` | Outbound-Klicks generisch (`link_domain`, `link_url`) |
-| `file_download` | Downloads — greift automatisch, sobald eine Demo-Datei verlinkt wird |
+| Event                          | Bedeutung                                                            |
+| :----------------------------- | :------------------------------------------------------------------- |
+| `page_view`                    | Seitenaufruf inkl. `page_location`, `page_referrer`, UTM-Parameter   |
+| `session_start`, `first_visit` | Sessions und Neu- vs. Wiederkehrer                                   |
+| `user_engagement`              | Aktive Verweildauer                                                  |
+| `scroll`                       | 90 % Scrolltiefe (unsere eigene Staffelung siehe unten ist feiner)   |
+| `click`                        | Outbound-Klicks generisch (`link_domain`, `link_url`)                |
+| `file_download`                | Downloads — greift automatisch, sobald eine Demo-Datei verlinkt wird |
 
 Dazu kommen aus GA4 selbst: Gerät, Browser, OS, Auflösung, Land/Region/Stadt, Sprache,
 Traffic-Quelle/Medium/Kampagne.
 
-## Custom Events — jetzt aktiv
+## Custom Events — seitenübergreifend aktiv
 
-| Event | Parameter | Wofür |
-| :--- | :--- | :--- |
-| `cta_click` | `cta_id`, `cta_location`, `cta_label`, `link_url`, `click_index` | Welcher CTA zieht. `click_index` zeigt Mehrfachklicks (auf der Startseite = Spielerei mit dem Blitz-Button, ein Engagement-Signal). |
-| `outbound_click` | `link_id`, `link_domain`, `link_url`, `link_location` | Welcher Social-Kanal tatsächlich geklickt wird — GA4s eingebautes `click` weiß nicht, *welcher* Button es war. |
-| `section_view` | `section_id`, `section_index`, `time_to_view_seconds` | Scroll-Funnel: welcher Abschnitt wird überhaupt erreicht, und wie schnell. |
-| `scroll_depth` | `percent_scrolled` (25/50/75/100) | Lesetiefe, feiner als GA4s 90 %-Event. |
-| `page_engagement` | `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`, `interactions`, `exit_reason`, `summary_index` | Ein Qualitäts-Datensatz pro Seitenaufruf. Erlaubt Segmente wie „>30 s aktiv und >75 % gescrollt". |
+| Event             | Parameter                                                                                                       | Wofür                                                                                                                               |
+| :---------------- | :-------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------- |
+| `cta_click`       | `cta_id`, `cta_location`, `cta_label`, `link_url`, `click_index`                                                | Welcher CTA zieht. `click_index` zeigt Mehrfachklicks (auf der Startseite = Spielerei mit dem Blitz-Button, ein Engagement-Signal). |
+| `outbound_click`  | `link_id`, `link_domain`, `link_url`, `link_location`                                                           | Welcher Social-Kanal tatsächlich geklickt wird — GA4s eingebautes `click` weiß nicht, _welcher_ Button es war.                      |
+| `section_view`    | `section_id`, `section_index`, `time_to_view_seconds`                                                           | Scroll-Funnel: welcher Abschnitt wird überhaupt erreicht, und wie schnell.                                                          |
+| `scroll_depth`    | `percent_scrolled` (25/50/75/100)                                                                               | Lesetiefe, feiner als GA4s 90 %-Event.                                                                                              |
+| `page_engagement` | `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`, `interactions`, `exit_reason`, `summary_index` | Ein Qualitäts-Datensatz pro Seitenaufruf. Erlaubt Segmente wie „>30 s aktiv und >75 % gescrollt".                                   |
 
 Aktive Verweildauer zählt nur, solange der Tab sichtbar ist — ein Tab, der eine Stunde im
 Hintergrund liegt, ist keine Stunde Engagement.
@@ -77,11 +77,11 @@ Hintergrund liegt, ist keine Stunde Engagement.
 
 Das Event wird bei **jedem** Aufmerksamkeits-Ende gesendet, nicht nur beim ersten:
 
-| `exit_reason` | Auslöser |
-| :--- | :--- |
-| `hidden` | Tab-Wechsel oder Minimieren (das einzige verlässliche Signal auf Mobilgeräten) |
-| `pagehide` | Reload, Schließen, Navigation im selben Tab |
-| `swap` | View-Transition-Navigation innerhalb der Seite |
+| `exit_reason` | Auslöser                                                                       |
+| :------------ | :----------------------------------------------------------------------------- |
+| `hidden`      | Tab-Wechsel oder Minimieren (das einzige verlässliche Signal auf Mobilgeräten) |
+| `pagehide`    | Reload, Schließen, Navigation im selben Tab                                    |
+| `swap`        | View-Transition-Navigation innerhalb der Seite                                 |
 
 Ein Seitenaufruf kann also mehrere Zeilen erzeugen, jede mit hochzählendem
 `summary_index`. **Nicht summieren** — pro Seitenaufruf die Zeile mit dem höchsten
@@ -93,49 +93,161 @@ wäre sonst als 3-Sekunden-Besuch erfasst. Identische Folge-Summaries werden ver
 das `pagehide` direkt hinter einem `visibilitychange` (der normale Weg, einen Desktop-Tab
 zu schließen) erzeugt keine Dublette.
 
+## Custom Events — HoldStrong-Landingpage
+
+Aufrufstellen in [`src/pages/holdstrong.astro`](../src/pages/holdstrong.astro) (Attribute) und
+[`src/scripts/holdstrong.ts`](../src/scripts/holdstrong.ts) (alles, was sich nicht als Attribut
+ausdrücken lässt).
+
+| Event                     | Parameter                                       | Wofür                                                                               |
+| :------------------------ | :---------------------------------------------- | :---------------------------------------------------------------------------------- |
+| `wishlist_click`          | `store`, `placement`                            | **Key Event.** Steam-Wishlist-Absicht — das wichtigste Pre-Launch-Signal überhaupt. |
+| `playtest_signup_start`   | `form_id`                                       | Erster Fokus oder Tastendruck im E-Mail-Feld → Funnel-Einstieg.                     |
+| `playtest_signup_submit`  | `form_id`, `attempt`                            | Absenden versucht — auch bei ungültiger Eingabe.                                    |
+| `playtest_signup_success` | `form_id`, `time_to_convert_seconds`, `attempt` | **Key Event.** Anmeldung gespeichert.                                               |
+| `playtest_signup_error`   | `form_id`, `error_reason`                       | Woran Anmeldungen scheitern.                                                        |
+| `god_card_engage`         | `god_name`, `engage_type`                       | Welcher Gott Aufmerksamkeit zieht — Signal für Marketing-Assets und Priorisierung.  |
+
+**`error_reason`** hat drei Werte, und sie zeigen auf unterschiedliche Verantwortliche:
+`invalid_email` ist der Tippfehler des Besuchers (im Browser abgefangen, nichts hat die Seite
+verlassen), `network_error` heißt die Anfrage kam nie an (offline, Timeout, Ad-Blocker), und
+`rejected` heißt sie kam an und der Endpunkt hat sie abgelehnt — das ist unser Fehler.
+Eine bereits eingetragene Adresse ist **kein** Fehlerfall: der Endpunkt erkennt sie und antwortet
+`ok`, der Besucher ist ja angemeldet.
+
+Das Formular trägt bewusst `novalidate`. Die native Constraint-Validierung des Browsers
+unterdrückt sonst das `submit`-Event komplett — dann läuft weder die eigene Fehlermeldung der
+Seite noch eines der Funnel-Events. `type="email"` und `required` bleiben am Feld, für die
+Mobil-Tastatur und für Screenreader.
+
+**`god_card_engage`** kennt zwei `engage_type`: `dwell` feuert einmal pro Karte und Seitenaufruf,
+sobald sie 2 Sekunden am Stück zu mindestens 60 % sichtbar war — schnelles Vorbeiscrollen zählt
+nicht. `click` feuert bei jedem Klick. `god_name` ist `thor`, `loki` oder `tyr`; Odin hat keine
+Karte, er vergibt keinen Orb.
+
+> **Offen:** Die drei Wishlist-Buttons zeigen noch auf `href="#"` — es gibt keine Steam-Seite.
+> `wishlist_click` feuert trotzdem, bewusst: der Klick ist das Signal, nicht das Ziel. Die Zahlen
+> stammen bis zum Steam-Launch also aus einem Button, der nichts tut.
+
 ## Custom Events — definiert, aber noch nicht gefeuert
 
-Diese Events stehen typisiert in [`src/lib/analytics/events.ts`](../src/lib/analytics/events.ts).
-Die Aufrufstellen landen mit der HoldStrong-Demo-Seite (`feature/holdstrong-landing-page`). Sie sind
-jetzt schon definiert, damit Key Events und Custom Dimensions in GA4 vorab konfiguriert werden können
-— GA4 sammelt rückwirkend **nichts**, was nicht vorher angelegt war.
+Diese Events stehen typisiert in [`src/lib/analytics/events.ts`](../src/lib/analytics/events.ts),
+haben aber nichts, woran sie hängen könnten: die Gallery besteht aus Platzhalter-Blöcken statt
+Bildern, einen Trailer gibt es nicht, einen Share-Button auch nicht, und die Demo erscheint erst
+am 16. Oktober. Sie sind trotzdem definiert, damit Key Events und Custom Dimensions in GA4 vorab
+angelegt werden können — GA4 sammelt rückwirkend **nichts**, was nicht vorher registriert war.
 
-| Event | Parameter | Wofür |
-| :--- | :--- | :--- |
-| `wishlist_click` | `store`, `placement` | **Key Event.** Steam-Wishlist-Absicht — das wichtigste Pre-Launch-Signal überhaupt. |
-| `playtest_signup_start` | `form_id` | Erster Fokus/Tastendruck im E-Mail-Feld → Funnel-Einstieg. |
-| `playtest_signup_submit` | `form_id`, `attempt` | Absenden versucht (auch bei ungültiger Eingabe). |
-| `playtest_signup_success` | `form_id`, `time_to_convert_seconds`, `attempt` | **Key Event.** Anmeldung akzeptiert. |
-| `playtest_signup_error` | `form_id`, `error_reason` | Wo Anmeldungen scheitern (`invalid_email`, `duplicate`, `network_error`). |
-| `god_card_engage` | `god_name`, `engage_type` | Welcher Gott zieht Aufmerksamkeit — Signal für Marketing-Assets und Feature-Priorisierung. |
-| `gallery_item_click` | `gallery_slot`, `slot_index` | Welche Screenshots interessieren. |
-| `countdown_view` | `days_to_demo` | Countdown gesehen, inkl. Abstand zum Demo-Termin. |
-| `trailer_progress` | `video_title`, `percent_played` | Trailer-Abbruchquoten, sobald ein Trailer existiert. |
-| `demo_download_click` | `platform` | Demo-Downloads pro Plattform ab Release. |
-| `share_click` | `method` | Teilen der Seite. |
+| Event                 | Parameter                       | Wofür                                        |
+| :-------------------- | :------------------------------ | :------------------------------------------- |
+| `gallery_item_click`  | `gallery_slot`, `slot_index`    | Welche Screenshots interessieren.            |
+| `trailer_progress`    | `video_title`, `percent_played` | Trailer-Abbruchquoten, sobald es einen gibt. |
+| `demo_download_click` | `platform`                      | Demo-Downloads pro Plattform ab Release.     |
+| `share_click`         | `method`                        | Teilen der Seite.                            |
 
 ## User Properties (Custom Dimensions, user-scoped)
 
-Werden einmal pro Seitenaufruf gesetzt. Sie beschreiben die *Umgebung*, nicht die Person.
+Werden einmal pro Seitenaufruf gesetzt. Sie beschreiben die _Umgebung_, nicht die Person.
 
-| Property | Werte | Wofür |
-| :--- | :--- | :--- |
-| `viewport_bucket` | `mobile`, `tablet`, `desktop`, `wide` | Stabiler als rohe Breiten; Basis für Layout-Entscheidungen. |
-| `reduced_motion` | `true`, `false` | Die Seite ist animationslastig — relevant, falls Conversion-Raten auseinanderlaufen. |
-| `color_scheme` | `light`, `dark` | Für die geplante Dark-Mode-Variante. |
-| `touch_primary` | `true`, `false` | Touch vs. Maus, unabhängig von der Viewport-Breite. |
+| Property          | Werte                                 | Wofür                                                                                |
+| :---------------- | :------------------------------------ | :----------------------------------------------------------------------------------- |
+| `viewport_bucket` | `mobile`, `tablet`, `desktop`, `wide` | Stabiler als rohe Breiten; Basis für Layout-Entscheidungen.                          |
+| `reduced_motion`  | `true`, `false`                       | Die Seite ist animationslastig — relevant, falls Conversion-Raten auseinanderlaufen. |
+| `color_scheme`    | `light`, `dark`                       | Für die geplante Dark-Mode-Variante.                                                 |
+| `touch_primary`   | `true`, `false`                       | Touch vs. Maus, unabhängig von der Viewport-Breite.                                  |
 
 ## In GA4 anzulegen
 
-Ohne diese Registrierung sind die Parameter in Reports nicht auswählbar:
+**Admin → Datenanzeige → Benutzerdefinierte Definitionen.** Ohne diese Registrierung sind die
+Parameter in Reports nicht auswählbar, und GA4 sammelt sie **nicht rückwirkend** — was heute nicht
+angelegt ist, fehlt für alles, was vor dem Anlegen passiert ist.
 
-- **Custom Dimensions (event-scoped):** `cta_id`, `cta_location`, `link_id`, `link_location`,
-  `section_id`, `error_reason`, `god_name`, `placement`, `exit_reason`, `platform`
-- **Custom Metrics:** `engaged_time_seconds`, `max_scroll_percent`, `sections_viewed`,
-  `interactions`, `time_to_convert_seconds`, `days_to_demo`, `summary_index`
-- **Custom Dimensions (user-scoped):** `viewport_bucket`, `reduced_motion`, `color_scheme`,
-  `touch_primary`
-- **Key Events:** `playtest_signup_success`, `wishlist_click`
+Ein Parameter ist entweder Dimension **oder** Messwert, nie beides. Faustregel: Text und Ordinal-
+zahlen, nach denen man gruppiert, werden Dimension; nur was man summiert oder mittelt, wird
+Messwert.
+
+### Benutzerdefinierte Dimensionen — Anwendungsbereich `Ereignis`
+
+| Dimensionsname     | Ereignisparameter | Kommt von                                      |
+| :----------------- | :---------------- | :--------------------------------------------- |
+| CTA ID             | `cta_id`          | `cta_click`                                    |
+| CTA Position       | `cta_location`    | `cta_click`                                    |
+| CTA Label          | `cta_label`       | `cta_click`                                    |
+| CTA Klick-Index    | `click_index`     | `cta_click` — 1., 2., 3. Klick im Seitenaufruf |
+| Link Position      | `link_location`   | `outbound_click`                               |
+| Section ID         | `section_id`      | `section_view`                                 |
+| Section Index      | `section_index`   | `section_view` — Reihenfolge im Scroll-Funnel  |
+| Exit-Grund         | `exit_reason`     | `page_engagement`                              |
+| Summary Index      | `summary_index`   | `page_engagement` — höchster Wert je Aufruf    |
+| Store              | `store`           | `wishlist_click`                               |
+| Placement          | `placement`       | `wishlist_click`                               |
+| Signup Versuch     | `attempt`         | `playtest_signup_submit`, `_success`           |
+| Signup Fehlergrund | `error_reason`    | `playtest_signup_error`                        |
+| Gott               | `god_name`        | `god_card_engage`                              |
+| Engagement-Art     | `engage_type`     | `god_card_engage` — `dwell` oder `click`       |
+
+`click_index`, `section_index`, `summary_index` und `attempt` sind zwar Zahlen, aber Ordnungs-
+zahlen: eine Summe daraus bedeutet nichts, die Frage ist immer „wie viele Ereignisse hatten Wert
+N". Deshalb Dimension, nicht Messwert.
+
+### Benutzerdefinierte Messwerte — Anwendungsbereich `Ereignis` (einzige Option)
+
+| Messwertname       | Ereignisparameter         | Maßeinheit | Kommt von                 |
+| :----------------- | :------------------------ | :--------- | :------------------------ |
+| Zeit bis Section   | `time_to_view_seconds`    | Sekunden   | `section_view`            |
+| Aktive Zeit        | `engaged_time_seconds`    | Sekunden   | `page_engagement`         |
+| Max. Scrolltiefe   | `max_scroll_percent`      | Standard   | `page_engagement`         |
+| Gesehene Sections  | `sections_viewed`         | Standard   | `page_engagement`         |
+| Interaktionen      | `interactions`            | Standard   | `page_engagement`         |
+| Zeit bis Anmeldung | `time_to_convert_seconds` | Sekunden   | `playtest_signup_success` |
+
+GA4 kennt keine Einheit „Prozent" — `max_scroll_percent` läuft als **Standard** und wird als
+nackte Zahl 0–100 gemeldet.
+
+### Benutzerdefinierte Dimensionen — Anwendungsbereich `Nutzer`
+
+Hier wird statt eines Ereignisparameters eine **Nutzereigenschaft** eingetragen; die Namen sind
+identisch.
+
+| Dimensionsname | Nutzereigenschaft |
+| :------------- | :---------------- |
+| Viewport       | `viewport_bucket` |
+| Reduced Motion | `reduced_motion`  |
+| Farbschema     | `color_scheme`    |
+| Touch-Gerät    | `touch_primary`   |
+
+### Nicht anlegen — schon eingebaut
+
+Diese Parameter füllen GA4s vorgefertigte Dimensionen und brauchen keine eigene Definition.
+Erst im Report suchen; legt man sie trotzdem an, verbrennt das nur ein Kontingent.
+
+| Parameter          | Vorhandene Dimension    |
+| :----------------- | :---------------------- |
+| `link_id`          | Link-ID                 |
+| `link_url`         | Link-URL                |
+| `link_domain`      | Linkdomain              |
+| `form_id`          | Formular-ID             |
+| `percent_scrolled` | Gescrollter Prozentsatz |
+
+### Nicht anlegen — feuert noch nicht
+
+`gallery_slot`, `slot_index`, `video_title`, `percent_played`, `platform` und `method` gehören zu
+den Events, die die Seite noch nicht auslöst. Anlegen, wenn Gallery, Trailer, Demo-Download oder
+Share-Button live gehen — vorher sammeln sie ohnehin nichts.
+
+### Schlüsselereignisse
+
+**Verwaltung → Datenanzeige → Schlüsselereignisse → Neues Schlüsselereignis.** Der Dialog hat nur
+ein Freitextfeld; Namen exakt eintippen:
+
+- `playtest_signup_success`
+- `wishlist_click`
+
+Das geht, **bevor** das Ereignis je eingegangen ist — dafür ist das Freitextfeld da.
+
+Nicht zu verwechseln mit **Ereignisse → Ereignis erstellen**: das baut ein neues, abgeleitetes
+Ereignis aus einem bestehenden und verlangt deshalb einen Trigger aus einer Dropdown-Liste. Unsere
+Events stehen dort nicht drin, solange die Property noch keines empfangen hat — und gebraucht wird
+der Dialog hier ohnehin nicht.
 
 ## Eine neue Seite instrumentieren
 
@@ -143,6 +255,7 @@ Ohne diese Registrierung sind die Parameter in Reports nicht auswählbar:
 ---
 import Analytics from '../components/Analytics.astro';
 ---
+
 <head>
   <Analytics />
 </head>
@@ -151,8 +264,17 @@ import Analytics from '../components/Analytics.astro';
     Join the Playtest
   </a>
 
-  <a href="https://discord.gg/…" data-analytics="outbound" data-analytics-id="discord"
-     data-analytics-location="footer">Discord</a>
+  <a
+    href="https://discord.gg/…"
+    data-analytics="outbound"
+    data-analytics-id="discord"
+    data-analytics-location="footer">Discord</a
+  >
+
+  <!-- wishlist braucht keine data-analytics-id: der Store ist die ganze Identität. -->
+  <a href="https://store.steampowered.com/…" data-analytics="wishlist" data-analytics-location="nav">
+    Wishlist on Steam
+  </a>
 
   <section id="gods" data-analytics-section="gods">…</section>
 </body>
