@@ -4,7 +4,7 @@ description: "Why this devlog exists, what HoldStrong: The Last Tower is, and wh
 date: 2026-08-25
 ---
 
-![PLACEHOLDER — alt text follows once I have seen the image](/blog/welcome/hero.webp)
+![Mathias on a wide sandy beach by the sea, holding the handles of an orange stunt kite laid out on the sand](/blog/welcome/hero.webp)
 
 I am Mathias, a developer from northern Germany, and I am building my first game: **HoldStrong: The Last Tower**.
 
