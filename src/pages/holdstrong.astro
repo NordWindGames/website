@@ -1,5 +1,5 @@
 ---
-
+import { DISCORD_INVITE } from '../lib/social';
 ---
 
 <html lang="en">
@@ -199,8 +199,18 @@
 				<div class="hs-footer-inner">
 					<div class="hs-footer-brand">HOLD<span class="accent">STRONG</span></div>
 					<div class="hs-footer-links">
-						<a href="#" class="hs-footer-link hs-footer-link-discord">Discord</a>
+						<a
+							href={DISCORD_INVITE}
+							class="hs-footer-link hs-footer-link-discord"
+							rel="noopener"
+							data-analytics="outbound"
+							data-analytics-id="discord"
+							data-analytics-location="footer"
+						>
+							Discord
+						</a>
 						<a href="#" class="hs-footer-link hs-footer-link-steam">Steam</a>
+						<a href="/blog" class="hs-footer-link hs-footer-link-devlog">Devlog</a>
 						<a href="/" class="hs-footer-link hs-footer-link-studio">Nordwind Games</a>
 					</div>
 					<div class="hs-copyright">© 2026 · Made by Nordwind Games</div>
@@ -787,6 +797,10 @@
 	.hs-footer-link-steam {
 		border: 1px solid rgba(147, 160, 180, 0.25);
 		color: #a9b4c5;
+	}
+	.hs-footer-link-devlog {
+		border: 1px solid rgba(127, 212, 255, 0.35);
+		color: #7fd4ff;
 	}
 	.hs-footer-link-studio {
 		border: 1px solid rgba(255, 122, 47, 0.4);
