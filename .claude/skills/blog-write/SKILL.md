@@ -56,7 +56,9 @@ Both locales, identical filename: `src/content/blog/{en,de}/<slug>.md`.
   a personal devlog, not a corporate blog.
 - **Hero image directly under the frontmatter**, before the first paragraph.
 - Images in `public/blog/<slug>/`. Photos `.webp`, diagrams `.svg`.
-- Internal links: English `/blog/<slug>`, German `/de/blog/<slug>`.
+- Internal links keep their trailing slash: English `/blog/<slug>/`, German `/de/blog/<slug>/`,
+  game page `/holdstrong/`. `trailingSlash: 'always'` in `astro.config.mjs` makes the slashless
+  form a redirect hop.
 - **If the post names a tool, engine or another studio, add a short "what I use and why" line.** Not
   promotional, not a neutrality disclaimer — just say what you use and why you picked it.
 

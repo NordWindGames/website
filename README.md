@@ -32,3 +32,10 @@ Die Seite ist mit Google Analytics 4 instrumentiert. Die Measurement-ID kommt au
 GitHub-Actions-Repository-Variable `PUBLIC_GA_MEASUREMENT_ID`; ist sie nicht gesetzt, wird kein
 Tag gerendert. Was genau getrackt wird und wie neue Seiten instrumentiert werden, steht in
 [docs/analytics.md](./docs/analytics.md).
+
+## SEO und GEO
+
+Jede Seite trägt Canonical, Open-Graph-Karte und Schema.org-Daten; `/sitemap.xml`, `/robots.txt`,
+`/llms.txt` und zwei RSS-Feeds werden aus derselben Registry generiert. `robots.txt` erlaubt
+Retrieval-Crawler von Assistenten und sperrt Bulk-Trainings-Sammler — Begründung und die Regeln
+für hreflang stehen in [docs/seo.md](./docs/seo.md).

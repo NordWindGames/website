@@ -1,14 +1,25 @@
 ---
 import BlogLayout from '../../layouts/BlogLayout.astro';
 import { getPostsByLocale, postPath } from '../../lib/blog';
+import { BLOG_INDEX_ALTERNATES, blogIndex, feedPath } from '../../lib/seo';
+import { HOME_CRUMB, blog, breadcrumbs, identityNodes } from '../../lib/schema';
 
 const posts = await getPostsByLocale('en');
+const page = blogIndex('en');
+const site = Astro.site!;
 ---
 
 <BlogLayout
-	title="Devlog — Nordwind Games"
-	description="Development progress and learnings from Nordwind Games."
+	title={page.title}
+	description={page.description}
 	locale="en"
+	alternates={BLOG_INDEX_ALTERNATES}
+	feed={feedPath('en')}
+	jsonLd={[
+		...identityNodes(site),
+		blog(site, 'en', posts, (slug) => postPath('en', slug)),
+		breadcrumbs(site, [HOME_CRUMB, { name: 'Devlog', path: page.path }]),
+	]}
 >
 	<h1>Devlog</h1>
 	{posts.length === 0 && <p>No posts yet — check back soon.</p>}

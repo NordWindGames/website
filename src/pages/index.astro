@@ -1,6 +1,11 @@
 ---
 import Analytics from '../components/Analytics.astro';
+import Seo from '../components/Seo.astro';
 import { SOCIAL_CHANNELS } from '../lib/social';
+import { HOME } from '../lib/seo';
+import { identityNodes, website } from '../lib/schema';
+
+const site = Astro.site!;
 ---
 
 <html lang="en">
@@ -10,8 +15,7 @@ import { SOCIAL_CHANNELS } from '../lib/social';
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content="Nordwind Games — indie game studio. Game: Hold Strong, coming soon." />
-		<title>Nordwind Games</title>
+		<Seo title={HOME.title} description={HOME.description} jsonLd={[...identityNodes(site), website(site)]} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -83,10 +87,10 @@ import { SOCIAL_CHANNELS } from '../lib/social';
 								data-analytics="cta"
 								data-analytics-id="hold_strong_teaser"
 								data-analytics-location="hero"
-								data-analytics-label="Game: Hold Strong"
+								data-analytics-label="Game: HoldStrong"
 							>
 								<span class="cta-dot"></span>
-								Game: Hold Strong
+								Game: HoldStrong
 								<span class="cta-badge">coming soon</span>
 							</a>
 						</div>

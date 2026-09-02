@@ -4,7 +4,7 @@
   "repos": [
     {
       "id": "game",
-      "label": "Hold Strong (game)",
+      "label": "HoldStrong (game)",
       "path": "C:\\path\\to\\hold-strong"
     }
   ]

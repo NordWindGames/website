@@ -1,6 +1,11 @@
 ---
 import Analytics from '../components/Analytics.astro';
+import Seo from '../components/Seo.astro';
 import { DISCORD_INVITE } from '../lib/social';
+import { GAME_NAME, HOLDSTRONG, OG_HOLDSTRONG } from '../lib/seo';
+import { HOME_CRUMB, breadcrumbs, identityNodes, videoGame } from '../lib/schema';
+
+const site = Astro.site!;
 ---
 
 <html lang="en">
@@ -10,11 +15,16 @@ import { DISCORD_INVITE } from '../lib/social';
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<meta
-			name="description"
-			content="HoldStrong — an incremental Viking roguelike by Nordwind Games. Join the playtest before the public demo."
+		<Seo
+			title={HOLDSTRONG.title}
+			description={HOLDSTRONG.description}
+			image={OG_HOLDSTRONG}
+			jsonLd={[
+				...identityNodes(site),
+				videoGame(site),
+				breadcrumbs(site, [HOME_CRUMB, { name: GAME_NAME, path: HOLDSTRONG.path }]),
+			]}
 		/>
-		<title>HoldStrong — Nordwind Games</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
@@ -256,7 +266,7 @@ import { DISCORD_INVITE } from '../lib/social';
 							data-analytics-location="footer">Steam</a
 						>
 						<a
-							href="/blog"
+							href="/blog/"
 							class="hs-footer-link hs-footer-link-devlog"
 							data-analytics="cta"
 							data-analytics-id="devlog"

@@ -33,7 +33,7 @@ export type SocialChannel = {
  * landing page, so there is no third-party form to point at.
  */
 export const DISCORD_INVITE = 'https://discord.com/invite/RDk2UGcQ97';
-export const PLAYTEST_SIGNUP = '/holdstrong#demo';
+export const PLAYTEST_SIGNUP = '/holdstrong/#demo';
 
 // TODO(nordwind): every url below except Discord is still a placeholder
 // pointing at the platform's own homepage - they went live that way. Replace

@@ -1,7 +1,9 @@
 ---
 import { render } from 'astro:content';
 import BlogLayout from '../../../layouts/BlogLayout.astro';
-import { getPostsByLocale, getTranslationPath } from '../../../lib/blog';
+import { getPostsByLocale, getTranslationPath, postPath } from '../../../lib/blog';
+import { blogIndex, feedPath, postAlternates } from '../../../lib/seo';
+import { HOME_CRUMB, blogPosting, breadcrumbs, identityNodes } from '../../../lib/schema';
 
 export async function getStaticPaths() {
 	const posts = await getPostsByLocale('de');
@@ -11,6 +13,9 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const altLocaleHref = await getTranslationPath('de', post.slug);
+const alternates = await postAlternates('de', post.slug);
+const site = Astro.site!;
+const path = postPath('de', post.slug);
 ---
 
 <BlogLayout
@@ -18,6 +23,27 @@ const altLocaleHref = await getTranslationPath('de', post.slug);
 	description={post.data.description}
 	locale="de"
 	altLocaleHref={altLocaleHref}
+	alternates={alternates}
+	type="article"
+	publishedTime={post.data.date}
+	feed={feedPath('de')}
+	jsonLd={[
+		...identityNodes(site),
+		blogPosting({
+			site,
+			locale: 'de',
+			path,
+			title: post.data.title,
+			description: post.data.description,
+			date: post.data.date,
+			body: post.body,
+		}),
+		breadcrumbs(site, [
+			HOME_CRUMB,
+			{ name: 'Devlog', path: blogIndex('de').path },
+			{ name: post.data.title, path },
+		]),
+	]}
 >
 	<h1>{post.data.title}</h1>
 	<p class="meta">{post.data.date.toISOString().slice(0, 10)}</p>

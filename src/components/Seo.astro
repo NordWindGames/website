@@ -1,0 +1,110 @@
+---
+/**
+ * Every page's SEO head: title, description, canonical, hreflang, the Open Graph
+ * sharing card, and structured data.
+ *
+ * It deliberately does not own charset, viewport, favicons, fonts or
+ * <Analytics />. Those differ per page — the landing page, the game page and the
+ * devlog each load a different font set and paint a different background — so
+ * pulling them in here would turn this into a layout with a slot for everything.
+ * In each of the three existing <head> blocks this replaces exactly two lines:
+ * <title> and <meta name="description">.
+ */
+import type { Locale } from '../lib/blog';
+import { absoluteUrl, canonicalUrl, OG_DEFAULT, SITE_NAME, type Alternate, type OgImage } from '../lib/seo';
+
+interface Props {
+	title: string;
+	description: string;
+	/** Drives og:locale. The page itself still sets <html lang>. */
+	locale?: Locale;
+	image?: OgImage;
+	type?: 'website' | 'article';
+	/** Only where a real translation exists — see postAlternates in src/lib/seo.ts. */
+	alternates?: Alternate[];
+	/** For /404.html: keep it out of the index, and out of the sitemap. */
+	noindex?: boolean;
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	/** An RSS feed to advertise, as a site-relative path. */
+	feed?: string;
+	/** schema.org nodes. Several are merged into one @graph. */
+	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+	title,
+	description,
+	locale = 'en',
+	image = OG_DEFAULT,
+	type = 'website',
+	alternates = [],
+	noindex = false,
+	publishedTime,
+	modifiedTime,
+	feed,
+	jsonLd,
+} = Astro.props;
+
+const site = Astro.site;
+if (!site) {
+	throw new Error('astro.config.mjs: `site` is required for canonical URLs and og:url');
+}
+
+const canonical = canonicalUrl(Astro.url, site);
+const ogImage = absoluteUrl(image.src, site);
+const ogLocale = locale === 'de' ? 'de_DE' : 'en_US';
+
+const nodes = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const graph =
+	nodes.length === 0
+		? null
+		: JSON.stringify(
+				nodes.length === 1
+					? { '@context': 'https://schema.org', ...nodes[0] }
+					: { '@context': 'https://schema.org', '@graph': nodes },
+			)
+				// set:html does not escape. A "<" in a post title would otherwise close
+				// the script element early and spill the rest of the graph into the page.
+				.replace(/</g, '\\u003c');
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+
+{
+	/* A noindex page needs no canonical: it is asking to stay out of the index,
+	   and a self-canonical only muddies that request. */
+	noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />
+}
+
+{
+	alternates.map((alternate) => (
+		<link rel="alternate" hreflang={alternate.hreflang} href={absoluteUrl(alternate.href, site)} />
+	))
+}
+
+{feed && <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} Devlog`} href={feed} />}
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content={String(image.width)} />
+<meta property="og:image:height" content={String(image.height)} />
+<meta property="og:image:alt" content={image.alt} />
+
+{
+	/* X falls back to og:* for title, description and image, so only what it
+	   cannot derive goes here. twitter:site stays out until there is a real
+	   account to name — see the TODO in src/lib/social.ts. */
+}
+<meta name="twitter:card" content="summary_large_image" />
+
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+
+{graph && <script type="application/ld+json" is:inline set:html={graph} />}
