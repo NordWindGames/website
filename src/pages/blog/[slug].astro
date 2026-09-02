@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BlogLayout from '../../layouts/BlogLayout.astro';
 import { getPostsByLocale, getTranslationPath } from '../../lib/blog';
+import { feedPath, postAlternates } from '../../lib/seo';
 
 export async function getStaticPaths() {
 	const posts = await getPostsByLocale('en');
@@ -11,6 +12,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const altLocaleHref = await getTranslationPath('en', post.slug);
+const alternates = await postAlternates('en', post.slug);
 ---
 
 <BlogLayout
@@ -18,6 +20,10 @@ const altLocaleHref = await getTranslationPath('en', post.slug);
 	description={post.data.description}
 	locale="en"
 	altLocaleHref={altLocaleHref}
+	alternates={alternates}
+	type="article"
+	publishedTime={post.data.date}
+	feed={feedPath('en')}
 >
 	<h1>{post.data.title}</h1>
 	<p class="meta">{post.data.date.toISOString().slice(0, 10)}</p>

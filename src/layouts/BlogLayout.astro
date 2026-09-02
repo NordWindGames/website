@@ -1,7 +1,9 @@
 ---
 import Analytics from '../components/Analytics.astro';
+import Seo from '../components/Seo.astro';
 import { SOCIAL_CHANNELS, DISCORD_INVITE } from '../lib/social';
 import { blogIndexPath, otherLocale, type Locale } from '../lib/blog';
+import type { Alternate, OgImage } from '../lib/seo';
 
 interface Props {
 	title: string;
@@ -13,9 +15,36 @@ interface Props {
 	 * keeps you on what you were reading rather than dumping you at the index.
 	 */
 	altLocaleHref?: string;
+	/**
+	 * Passed straight through to <Seo />. The layout decides none of it: which
+	 * pages may claim an hreflang cluster, carry an article date or stay out of
+	 * the index is a per-route question, and answering it here would mean
+	 * guessing from the locale prop.
+	 */
+	alternates?: Alternate[];
+	noindex?: boolean;
+	type?: 'website' | 'article';
+	image?: OgImage;
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	feed?: string;
+	jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, locale, altLocaleHref } = Astro.props;
+const {
+	title,
+	description,
+	locale,
+	altLocaleHref,
+	alternates,
+	noindex,
+	type,
+	image,
+	publishedTime,
+	modifiedTime,
+	feed,
+	jsonLd,
+} = Astro.props;
 // The landing page is English-only, so both locales' brand link goes there. A
 // '/de/' home would be a 404: GitHub Pages serves static files with no rewrite,
 // and there is no src/pages/de/index.astro to build one from.
@@ -38,8 +67,19 @@ const t =
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
-		<title>{title}</title>
+		<Seo
+			{title}
+			{description}
+			{locale}
+			{alternates}
+			{noindex}
+			{type}
+			{image}
+			{publishedTime}
+			{modifiedTime}
+			{feed}
+			{jsonLd}
+		/>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
