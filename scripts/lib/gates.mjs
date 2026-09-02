@@ -55,13 +55,18 @@ function routesFor(locale) {
   return routes
 }
 
-/** Does a path exist as a route, or as a real file under public/ (favicon, PDF, CNAME)? */
-function resolves(routes, segments) {
+/** Does a path exist as a page route? Static segments and dynamic [param] ones alike. */
+function matchesRoute(routes, segments) {
   if (routes.has(segments.join('/'))) return true
   for (let i = 0; i < segments.length; i++) {
     if (routes.has([...segments.slice(0, i), '*'].join('/'))) return true
   }
-  return existsSync(join(PUBLIC_DIR, ...segments))
+  return false
+}
+
+/** Does a path exist as a route, or as a real file under public/ (favicon, PDF, CNAME)? */
+function resolves(routes, segments) {
+  return matchesRoute(routes, segments) || existsSync(join(PUBLIC_DIR, ...segments))
 }
 
 /**
@@ -103,6 +108,28 @@ function svgSize(markup) {
   const width = Number(tag.match(/\bwidth\s*=\s*["'](\d+(?:\.\d+)?)(?:px)?["']/i)?.[1])
   const height = Number(tag.match(/\bheight\s*=\s*["'](\d+(?:\.\d+)?)(?:px)?["']/i)?.[1])
   return width > 0 && height > 0 ? { width, height } : null
+}
+
+/**
+ * True for an unprefixed link out of a non-default-locale post that points at a page which only
+ * exists in the default locale.
+ *
+ * The prefix rule assumes every locale is a full mirror of the default one. Not every page is:
+ * the studio home and the HoldStrong landing page are English-only by decision, so a "/de/…"
+ * counterpart would be a 404 - GitHub Pages serves static files with no rewrite. The escape
+ * hatch is deliberately narrow: it only applies where the current locale has no route of its own
+ * at that path, so /blog links (which do exist per locale) still have to carry the /de prefix.
+ */
+function isSharedDefaultRoute(routesByLocale, locale, prefix, segments) {
+  if (locale === CONFIG.locales.default || prefix !== '' || segments.length === 0) return false
+
+  // Route sets only, not resolves(): its public/ fallback is locale-agnostic, so the asset
+  // directory public/holdstrong/ would otherwise pass as a German route.
+  const own = routesByLocale.get(locale)
+  if (own && matchesRoute(own, segments)) return false
+
+  const fallback = routesByLocale.get(CONFIG.locales.default)
+  return Boolean(fallback) && matchesRoute(fallback, segments)
 }
 
 /** Conventions: frontmatter, slug, hero image, internal links, DE/EN pairing. */
@@ -175,7 +202,10 @@ export function lint(corpus) {
       const segments = path.split('/').filter(Boolean)
       const prefix = LOCALES.includes(segments[0]) ? `/${segments[0]}` : ''
 
-      if (prefix !== expectedPrefix) {
+      if (
+        prefix !== expectedPrefix &&
+        !isSharedDefaultRoute(routesByLocale, locale, prefix, segments)
+      ) {
         err(
           where,
           `wrong locale prefix for a "${locale}" post: ${href} - expected ` +
