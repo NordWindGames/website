@@ -1,0 +1,16 @@
+---
+// GitHub Pages serves this single file for every unmatched path — there is no
+// server to rewrite or route, and it is not locale-aware, so one bilingual page
+// has to cover both /… and /de/… misses.
+import BlogLayout from '../layouts/BlogLayout.astro';
+---
+
+<BlogLayout title="Not found — Nordwind Games" description="This page does not exist." locale="en">
+	<h1>404</h1>
+	<p>That page does not exist (yet). / Diese Seite gibt es (noch) nicht.</p>
+	<ul>
+		<li><a href="/">Nordwind Games</a></li>
+		<li><a href="/blog/">Devlog (English)</a></li>
+		<li><a href="/de/blog/">Devlog (Deutsch)</a></li>
+	</ul>
+</BlogLayout>
