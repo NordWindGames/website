@@ -39,6 +39,24 @@ personenbezogene Daten als Event-Parameter senden.
 Die Measurement-ID kommt aus `PUBLIC_GA_MEASUREMENT_ID`; ohne sie wird kein Tag gerendert und der
 Dev-Server loggt die Events nur in die Konsole.
 
+## SEO und GEO
+
+Jede Seite bindet `<Seo title=… description=… />` ([src/components/Seo.astro](./src/components/Seo.astro))
+im `<head>` ein — die Komponente ersetzt `<title>` und `<meta name="description">`, sonst nichts.
+Titel und Description gehören als `StaticPage` nach `src/lib/seo.ts` und in `STATIC_PAGES`: der
+Sitemap-Endpoint bricht den Build ab, wenn eine Seite unter `src/pages/` in keinem Eintrag steht.
+
+`alternates` (hreflang) nur setzen, wenn die andere Sprachfassung **wirklich existiert**. `/` und
+`/holdstrong/` sind englisch-only und tragen keins; für Posts liefert `postAlternates()` ohne
+Übersetzung ein leeres Array. Niemals `getTranslationPath()` für hreflang verwenden — dessen
+Index-Fallback ist für den sichtbaren Sprachumschalter richtig und als hreflang eine Falschaussage.
+
+JSON-LD über den `jsonLd`-Prop, Knoten aus `src/lib/schema.ts`, mindestens `identityNodes(site)`.
+Interne Links behalten ihren Trailing Slash (`trailingSlash: 'always'`).
+
+Vollständige Doku inklusive Crawler-Haltung in `robots.txt` und der bewusst weggelassenen
+Schema-Felder: [docs/seo.md](./docs/seo.md) — bei Änderungen mitpflegen.
+
 ## Devlog
 
 Die Ideen-Pipeline für den Devlog liegt in `scripts/blog.mjs` + `scripts/lib/` +
