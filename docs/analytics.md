@@ -236,10 +236,18 @@ Share-Button live gehen — vorher sammeln sie ohnehin nichts.
 
 ### Schlüsselereignisse
 
-**Admin → Schlüsselereignisse → Neues Schlüsselereignis**, Name jeweils exakt eintippen:
+**Verwaltung → Datenanzeige → Schlüsselereignisse → Neues Schlüsselereignis.** Der Dialog hat nur
+ein Freitextfeld; Namen exakt eintippen:
 
 - `playtest_signup_success`
 - `wishlist_click`
+
+Das geht, **bevor** das Ereignis je eingegangen ist — dafür ist das Freitextfeld da.
+
+Nicht zu verwechseln mit **Ereignisse → Ereignis erstellen**: das baut ein neues, abgeleitetes
+Ereignis aus einem bestehenden und verlangt deshalb einen Trigger aus einer Dropdown-Liste. Unsere
+Events stehen dort nicht drin, solange die Property noch keines empfangen hat — und gebraucht wird
+der Dialog hier ohnehin nicht.
 
 ## Eine neue Seite instrumentieren
 
