@@ -8,9 +8,29 @@ import BlogLayout from '../layouts/BlogLayout.astro';
 <BlogLayout title="Not found — Nordwind Games" description="This page does not exist." locale="en" noindex>
 	<h1>404</h1>
 	<p>That page does not exist (yet). / Diese Seite gibt es (noch) nicht.</p>
-	<ul>
+	<ul class="links">
 		<li><a href="/">Nordwind Games</a></li>
 		<li><a href="/blog/">Devlog (English)</a></li>
 		<li><a href="/de/blog/">Devlog (Deutsch)</a></li>
 	</ul>
 </BlogLayout>
+
+<style>
+	@media (max-width: 1023px) {
+		.links {
+			list-style: none;
+			padding: 0;
+			margin: 2em 0 0;
+		}
+		.links li + li {
+			margin-top: 4px;
+		}
+	}
+	@media (max-width: 1023px) {
+		.links a {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
+		}
+	}
+</style>

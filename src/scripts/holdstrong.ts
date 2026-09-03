@@ -22,6 +22,8 @@ type Els = {
 	success: HTMLElement;
 	successEmail: HTMLElement;
 	godCards: HTMLElement[];
+	galleryScroll: HTMLElement | null;
+	galleryDots: HTMLElement | null;
 };
 
 type SignupResult = { ok: true } | { ok: false; reason: 'unreachable' | 'rejected' };
@@ -47,6 +49,12 @@ const GOD_DWELL_MS = 2000;
 
 /** Fraction of a card that must be visible for the dwell timer to run. */
 const GOD_DWELL_RATIO = 0.6;
+
+/** Below this the gallery is a carousel; above it, a grid. Mirrors the CSS. */
+const CAROUSEL_QUERY = '(max-width: 639px)';
+
+/** Fraction of a slide that must be showing before its dot lights up. */
+const SLIDE_ACTIVE_RATIO = 0.6;
 
 const GODS: readonly God[] = ['thor', 'loki', 'tyr'];
 
@@ -245,8 +253,65 @@ function bindGodCards(cards: HTMLElement[]) {
 	for (const card of cards) observer.observe(card);
 }
 
+/**
+ * Light the dot belonging to the gallery slide currently on screen.
+ *
+ * Display only: the dots are aria-hidden and are never controls. On a touch
+ * screen you swipe, you do not aim at a 7px target — and above the carousel
+ * breakpoint there is no carousel to indicate, so the observer is torn down
+ * rather than left running over a static grid.
+ */
+function bindGalleryCarousel(scroll: HTMLElement | null, dots: HTMLElement | null) {
+	if (!scroll || !dots) return;
+	if (typeof IntersectionObserver === 'undefined' || typeof matchMedia === 'undefined') return;
+
+	const slides = Array.from(scroll.querySelectorAll<HTMLElement>('.hs-gallery-slot'));
+	const marks = Array.from(dots.querySelectorAll<HTMLElement>('span'));
+	if (slides.length === 0 || marks.length !== slides.length) return;
+
+	let observer: IntersectionObserver | null = null;
+
+	const attach = () => {
+		if (observer) return;
+		observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					const index = slides.indexOf(entry.target as HTMLElement);
+					if (index < 0) continue;
+					for (const [i, mark] of marks.entries()) mark.toggleAttribute('data-active', i === index);
+				}
+			},
+			{ root: scroll, threshold: SLIDE_ACTIVE_RATIO },
+		);
+		for (const slide of slides) observer.observe(slide);
+
+		// A horizontal scroller is unreachable by keyboard in browsers that do not
+		// focus scroll containers on their own, so say it is focusable — but only
+		// while it actually scrolls.
+		scroll.setAttribute('tabindex', '0');
+		scroll.setAttribute('role', 'group');
+		scroll.setAttribute('aria-label', 'Gallery, scrolls horizontally');
+	};
+
+	const detach = () => {
+		observer?.disconnect();
+		observer = null;
+		for (const mark of marks) mark.removeAttribute('data-active');
+		scroll.removeAttribute('tabindex');
+		scroll.removeAttribute('role');
+		scroll.removeAttribute('aria-label');
+	};
+
+	const mq = matchMedia(CAROUSEL_QUERY);
+	const sync = () => (mq.matches ? attach() : detach());
+	mq.addEventListener('change', sync);
+	sync();
+}
+
 export function initHoldStrong(els: Els) {
 	startCountdown(els);
 	bindSignupForm(els);
 	bindGodCards(els.godCards);
+	bindGalleryCarousel(els.galleryScroll, els.galleryDots);
 }

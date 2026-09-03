@@ -216,6 +216,8 @@ class StormCloud {
 		this.resize();
 		window.addEventListener('resize', this.resize);
 		this.start = performance.now();
+		const still = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 		this.loop = (t: number) => {
 			try {
 				const c = this.canvas;
@@ -227,15 +229,23 @@ class StormCloud {
 					console.warn('cloud draw error', e);
 				}
 			} finally {
-				this.raf = requestAnimationFrame(this.loop);
+				if (!still) this.raf = requestAnimationFrame(this.loop);
 			}
 		};
+		// Reduced motion still gets the scene, just not the animation: one frame
+		// paints the cloud and leaves the CSS variables at sane values, and a
+		// resize repaints it so the canvas never goes blank.
 		this.raf = requestAnimationFrame(this.loop);
+		if (still) window.addEventListener('resize', () => this.loop(performance.now()));
 
-		this.btn.addEventListener('pointerenter', () => {
+		this.btn.addEventListener('pointerenter', (e) => {
+			if (e.pointerType === 'touch') return;
 			this.hover = true;
 		});
 		this.btn.addEventListener('pointerleave', () => {
+			this.hover = false;
+		});
+		this.btn.addEventListener('pointercancel', () => {
 			this.hover = false;
 		});
 		this.btn.addEventListener('focus', () => {

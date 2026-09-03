@@ -141,6 +141,9 @@ const site = Astro.site!;
 		position: relative;
 		width: 100%;
 		min-height: 100vh;
+		min-height: 100dvh;
+		/* Not an overflow workaround: the CTA jolt animation moves the button
+		   outside the layout box and this is the clip that contains it. */
 		overflow: hidden;
 		font-family: 'IBM Plex Mono', ui-monospace, monospace;
 	}
@@ -158,6 +161,7 @@ const site = Astro.site!;
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		min-height: 100dvh;
 		padding: 40px clamp(24px, 6vw, 96px) 48px;
 	}
 
@@ -300,8 +304,10 @@ const site = Astro.site!;
 		box-shadow: var(--gameshadow);
 		transform: translateY(var(--gamelift));
 	}
-	.cta:hover {
-		letter-spacing: 0.09em;
+	@media (hover: hover) {
+		.cta:hover {
+			letter-spacing: 0.09em;
+		}
 	}
 
 	.cta-dot {
@@ -317,5 +323,55 @@ const site = Astro.site!;
 		text-transform: uppercase;
 		white-space: nowrap;
 		opacity: 0.62;
+	}
+
+	/* ── responsive ──────────────────────────────────────────────────────────
+	 *
+	 * max-width steps matching the analytics viewport buckets in
+	 * src/lib/analytics/auto.ts. Nothing here applies at 1024px and up.
+	 *
+	 * Note .site keeps its overflow:hidden - unlike /holdstrong/ that is not a
+	 * clip hiding a layout bug, it is the clip the CTA jolt animation needs.
+	 */
+
+	@media (max-width: 1023px) {
+		.nav-link,
+		.social-btn {
+			height: 44px;
+		}
+		.social-btn {
+			width: 44px;
+		}
+	}
+
+	@media (max-width: 639px) {
+		/* "Game: HoldStrong" plus the badge is ~400px of Silkscreen on one line and
+		   was clipped at both ends. Let it be two lines instead of shrinking the
+		   only primary CTA on the page. */
+		.cta {
+			flex-direction: column;
+			gap: 6px;
+			padding: 14px 20px;
+			text-align: center;
+			white-space: normal;
+		}
+		.cta-dot {
+			display: none;
+		}
+
+		/* Out of flow plus .hero's 26vh top padding meant the socials overlapped
+		   the CTA on a short (landscape) viewport. */
+		.socials {
+			position: static;
+			justify-content: center;
+			margin-top: 32px;
+		}
+		.hero {
+			padding-top: min(26vh, 96px);
+			padding-bottom: 8px;
+		}
+		.content {
+			padding-bottom: 32px;
+		}
 	}
 </style>

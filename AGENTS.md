@@ -48,6 +48,33 @@ Die Ideen-Pipeline für den Devlog liegt in `scripts/blog.mjs` + `scripts/lib/` 
 Referenz-Blog-URLs) und alle daraus abgeleiteten State-Files sind absichtlich gitignored —
 dieses Repo ist öffentlich. Vor dem Schreiben eines Posts `npm run blog:check` laufen lassen.
 
+## Styling und Responsive
+
+Kein CSS-Framework, keine globale Stylesheet-Datei — alles Styling steht in den drei gescopten
+`<style>`-Blöcken von [src/pages/index.astro](./src/pages/index.astro),
+[src/pages/holdstrong.astro](./src/pages/holdstrong.astro) und
+[src/layouts/BlogLayout.astro](./src/layouts/BlogLayout.astro).
+
+Zwei Breakpoints, beide `max-width`: `1023px` („nicht Desktop") und `639px` („Handy"). Die Werte
+sind deckungsgleich mit `viewportBucket()` in `src/lib/analytics/auto.ts`, damit Layout und
+GA4-Reporting dieselben Grenzen benutzen.
+
+**Die Regel: mobile Regeln kommen als `max-width`-Block ans Ende des Style-Blocks, der
+Desktop-Pfad darüber wird nicht angefasst.** Ab 1024px greift keine dieser Regeln — das ist die
+Garantie, dass eine Mobile-Änderung den Desktop nicht verschiebt. Werte, die nur kleiner werden
+sollen, per `clamp()` in der bestehenden Regel statt per Breakpoint-Sprung.
+
+Hover-Effekte, die mehr tun als eine Farbe wechseln, gehören in `@media (hover: hover)` — auf
+Touch feuert `pointerleave` oft nie und der Effekt bleibt hängen. Interaktive Elemente sind
+unterhalb 1024px mindestens 44px hoch; Inline-Links im Fließtext sind die bewusste Ausnahme.
+
+Vorsicht bei `--fg`, `--line`, `--gamebg`, `--gamelift`, `--gameshadow` auf `.site`: das sind keine
+Theme-Tokens, sondern Kanäle, die `src/scripts/storm-cloud.ts` pro Animationsframe beschreibt.
+
+Vollständige Doku inklusive der beiden Karussells auf `/holdstrong/` und der offenen Punkte
+(CLS bei Markdown-Bildern, 1 MB Keyart, fehlendes `:focus-visible`): [docs/styling.md](./docs/styling.md)
+— bei Änderungen mitpflegen.
+
 ## Dokumentation
 
 Vollständige Doku: https://docs.astro.build
