@@ -36,7 +36,15 @@ const site = Astro.site!;
 	<body>
 		<div class="hs-page">
 			<div class="hs-hero">
-				<img class="hs-hero-img" src="/holdstrong/keyart.png" alt="" />
+				<img
+					class="hs-hero-img"
+					src="/holdstrong/keyart.png"
+					alt=""
+					width="1024"
+					height="559"
+					fetchpriority="high"
+					decoding="async"
+				/>
 				<div class="hs-hero-overlay hs-hero-overlay-1"></div>
 				<div class="hs-hero-overlay hs-hero-overlay-2"></div>
 
@@ -178,15 +186,29 @@ const site = Astro.site!;
 						<h2 class="hs-h2">From the build</h2>
 						<div class="hs-gallery-note">Pre-alpha capture · art not final</div>
 					</div>
-					<div class="hs-gallery-grid-main">
+					<div class="hs-gallery-body">
 						<div class="hs-gallery-slot hs-gallery-slot-wide">Wide gameplay shot — the tower under siege</div>
-						<div class="hs-gallery-slot">Upgrade / rune screen</div>
-						<div class="hs-gallery-slot">Boss or god encounter</div>
+						<!--
+						  display:contents above 639px, so the two grids below stay direct grid items of
+						  .hs-gallery-body and the desktop layout is exactly the one it always was. Below
+						  640px this element becomes the scroll-snap carousel and the five slots become its
+						  slides - which only works if they share a single parent, hence the wrapper.
+						-->
+						<div class="hs-gallery-scroll" id="hs-gallery-scroll">
+							<div class="hs-gallery-grid-main">
+								<div class="hs-gallery-slot">Upgrade / rune screen</div>
+								<div class="hs-gallery-slot">Boss or god encounter</div>
+							</div>
+							<div class="hs-gallery-grid-secondary">
+								<div class="hs-gallery-slot hs-gallery-slot-short">Combat</div>
+								<div class="hs-gallery-slot hs-gallery-slot-short">World map</div>
+								<div class="hs-gallery-slot hs-gallery-slot-short">Loot / meta progression</div>
+							</div>
+						</div>
 					</div>
-					<div class="hs-gallery-grid-secondary">
-						<div class="hs-gallery-slot hs-gallery-slot-short">Combat</div>
-						<div class="hs-gallery-slot hs-gallery-slot-short">World map</div>
-						<div class="hs-gallery-slot hs-gallery-slot-short">Loot / meta progression</div>
+					<!-- Carousel position indicator. Display only, never a control. -->
+					<div class="hs-gallery-dots" id="hs-gallery-dots" aria-hidden="true">
+						<span></span><span></span><span></span><span></span><span></span>
 					</div>
 				</div>
 			</section>
@@ -299,6 +321,8 @@ const site = Astro.site!;
 				success: document.getElementById('hs-success')!,
 				successEmail: document.getElementById('hs-success-email')!,
 				godCards: Array.from(document.querySelectorAll<HTMLElement>('[data-god]')),
+				galleryScroll: document.getElementById('hs-gallery-scroll'),
+				galleryDots: document.getElementById('hs-gallery-dots'),
 			});
 		</script>
 	</body>
@@ -321,7 +345,6 @@ const site = Astro.site!;
 		background: #070a11;
 		color: #c9d2e0;
 		font-family: Barlow, system-ui, sans-serif;
-		overflow-x: hidden;
 	}
 
 	.accent {
@@ -602,8 +625,10 @@ const site = Astro.site!;
 		overflow: hidden;
 		transition: border-color 150ms;
 	}
-	.hs-god-card:hover {
-		border-color: rgba(255, 122, 47, 0.4);
+	@media (hover: hover) {
+		.hs-god-card:hover {
+			border-color: rgba(255, 122, 47, 0.4);
+		}
 	}
 	.hs-god-rune {
 		position: absolute;
@@ -667,24 +692,39 @@ const site = Astro.site!;
 		text-transform: uppercase;
 		color: #6f7b8e;
 	}
-	.hs-gallery-grid-main {
+	/*
+	 * One 2fr/1fr grid: the wide slot fills column 1, the two tall slots stack in
+	 * column 2, the three short ones span the full width below. .hs-gallery-scroll
+	 * is display:contents here, so its children are the grid items and the geometry
+	 * is identical to what it was before the wrapper existed. Below 640px that
+	 * wrapper becomes the carousel instead - see the media block at the end.
+	 */
+	.hs-gallery-body {
 		display: grid;
 		grid-template-columns: 2fr 1fr;
-		grid-template-rows: 230px 230px;
 		gap: 16px;
 		margin-top: 34px;
 	}
-	.hs-gallery-grid-main .hs-gallery-slot-wide {
-		grid-row: span 2;
+	.hs-gallery-scroll {
+		display: contents;
+	}
+	.hs-gallery-grid-main {
+		display: grid;
+		grid-template-rows: 230px 230px;
+		gap: 16px;
 	}
 	.hs-gallery-grid-secondary {
+		grid-column: 1 / -1;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: 16px;
-		margin-top: 16px;
 	}
 	.hs-gallery-grid-secondary .hs-gallery-slot-short {
 		height: 170px;
+	}
+	/* Carousel affordance; only ever visible at the carousel breakpoint. */
+	.hs-gallery-dots {
+		display: none;
 	}
 	.hs-gallery-slot {
 		display: flex;
@@ -877,5 +917,226 @@ const site = Astro.site!;
 	.hs-copyright {
 		font-size: 13px;
 		color: #5f6a7c;
+	}
+
+	/* ── responsive ──────────────────────────────────────────────────────────
+	 *
+	 * Two max-width steps, matching the analytics viewport buckets in
+	 * src/lib/analytics/auto.ts so layout and reporting share their boundaries:
+	 * below 1024px is "not desktop", below 640px is "phone". Nothing here applies
+	 * at 1024px and up - the desktop layout above is deliberately untouched.
+	 */
+
+	@media (max-width: 1023px) {
+		/* 48px of fixed gutter ate 27% of a 360px viewport. */
+		.hs-header,
+		.hs-countdown-inner,
+		.hs-section,
+		.hs-demo-inner,
+		.hs-footer-inner {
+			padding-left: clamp(16px, 5vw, 48px);
+			padding-right: clamp(16px, 5vw, 48px);
+		}
+		.hs-section {
+			padding-top: clamp(56px, 9vw, 100px);
+			padding-bottom: clamp(56px, 9vw, 100px);
+		}
+		.hs-demo-inner {
+			padding-top: clamp(56px, 9vw, 100px);
+			padding-bottom: clamp(56px, 9vw, 100px);
+		}
+		.hs-hero-body {
+			padding: clamp(48px, 8vw, 80px) clamp(16px, 5vw, 32px) clamp(56px, 9vw, 96px);
+		}
+
+		/* A hero taller than the viewport pushes every word below the fold, and
+		   cover-cropping a 1024x559 landscape key art into a tall box overzooms it. */
+		.hs-hero {
+			min-height: min(820px, 100svh);
+		}
+
+		/* The clamp floor of 64px was higher than a 360px viewport can hold. */
+		.hs-title {
+			font-size: clamp(38px, 11vw, 148px);
+		}
+		.hs-tagline {
+			font-size: clamp(16px, 2.4vw, 20px);
+		}
+		.hs-brand {
+			font-size: clamp(21px, 3vw, 26px);
+		}
+		.hs-h2 {
+			font-size: clamp(30px, 6vw, 52px);
+		}
+		.hs-god-name {
+			font-size: clamp(28px, 4.4vw, 38px);
+		}
+		.hs-god-rune {
+			font-size: clamp(96px, 16vw, 150px);
+		}
+		.hs-countdown-value {
+			font-size: clamp(32px, 5.5vw, 44px);
+		}
+		.hs-countdown-date {
+			font-size: clamp(18px, 2.6vw, 22px);
+		}
+		.hs-feature-title {
+			font-size: clamp(19px, 2.6vw, 22px);
+		}
+		.hs-signup-success-title {
+			font-size: clamp(24px, 3.6vw, 30px);
+		}
+
+		/* auto-fit keeps three columns wherever they still fit and drops to two,
+		   then one, instead of squeezing every track below readability. */
+		.hs-gods-grid {
+			grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+			margin-top: clamp(28px, 5vw, 48px);
+		}
+		.hs-feature-grid {
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		}
+
+		/* Fixed row heights cannot survive a narrow column. */
+		.hs-gallery-grid-main {
+			grid-template-rows: repeat(2, minmax(160px, 1fr));
+		}
+
+		.hs-countdown-unit {
+			min-width: 0;
+		}
+		.hs-input {
+			min-width: 0;
+			width: 100%;
+		}
+
+		/* Touch targets: the jump links were 18px tall, the footer links 34px. */
+		.hs-nav {
+			gap: 8px 20px;
+		}
+		.hs-nav a {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
+		}
+		.hs-nav-cta {
+			min-height: 44px;
+		}
+		.hs-footer-link {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
+		}
+		.hs-brand {
+			display: inline-flex;
+			align-items: center;
+			min-height: 44px;
+		}
+	}
+
+	@media (max-width: 639px) {
+		/* The four jump links wrapped into a ~200px tall stack on top of the key
+		   art. The page scrolls fine without them; the wishlist CTA is the one
+		   thing in the header worth keeping. */
+		.hs-nav a:not(.hs-nav-cta) {
+			display: none;
+		}
+
+		/* Four units at min-width 104px needed 458px and clipped minutes and
+		   seconds away behind the old overflow:hidden. */
+		.hs-countdown-units {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+			width: 100%;
+		}
+		.hs-countdown-inner {
+			gap: 24px;
+		}
+
+		/* Gods carousel: framed cards with the next one peeking in. The peek is
+		   the affordance, which is why these need no dots - and why they read as
+		   a different thing from the edge-to-edge gallery below. */
+		.hs-gods-grid {
+			display: flex;
+			grid-template-columns: none;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			scroll-padding-left: clamp(16px, 5vw, 48px);
+			gap: 14px;
+			/* Bleed into the gutter so a snapped card still lines up with the text
+			   above it, while the next card can be seen past the right edge. */
+			margin-inline: calc(clamp(16px, 5vw, 48px) * -1);
+			padding-inline: clamp(16px, 5vw, 48px);
+			scrollbar-width: none;
+		}
+		.hs-gods-grid::-webkit-scrollbar {
+			display: none;
+		}
+		.hs-god-card {
+			flex: 0 0 82%;
+			scroll-snap-align: start;
+		}
+
+		/* Gallery carousel: edge to edge, one slot per screen, position shown by
+		   the dots underneath. The wide shot stays put above it. */
+		.hs-gallery-scroll {
+			display: flex;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			gap: 12px;
+			margin-inline: calc(clamp(16px, 5vw, 48px) * -1);
+			padding-inline: clamp(16px, 5vw, 48px);
+			scroll-padding-left: clamp(16px, 5vw, 48px);
+			scrollbar-width: none;
+		}
+		.hs-gallery-scroll::-webkit-scrollbar {
+			display: none;
+		}
+		/* Transparent so all five slots become slides of the one scroller. */
+		.hs-gallery-grid-main,
+		.hs-gallery-grid-secondary {
+			display: contents;
+		}
+		.hs-gallery-body {
+			display: block;
+		}
+		.hs-gallery-slot-wide {
+			aspect-ratio: 16 / 9;
+			margin-bottom: 16px;
+		}
+		.hs-gallery-scroll .hs-gallery-slot {
+			flex: 0 0 100%;
+			scroll-snap-align: start;
+			aspect-ratio: 16 / 9;
+			height: auto;
+		}
+		.hs-gallery-dots {
+			display: flex;
+			justify-content: center;
+			gap: 8px;
+			margin-top: 16px;
+		}
+		.hs-gallery-dots span {
+			width: 7px;
+			height: 7px;
+			border-radius: 50%;
+			background: rgba(127, 212, 255, 0.25);
+			transition: background 150ms;
+		}
+		.hs-gallery-dots span[data-active] {
+			background: #7fd4ff;
+		}
+
+		.hs-feature-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.hs-signup-row {
+			flex-direction: column;
+		}
+		.hs-submit-btn {
+			width: 100%;
+		}
 	}
 </style>
