@@ -35,29 +35,13 @@ export type SocialChannel = {
 export const DISCORD_INVITE = 'https://discord.com/invite/RDk2UGcQ97';
 export const PLAYTEST_SIGNUP = '/holdstrong/#demo';
 
-// TODO(nordwind): every url below except Discord is still a placeholder
-// pointing at the platform's own homepage - they went live that way. Replace
-// each with the real profile URL. Anything still ending in a bare domain is a
-// broken link in production.
 export const SOCIAL_CHANNELS: SocialChannel[] = [
 	{
-		id: 'tiktok',
-		label: 'TikTok',
-		url: 'https://www.tiktok.com/',
+		id: 'twitch',
+		label: 'Twitch',
+		url: 'https://www.twitch.tv/nordwindgamesdev',
 		size: 19,
-		icon: '<path d="M16.6 2h-2.9v12.1a2.4 2.4 0 1 1-2.4-2.4c.26 0 .5.04.74.12V9.1a5.1 5.1 0 1 0 4.36 5.05V8.2a6.1 6.1 0 0 0 3.6 1.16V6.6a3.6 3.6 0 0 1-3.4-3.5V2z" fill="currentColor"></path>',
-	},
-	{
-		id: 'instagram',
-		label: 'Instagram',
-		url: 'https://www.instagram.com/',
-		size: 19,
-		icon:
-			'<g fill="none" stroke="currentColor" stroke-width="1.8">' +
-			'<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect>' +
-			'<circle cx="12" cy="12" r="4.1"></circle>' +
-			'<circle cx="17.1" cy="6.9" r="1.1" fill="currentColor" stroke="none"></circle>' +
-			'</g>',
+		icon: '<path d="M11.6 4.7h1.7v5.2h-1.7V4.7zm4.7 0H18v5.2h-1.7V4.7zM6 0 1.7 4.3v15.4h5.2V24l4.3-4.3h3.4L22.3 12V0H6zm14.6 11.1-3.5 3.5h-3.4l-3 3v-3H6.9V1.7h13.7v9.4z" fill="currentColor"></path>',
 	},
 	{
 		id: 'discord',
@@ -69,8 +53,15 @@ export const SOCIAL_CHANNELS: SocialChannel[] = [
 	{
 		id: 'x',
 		label: 'X',
-		url: 'https://x.com/',
+		url: 'https://x.com/NordwindGames',
 		size: 17,
 		icon: '<path d="M18.2 2.5h3.4l-7.4 8.5 8.1 10.5h-6.5l-4.6-6.1-5.3 6.1H2.5l7.7-8.9L2.4 2.5h6.6l4.3 5.7 4.9-5.7zm-1.2 17h1.9L7.1 4.4H5.1l11.9 15.1z" fill="currentColor"></path>',
+	},
+	{
+		id: 'tiktok',
+		label: 'TikTok',
+		url: 'https://www.tiktok.com/@nordwindgames',
+		size: 19,
+		icon: '<path d="M16.6 2h-2.9v12.1a2.4 2.4 0 1 1-2.4-2.4c.26 0 .5.04.74.12V9.1a5.1 5.1 0 1 0 4.36 5.05V8.2a6.1 6.1 0 0 0 3.6 1.16V6.6a3.6 3.6 0 0 1-3.4-3.5V2z" fill="currentColor"></path>',
 	},
 ];
