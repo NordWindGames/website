@@ -29,3 +29,6 @@ content/ideas/*
 !content/ideas/blog.config.json
 !content/ideas/sources.example.json
 !content/ideas/repos.example.json
+
+# scratch space for drafts and internal source docs (game canon, notes) - never published
+temp/
