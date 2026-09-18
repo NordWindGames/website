@@ -20,6 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# editor backups, e.g. the *.webp~ an image editor leaves next to a re-saved asset
+*~
+
 # jetbrains setting folder
 .idea/
 

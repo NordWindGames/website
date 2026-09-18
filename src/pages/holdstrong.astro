@@ -1,11 +1,45 @@
 ---
+import { Image } from 'astro:assets';
 import Analytics from '../components/Analytics.astro';
 import Seo from '../components/Seo.astro';
 import { DISCORD_INVITE } from '../lib/social';
 import { GAME_NAME, HOLDSTRONG, OG_HOLDSTRONG } from '../lib/seo';
 import { HOME_CRUMB, breadcrumbs, identityNodes, videoGame } from '../lib/schema';
+import draugr from '../assets/concept/draugr_concept_art_game_HoldStrong.webp';
+import fenrirBrood from '../assets/concept/fenrir_brood_concept_art_game_HoldStrong.webp';
+import hrimthurs from '../assets/concept/hrimthur_concept_art_game_HoldStrong.webp';
+import icespearman from '../assets/concept/Icespearman_concept_art_game_HoldStrong.webp';
 
 const site = Astro.site!;
+
+// The four enemy turnarounds, in the order they read best: the personal one
+// first, then the two that answer to a god or to the ice, then the footsoldier.
+const CONCEPT_ART = [
+	{
+		image: draugr,
+		name: 'Draugr',
+		epithet: "Rimehold's own dead",
+		alt: 'Draugr concept art for HoldStrong — four views of an undead Rimehold defender in dark mail and a torn cloak, carrying a round shield, with pale blue eyes.',
+	},
+	{
+		image: fenrirBrood,
+		name: 'Fenrir Brood',
+		epithet: "Týr's old debt, still hunting",
+		alt: 'Fenrir brood concept art for HoldStrong — four views of a low-poly grey ice wolf, including a snarling attack pose.',
+	},
+	{
+		image: hrimthurs,
+		name: 'Hrímthurs',
+		epithet: 'Rime giant, lit from within',
+		alt: 'Hrímthurs concept art for HoldStrong — four views of a hulking stone giant with glowing blue cracks across its chest.',
+	},
+	{
+		image: icespearman,
+		name: 'Icespearman',
+		epithet: 'The ice, given reach',
+		alt: 'Icespearman concept art for HoldStrong — three views of a gaunt, faceless ice figure holding a long spear.',
+	},
+];
 ---
 
 <html lang="en">
@@ -183,32 +217,38 @@ const site = Astro.site!;
 			<section id="gallery" class="hs-gallery" data-analytics-section="gallery">
 				<div class="hs-section">
 					<div class="hs-gallery-head">
-						<h2 class="hs-h2">From the build</h2>
-						<div class="hs-gallery-note">Pre-alpha capture · art not final</div>
+						<h2 class="hs-h2">The ice sends these</h2>
+						<div class="hs-gallery-note">Concept art · in-game look may differ</div>
 					</div>
-					<div class="hs-gallery-body">
-						<div class="hs-gallery-slot hs-gallery-slot-wide">Wide gameplay shot — the tower under siege</div>
-						<!--
-						  display:contents above 639px, so the two grids below stay direct grid items of
-						  .hs-gallery-body and the desktop layout is exactly the one it always was. Below
-						  640px this element becomes the scroll-snap carousel and the five slots become its
-						  slides - which only works if they share a single parent, hence the wrapper.
-						-->
-						<div class="hs-gallery-scroll" id="hs-gallery-scroll">
-							<div class="hs-gallery-grid-main">
-								<div class="hs-gallery-slot">Upgrade / rune screen</div>
-								<div class="hs-gallery-slot">Boss or god encounter</div>
-							</div>
-							<div class="hs-gallery-grid-secondary">
-								<div class="hs-gallery-slot hs-gallery-slot-short">Combat</div>
-								<div class="hs-gallery-slot hs-gallery-slot-short">World map</div>
-								<div class="hs-gallery-slot hs-gallery-slot-short">Loot / meta progression</div>
-							</div>
-						</div>
+					<!--
+					  The turnarounds are 16:9 with the figures in a horizontal band across the
+					  middle, so the tiles are 2:1 and object-fit crops the empty sky and floor
+					  away rather than the art. Below 640px this scroller becomes the carousel.
+					-->
+					<div class="hs-gallery-body hs-gallery-scroll" id="hs-gallery-scroll">
+						{
+							CONCEPT_ART.map(({ image, name, epithet, alt }) => (
+								<figure class="hs-gallery-slot">
+									<Image
+										src={image}
+										alt={alt}
+										width={1600}
+										widths={[480, 800, 1200, 1600]}
+										sizes="(max-width: 1023px) 92vw, 500px"
+										class="hs-gallery-img"
+										loading="lazy"
+									/>
+									<figcaption class="hs-gallery-caption">
+										<span class="hs-gallery-name">{name}</span>
+										<span class="hs-gallery-epithet">{epithet}</span>
+									</figcaption>
+								</figure>
+							))
+						}
 					</div>
 					<!-- Carousel position indicator. Display only, never a control. -->
 					<div class="hs-gallery-dots" id="hs-gallery-dots" aria-hidden="true">
-						<span></span><span></span><span></span><span></span><span></span>
+						<span></span><span></span><span></span><span></span>
 					</div>
 				</div>
 			</section>
@@ -692,54 +732,80 @@ const site = Astro.site!;
 		text-transform: uppercase;
 		color: #6f7b8e;
 	}
-	/*
-	 * One 2fr/1fr grid: the wide slot fills column 1, the two tall slots stack in
-	 * column 2, the three short ones span the full width below. .hs-gallery-scroll
-	 * is display:contents here, so its children are the grid items and the geometry
-	 * is identical to what it was before the wrapper existed. Below 640px that
-	 * wrapper becomes the carousel instead - see the media block at the end.
-	 */
+	/* Four equal tiles, two per row. Below 640px this same element becomes the
+	   carousel instead - see the media block at the end. */
 	.hs-gallery-body {
 		display: grid;
-		grid-template-columns: 2fr 1fr;
+		grid-template-columns: 1fr 1fr;
 		gap: 16px;
 		margin-top: 34px;
-	}
-	.hs-gallery-scroll {
-		display: contents;
-	}
-	.hs-gallery-grid-main {
-		display: grid;
-		grid-template-rows: 230px 230px;
-		gap: 16px;
-	}
-	.hs-gallery-grid-secondary {
-		grid-column: 1 / -1;
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 16px;
-	}
-	.hs-gallery-grid-secondary .hs-gallery-slot-short {
-		height: 170px;
 	}
 	/* Carousel affordance; only ever visible at the carousel breakpoint. */
 	.hs-gallery-dots {
 		display: none;
 	}
 	.hs-gallery-slot {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		text-align: center;
-		padding: 16px;
+		margin: 0;
 		min-width: 0;
-		border: 1px dashed rgba(127, 212, 255, 0.25);
+		border: 1px solid rgba(127, 212, 255, 0.16);
 		background: rgba(15, 22, 36, 0.6);
-		color: #5c6a80;
+		overflow: hidden;
+	}
+	/*
+	 * The turnarounds are cut out, so the tile background shows through and the
+	 * figures stand on the page itself. That is also why the tiles crop to 2:1:
+	 * transparent padding reads as an empty hole here, where a backdrop would
+	 * merely have looked like a backdrop.
+	 */
+	.hs-gallery-img {
+		display: block;
+		width: 100%;
+		/* Astro emits width/height attributes; without this the intrinsic height
+		   wins and aspect-ratio never applies. */
+		height: auto;
+		aspect-ratio: 2 / 1;
+		object-fit: cover;
+		/* The figures sit above the middle of every sheet, so a centred crop leaves
+		   a gap under their feet. This lands their mass in the middle of the tile. */
+		object-position: center 30%;
+	}
+	.hs-gallery-caption {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 12px;
+		flex-wrap: wrap;
+		padding: 14px 16px;
+		border-top: 1px solid rgba(127, 212, 255, 0.16);
+	}
+	.hs-gallery-name {
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 20px;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		color: #f0e6d6;
+	}
+	.hs-gallery-epithet {
 		font-family: 'Barlow Condensed', sans-serif;
 		font-size: 13px;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
+		color: #6f7b8e;
+	}
+	/* Touch never delivers the matching pointerleave, so the lift is desktop only. */
+	@media (hover: hover) {
+		.hs-gallery-slot {
+			transition: border-color 200ms;
+		}
+		.hs-gallery-img {
+			transition: transform 400ms;
+		}
+		.hs-gallery-slot:hover {
+			border-color: rgba(127, 212, 255, 0.4);
+		}
+		.hs-gallery-slot:hover .hs-gallery-img {
+			transform: scale(1.03);
+		}
 	}
 
 	/* demo / signup */
@@ -997,9 +1063,10 @@ const site = Astro.site!;
 			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		}
 
-		/* Fixed row heights cannot survive a narrow column. */
-		.hs-gallery-grid-main {
-			grid-template-rows: repeat(2, minmax(160px, 1fr));
+		/* Two columns would put four figures into a ~290px tile. One column keeps
+		   the turnaround readable. */
+		.hs-gallery-body {
+			grid-template-columns: 1fr;
 		}
 
 		.hs-countdown-unit {
@@ -1078,10 +1145,11 @@ const site = Astro.site!;
 			scroll-snap-align: start;
 		}
 
-		/* Gallery carousel: edge to edge, one slot per screen, position shown by
-		   the dots underneath. The wide shot stays put above it. */
+		/* Gallery carousel: edge to edge, one tile per screen, position shown by
+		   the dots underneath. */
 		.hs-gallery-scroll {
 			display: flex;
+			grid-template-columns: none;
 			overflow-x: auto;
 			scroll-snap-type: x mandatory;
 			gap: 12px;
@@ -1093,23 +1161,9 @@ const site = Astro.site!;
 		.hs-gallery-scroll::-webkit-scrollbar {
 			display: none;
 		}
-		/* Transparent so all five slots become slides of the one scroller. */
-		.hs-gallery-grid-main,
-		.hs-gallery-grid-secondary {
-			display: contents;
-		}
-		.hs-gallery-body {
-			display: block;
-		}
-		.hs-gallery-slot-wide {
-			aspect-ratio: 16 / 9;
-			margin-bottom: 16px;
-		}
 		.hs-gallery-scroll .hs-gallery-slot {
 			flex: 0 0 100%;
 			scroll-snap-align: start;
-			aspect-ratio: 16 / 9;
-			height: auto;
 		}
 		.hs-gallery-dots {
 			display: flex;
