@@ -48,23 +48,44 @@ unterschiedlich** aus, damit zwei Wisch-Bereiche auf derselben Seite nicht zum R
 
 - **Götter** — gerahmte Karten mit `flex: 0 0 82%`. Die angeschnittene nächste Karte ist die
   Affordanz; deshalb brauchen sie keinen Indikator.
-- **Galerie** — randlos über die volle Viewport-Breite, ein Slot pro Bildschirm. Weil hier nichts
+- **Galerie** — randlos über die volle Viewport-Breite, eine Kachel pro Bildschirm. Weil hier nichts
   angeschnitten ist, übernimmt ein Punkte-Indikator die Affordanz.
 
 Der Indikator ist **reine Anzeige**: `aria-hidden`, keine Buttons, nicht anklickbar. Auf einem
 Touchgerät wischt man, man zielt nicht auf 7px-Punkte. Gesetzt wird er von `bindGalleryCarousel()`
 in [`src/scripts/holdstrong.ts`](../src/scripts/holdstrong.ts) über einen `IntersectionObserver`,
 der per `matchMedia('(max-width: 639px)')` an- und abgehängt wird — oberhalb des Breakpoints gibt
-es kein Karussell und läuft entsprechend auch kein Observer.
+es kein Karussell und läuft entsprechend auch kein Observer. Die Zahl der Punkte in
+`.hs-gallery-dots` muss zur Zahl der `.hs-gallery-slot` passen, sonst hängt sich der Observer gar
+nicht erst an.
 
-### Warum die Galerie einen Wrapper hat
+## Die Galerie auf /holdstrong/
 
-Der Wide-Shot steht auf dem Handy fest über dem Karussell, die anderen fünf Slots sind die Slides.
-Damit fünf Slots ein Scroll-Container sein können, brauchen sie **einen** Elternknoten — die lagen
-aber ursprünglich in zwei getrennten Grids. Deshalb `.hs-gallery-scroll`: oberhalb 639px ist es
-`display: contents` und damit unsichtbar, seine Kinder bleiben direkte Grid-Items von
-`.hs-gallery-body`, und die Desktop-Geometrie ist unverändert. Unterhalb wird derselbe Knoten zum
-Scroller.
+Vier Gegner-Turnarounds aus `src/assets/concept/`, eingebunden über `<Image>` aus `astro:assets` —
+die Originale sind 2752px breit und würden sonst für eine 500px-Kachel komplett ausgeliefert.
+
+Ein Knoten trägt beide Rollen: `.hs-gallery-body` ist oberhalb 1024px ein 2×2-Grid, zwischen 640px
+und 1023px einspaltig (zwei Spalten würden vier Figuren in eine ~290px-Kachel quetschen) und
+unterhalb 640px derselbe Knoten als Flex-Scroller.
+
+**Die Kacheln sind 2:1, die Bilder 16:9** — auf allen Breiten gleich. Die Figuren stehen in einem
+waagerechten Band in der Bildmitte, oben und unten ist Leerraum; `object-fit: cover` schneidet also
+genau den Leerraum weg und nicht die Kunst. Das gilt auf dem Handy genauso: die Figuren werden vom
+flacheren Zuschnitt nicht kleiner (bei `cover` bestimmt die Kachelbreite die Skalierung), es
+verschwindet nur toter Raum.
+
+`object-position` steht auf `center 30%`, nicht auf `center`. Die Figuren sitzen auf jedem Blatt
+oberhalb der Bildmitte — ein mittiger Zuschnitt ließe eine Lücke unter ihren Füßen.
+
+`.hs-gallery-img` braucht zwingend `height: auto`. Astro rendert `width`/`height` als Attribute,
+und ohne das Zurücksetzen gewinnt die intrinsische Höhe — `aspect-ratio` greift dann nie und die
+Kachel wird 1548px hoch.
+
+Die Turnarounds sind **freigestellt** (Alphakanal, 66–90 % transparent). Der Kachelhintergrund
+scheint also durch und die Figuren stehen auf der Seite selbst — deshalb ist der 2:1-Zuschnitt hier
+nicht nur Kosmetik: transparenter Leerraum liest sich als Loch, wo eine Hintergrundfläche bloß wie
+eine Hintergrundfläche ausgesehen hätte. Wer die Assets je gegen Fassungen mit Hintergrund
+tauscht, sollte diesen Abschnitt neu bewerten.
 
 ## Animationskanäle, keine Theme-Tokens
 
