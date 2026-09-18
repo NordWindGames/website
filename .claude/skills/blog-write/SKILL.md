@@ -52,8 +52,6 @@ Both locales, identical filename: `src/content/blog/{en,de}/<slug>.md`.
 
 - **Frontmatter is `title`, `description`, `date` — nothing else.** Enforced by the zod `.strict()`
   schema in `src/content.config.ts`, where an extra field is a build error, not a silent drop.
-- **Address the reader informally** (English: plain second person; German: `du`, not `Sie`). This is
-  a personal devlog, not a corporate blog.
 - **Hero image directly under the frontmatter**, before the first paragraph.
 - Images in `public/blog/<slug>/`. Photos `.webp`, diagrams `.svg`.
 - Internal links keep their trailing slash: English `/blog/<slug>/`, German `/de/blog/<slug>/`,
@@ -64,6 +62,33 @@ Both locales, identical filename: `src/content/blog/{en,de}/<slug>.md`.
 
 Everything else about links, slugs and images is checked in step 6; write naturally and let the gate
 tell you what it does not like.
+
+### The voice — one solo developer talking, not a studio publishing
+
+The benchmark is `what-the-ice-sends` in both locales. Match it. Every rule below exists because a
+draft got rewritten for breaking it.
+
+- **First person, and own every decision.** "I gave myself a rule", "my biggest hurdle", "an enemy I
+  was fond of", "I only noticed it afterwards". One person designs, draws and builds this game; a
+  post that hides that behind "the design document says" or the passive voice reads like a press
+  release. Where the solo-dev reality explains a delay or a gap, say it outright — it is context,
+  not an excuse.
+- **Pronouns.** German: `du` for the player inside the fiction, `ihr` for the readers of the post,
+  never `Sie`. Keep the two apart — the split is doing real work, since "du stehst am Turm" and
+  "was ihr hier seht" are addressing different people. English has one `you` for both.
+- **Write to be read once.** A sentence that needs a second pass gets split. Prefer the explicit
+  connective — _so_, _that is why_, _deshalb_, _zusammenfassend_ — over the jump cut that leaves the
+  reader to infer the link. Aphorisms feel sharp to write and cost the reader every time.
+- **At most one em dash per paragraph.** A second one means the sentence wanted to be two
+  sentences. The same goes for stacked appositions and parentheses inside parentheses.
+- **Gloss the lore the first time it appears.** "the great wolf Fenrir", "the larva of Nidhöggr",
+  "Rimehold, the outpost you hold". Readers have not read `story.md`, and a name they cannot place
+  is a name they skim past.
+- **Be fond of the thing out loud.** "There is one detail I like enormously", "the most useful line
+  in my entire design document". Warmth is what separates a devlog from patch notes; the cold,
+  clipped register reads as marketing copy trying to sound literary.
+- **End a section by saying what it meant.** Do not leave a punchy fragment to carry the point —
+  land it in a plain sentence, then move on.
 
 ### The honesty rules — these are what make a devlog trusted rather than promotional
 
