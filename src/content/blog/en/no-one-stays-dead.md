@@ -44,7 +44,7 @@ Then the decision handed me something I had not planned for. If the runes are Od
 
 ## Two kinds of dead, kept apart on purpose
 
-The Draugr that come at you out of the ice are Rimehold's own dead. They are the defenders who held this outpost before you did, dragged back up by the thing they died fighting, and they knew the tower they are now hammering on — which makes them the only enemy in the game with anything personal about them.
+The Draugr that come at you out of the ice are Rimehold's own dead. They are the defenders who held this outpost before you did, dragged back up by the thing they died fighting, and they knew the tower they are now hammering on — which makes them the only enemy in the game with anything personal about them. They and the rest of the cast have [a post of their own now](/blog/what-the-ice-sends/), with the concept art.
 
 The tower, all the while, is carrying Valhalla's dead, the ones you brought down yourself.
 

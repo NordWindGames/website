@@ -44,7 +44,7 @@ Dann hat mir diese Entscheidung etwas in die Hand gelegt, womit ich nicht gerech
 
 ## Zwei Arten von Toten, mit Absicht getrennt
 
-Die Draugr, die aus dem Eis auf dich zukommen, sind Rimeholds eigene Tote. Es sind die Verteidiger, die diesen Vorposten vor dir gehalten haben, zurückgeholt von genau dem, gegen das sie gestorben sind, und sie kannten den Turm, auf den sie jetzt einschlagen — womit sie der einzige Gegner im Spiel sind, an dem irgendetwas persönlich ist.
+Die Draugr, die aus dem Eis auf dich zukommen, sind Rimeholds eigene Tote. Es sind die Verteidiger, die diesen Vorposten vor dir gehalten haben, zurückgeholt von genau dem, gegen das sie gestorben sind, und sie kannten den Turm, auf den sie jetzt einschlagen — womit sie der einzige Gegner im Spiel sind, an dem irgendetwas persönlich ist. Sie und das restliche Ensemble haben inzwischen [einen eigenen Post](/de/blog/what-the-ice-sends/), mit der Concept Art.
 
 Der Turm trägt derweil Walhalls Tote, die, die du selbst hinuntergebracht hast.
 
