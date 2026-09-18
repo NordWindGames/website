@@ -39,3 +39,5 @@ The hard part is not the writing, it is the rhythm. The weeks where little got f
 So I will write down what got built, what did not work, and what I learned along the way. Including the parts where I was wrong.
 
 Looking forward to it. Let's start.
+
+_Added later: the posts this one was holding things back for are up now — [the story behind HoldStrong](/blog/no-one-stays-dead/), and [what comes walking out of the Eternal Ice](/blog/what-the-ice-sends/)._

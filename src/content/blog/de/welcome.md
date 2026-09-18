@@ -39,3 +39,5 @@ Das Schwierige daran ist nicht das Schreiben, sondern der Takt. Die Wochen, in d
 Ich schreibe also auf, was gebaut ist, was nicht funktioniert hat, und was ich unterwegs gelernt habe. Auch die Teile, bei denen ich falsch lag.
 
 Ich freue mich drauf. Fangen wir an.
+
+_Später ergänzt: Die Posts, für die dieser hier einiges zurückgehalten hat, sind inzwischen da — [die Story hinter HoldStrong](/de/blog/no-one-stays-dead/) und [was aus dem Ewigen Eis herauskommt](/de/blog/what-the-ice-sends/)._
